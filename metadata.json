@@ -1,0 +1,6 @@
+{
+  "name": "Sera Ecosystem",
+  "description": "The official digital ecosystem of Será Cacau, providing educational resources, technical libraries, and B2B relationship tools for nutritionists and partners with an elegant, slow-living aesthetic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
