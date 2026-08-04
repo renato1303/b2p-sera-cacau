@@ -75,7 +75,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const [courseCategory, setCourseCategory] = useState<'Treinamento' | 'História' | 'Nutrição' | 'Negócios'>('Treinamento');
   const [courseInstructor, setCourseInstructor] = useState('');
   const [courseDesc, setCourseDesc] = useState('');
-  const [courseCover, setCourseCover] = useState('/src/assets/images/cabruca_forest_1783964129461.jpg');
+  const [courseCover, setCourseCover] = useState('/images/IMG_4189 copiar.jpg');
   const [certificateEnabled, setCertificateEnabled] = useState(true);
   const [communityEnabled, setCommunityEnabled] = useState(true);
   const [courseVisibility, setCourseVisibility] = useState<'Público' | 'Somente Matriculadas' | 'Rascunho'>('Somente Matriculadas');
@@ -300,7 +300,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setCourseTitle('');
     setCourseInstructor('');
     setCourseDesc('');
-    setCourseCover('/src/assets/images/cabruca_forest_1783964129461.jpg');
+    setCourseCover('/images/IMG_4189 copiar.jpg');
     setTempModules([]);
     setActiveModuleForClass(null);
     setCertificateEnabled(true);
@@ -332,7 +332,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         sodium: '0mg'
       },
       hasLaudo: false,
-      imageUrl: '/src/assets/images/cocoa_drops_jar_1783964100837.jpg',
+      imageUrl: '/images/cocoa_drops_jar_1783964100837.jpg',
       shopifyId: `sh_new_${Date.now()}`,
       price: prodPrice.startsWith('R$') ? prodPrice : `R$ ${prodPrice}`,
       originCooperativa: 'Cooperativa Parceira do Sul da Bahia'
