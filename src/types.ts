@@ -8,7 +8,26 @@ export enum UserRole {
   NUTRICIONISTA = 'NUTRICIONISTA',
 }
 
+export type GamificationTier = 'Bronze' | 'Prata' | 'Ouro' | 'Diamante';
+
+export interface GamificationReward {
+  id: string;
+  title: string;
+  description: string;
+  pointsRequired: number;
+  icon?: string; // nome do ícone lucide-react a usar, ex: 'Gift', 'Award'
+}
+
+export interface PointsEntry {
+  id: string;
+  memberId: string;
+  points: number;
+  reason: string; // ex: "Venda de 5 unidades Gotas 210g", "Curso concluído", "Indicação de nova nutri"
+  date: string;
+}
+
 export interface UserProfile {
+  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -19,6 +38,8 @@ export interface UserProfile {
   role: UserRole;
   avatarUrl?: string;
   crn?: string; // CRN registry for nutritionists
+  totalPoints?: number;
+  tier?: GamificationTier;
 }
 
 export interface FileAttachment {
@@ -56,6 +77,8 @@ export interface Product {
   shopifyId: string;
   price: string;
   originCooperativa: string;
+  discountCode?: string;
+  discountDescription?: string;
 }
 
 export interface QuizOption {
@@ -75,6 +98,7 @@ export interface CourseClass {
   title: string;
   duration: string;
   videoUrl: string; // vazio quando type === 'quiz'
+  thumbnailUrl?: string;
   summary: string;
   type?: 'video' | 'quiz'; // default 'video' quando ausente
   pdfAttachment?: FileAttachment;
@@ -134,6 +158,8 @@ export interface Member {
   state: string;
   enrolledCourseIds: string[];
   joinedDate: string;
+  totalPoints?: number;
+  tier?: GamificationTier;
 }
 
 export interface Campaign {

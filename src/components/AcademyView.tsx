@@ -381,86 +381,58 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                     ) : (
                       /* RENDER VIDEO PLAYER */
                       <>
-                        {/* Video Image Poster */}
-                        <div className="absolute inset-0 w-full h-full">
-                          <img 
-                            src={selectedCourse.coverImage} 
-                            alt={activeClass.title}
-                            className={`w-full h-full object-cover filter brightness-50 transition-all duration-500 ${videoPlaying ? 'blur-xs scale-102' : ''}`}
-                            referrerPolicy="no-referrer"
-                          />
-                        </div>
-
-                        {/* Centered Large Play Overlay */}
-                        {!videoPlaying && (
-                          <button 
-                            onClick={() => setVideoPlaying(true)}
-                            className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-primary-accent text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform duration-300 z-20 cursor-pointer"
-                          >
-                            <Play className="w-9 h-9 fill-current translate-x-0.5" />
-                          </button>
-                        )}
-
-                        {/* Simulated Video Streaming Overlay */}
-                        {videoPlaying && (
-                          <div className="absolute inset-0 bg-transparent flex flex-col justify-end p-6 z-20">
-                            
-                            {/* Active floating branding tag */}
-                            <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-primary-accent animate-pulse"></span>
-                              <span className="text-[9px] uppercase tracking-widest font-bold text-white/80 font-mono">Transmissão Segura Será</span>
-                            </div>
-
-                            {/* Playback Controls Bar */}
-                            <div className="bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/10 flex flex-col gap-3">
-                              {/* Progress slider */}
-                              <div className="relative w-full bg-white/20 h-1.5 rounded-full overflow-hidden cursor-pointer">
-                                <div 
-                                  className="bg-primary-accent h-full rounded-full transition-all duration-300" 
-                                  style={{ width: `${videoProgress}%` }}
-                                />
-                              </div>
-
-                              {/* Control buttons */}
-                              <div className="flex justify-between items-center text-white">
-                                <div className="flex items-center gap-4">
-                                  <button 
-                                    onClick={() => setVideoPlaying(false)}
-                                    className="text-xs font-semibold text-white hover:text-primary-accent transition-colors cursor-pointer"
-                                  >
-                                    Pausar
-                                  </button>
-                                  <button 
-                                    onClick={() => setVideoProgress(prev => Math.min(100, Math.max(0, prev - 10)))}
-                                    className="hover:text-primary-accent transition-colors cursor-pointer"
-                                    title="Retroceder 10s"
-                                  >
-                                    <RotateCcw className="w-4 h-4" />
-                                  </button>
-                                  <span className="text-[10px] font-mono tracking-widest text-white/60">
-                                    04:12 / {activeClass.duration}
-                                  </span>
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                  {/* Volume simulation */}
-                                  <div className="flex items-center gap-1.5">
-                                    <Volume2 className="w-4 h-4 text-white/60" />
-                                    <div className="w-16 bg-white/20 h-1 rounded-full overflow-hidden">
-                                      <div className="bg-white h-full" style={{ width: '80%' }} />
-                                    </div>
-                                  </div>
-                                  <Maximize2 className="w-4 h-4 text-white/60 cursor-pointer hover:text-white" />
-                                </div>
-                              </div>
-                            </div>
+                        {/* If videoPlaying is true and activeClass has videoUrl, embed the real Vimeo player */}
+                        {videoPlaying && activeClass.videoUrl ? (
+                          <div className="absolute inset-0 w-full h-full bg-black z-20">
+                            <iframe 
+                              src={(() => {
+                                const match = activeClass.videoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
+                                const id = match && match[1] ? match[1] : '';
+                                return id ? `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&badge=0&dnt=1` : activeClass.videoUrl;
+                              })()}
+                              className="w-full h-full border-0"
+                              allow="autoplay; fullscreen; picture-in-picture"
+                              allowFullScreen
+                              title={activeClass.title}
+                            />
                           </div>
-                        )}
+                        ) : (
+                          <>
+                            {/* Video Image Poster */}
+                            {(() => {
+                              const vimeoMatch = activeClass.videoUrl?.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
+                              const vimeoId = vimeoMatch && vimeoMatch[1] ? vimeoMatch[1] : '';
+                              const initialPoster = activeClass.thumbnailUrl || (vimeoId ? `https://vumbnail.com/${vimeoId}.jpg` : selectedCourse.coverImage);
 
-                        {/* Watermark brand overlay */}
-                        <div className="absolute top-5 right-5 font-mono text-[10px] font-bold tracking-wider text-white/10 select-none z-10 pointer-events-none uppercase">
-                          será cacau ritual
-                        </div>
+                              return (
+                                <div className="absolute inset-0 w-full h-full">
+                                  <img 
+                                    src={initialPoster} 
+                                    alt={activeClass.title}
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src = selectedCourse.coverImage;
+                                    }}
+                                    className="w-full h-full object-cover filter brightness-60 transition-all duration-500"
+                                    referrerPolicy="no-referrer"
+                                  />
+                                </div>
+                              );
+                            })()}
+
+                            {/* Centered Large Play Overlay */}
+                            <button 
+                              onClick={() => setVideoPlaying(true)}
+                              className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-primary-accent text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform duration-300 z-20 cursor-pointer group/play"
+                            >
+                              <Play className="w-9 h-9 fill-current translate-x-0.5 group-hover/play:scale-110 transition-transform" />
+                            </button>
+
+                            {/* Watermark brand overlay */}
+                            <div className="absolute top-5 right-5 font-mono text-[10px] font-bold tracking-wider text-white/20 select-none z-10 pointer-events-none uppercase">
+                              será cacau cabruca
+                            </div>
+                          </>
+                        )}
                       </>
                     )
                   ) : (
@@ -534,94 +506,48 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                 )}
               </div>
 
-              {/* SYLLABUS SYLLABUS CELL (Right block - 4 Cols) */}
-              <div className="lg:col-span-4 bg-surface text-primary-text rounded-2xl p-5 border border-border-color shadow-sm flex flex-col gap-6 sticky top-28">
-                <div className="border-b border-border-color/60 pb-4">
+              {/* SYLLABUS CELL (Right block - 4 Cols) */}
+              <div className="lg:col-span-4 bg-surface text-primary-text rounded-2xl p-5 border border-border-color shadow-sm flex flex-col gap-5 sticky top-28">
+                <div className="border-b border-border-color/60 pb-3.5">
                   <span className="text-[8px] uppercase tracking-widest text-primary-accent font-bold font-mono">Grade Curricular</span>
                   <h3 className="text-lg font-bold tracking-tight mt-0.5 text-primary-forest">{selectedCourse.title}</h3>
-                  <div className="flex gap-4 mt-2 text-[10px] text-secondary-text uppercase tracking-widest font-mono">
-                    <span>{selectedCourse.modules.length} Módulos</span>
-                    <span>•</span>
-                    <span>{getCourseClassesCount(selectedCourse)} Aulas</span>
+                  <div className="flex gap-4 mt-1.5 text-[10px] text-secondary-text uppercase tracking-widest font-mono">
+                    <span>{getCourseClassesCount(selectedCourse)} Aulas no Total</span>
                   </div>
                 </div>
 
-                {/* Structural Node List */}
-                <div className="flex flex-col gap-6 overflow-y-auto max-h-[500px] pr-2">
-                  {selectedCourse.modules.map((mod, modIdx) => {
-                    const isModuleLocked = mod.locked === true;
+                {/* Flat Class List */}
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[520px] pr-1">
+                  {selectedCourse.modules.flatMap(m => m.classes || []).map((cls) => {
+                    const isCompleted = completedClassIds.includes(cls.id);
+                    const isPlaying = activeClass?.id === cls.id;
 
                     return (
-                      <div key={mod.id} className="flex flex-col gap-3 relative">
-                        {/* Module header node */}
-                        <div className={`flex items-start gap-2.5 ${isModuleLocked ? 'opacity-50' : ''}`}>
-                          <span className="w-5 h-5 rounded bg-primary-accent/15 border border-primary-accent/20 text-primary-accent flex items-center justify-center text-[10px] font-mono font-bold">
-                            {isModuleLocked ? <Lock className="w-3 h-3 text-secondary-text" /> : modIdx + 1}
+                      <button
+                        id={`btn-class-node-${cls.id}`}
+                        key={cls.id}
+                        onClick={() => handleSelectClass(cls)}
+                        className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                          isPlaying 
+                            ? 'bg-primary-forest border-transparent text-white shadow-md font-bold' 
+                            : 'bg-bg-app border-transparent text-primary-text hover:bg-secondary-surface hover:text-primary-forest'
+                        }`}
+                      >
+                        <div className="min-w-0 flex items-center gap-2.5">
+                          {isCompleted ? (
+                            <CheckCircle className={`w-4 h-4 shrink-0 ${isPlaying ? 'text-white' : 'text-emerald-600'}`} />
+                          ) : (
+                            <Play className={`w-3.5 h-3.5 shrink-0 ${isPlaying ? 'text-white' : 'text-primary-accent'}`} />
+                          )}
+                          <span className="text-xs tracking-wider leading-snug truncate">
+                            {cls.title}
                           </span>
-                          <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-primary-forest">
-                              {mod.title}
-                            </h4>
-                            <p className="text-[10px] text-secondary-text line-clamp-1 mt-0.5">{mod.description}</p>
-                          </div>
                         </div>
 
-                        {/* Classes cells within module */}
-                        <div className="flex flex-col gap-2 pl-7 border-l border-border-color/60 ml-2.5 mt-1">
-                          {mod.classes?.map((cls, clsIdx) => {
-                            const isCompleted = completedClassIds.includes(cls.id);
-                            const isPlaying = activeClass?.id === cls.id;
-
-                            if (isModuleLocked) {
-                              return (
-                                <button
-                                  key={cls.id}
-                                  onClick={() => alert("Este módulo é liberado conforme o andamento do seu plano com a Será Cacau. Fale com o time para desbloquear.")}
-                                  className="w-full flex items-center justify-between p-2.5 rounded-lg border border-transparent bg-secondary-surface text-left text-primary-text/30 cursor-not-allowed"
-                                >
-                                  <div className="min-w-0 flex items-center gap-2">
-                                    <Lock className="w-3 h-3 shrink-0 text-secondary-text/50" />
-                                    <span className="text-xs tracking-wider leading-snug truncate">
-                                      {clsIdx + 1}. {cls.title}
-                                    </span>
-                                  </div>
-                                  <span className="text-[8px] font-mono tracking-wider opacity-60 ml-2">
-                                    {cls.duration}
-                                  </span>
-                                </button>
-                              );
-                            }
-
-                            return (
-                              <button
-                                id={`btn-class-node-${cls.id}`}
-                                key={cls.id}
-                                onClick={() => handleSelectClass(cls)}
-                                className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
-                                  isPlaying 
-                                    ? 'bg-primary-forest border-transparent text-white shadow-md scale-102 font-bold' 
-                                    : 'bg-bg-app border-transparent text-primary-text hover:bg-secondary-surface hover:text-primary-forest'
-                                }`}
-                              >
-                                <div className="min-w-0 flex items-center gap-2">
-                                  {isCompleted ? (
-                                    <CheckCircle className={`w-3.5 h-3.5 shrink-0 ${isPlaying ? 'text-white' : 'text-emerald-600'}`} />
-                                  ) : (
-                                    <Play className={`w-3 h-3 shrink-0 ${isPlaying ? 'text-white' : 'text-primary-accent'}`} />
-                                  )}
-                                  <span className="text-xs tracking-wider leading-snug truncate">
-                                    {clsIdx + 1}. {cls.title}
-                                  </span>
-                                </div>
-
-                                <span className="text-[8px] font-mono tracking-wider opacity-60 ml-2">
-                                  {cls.duration}
-                                </span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
+                        <span className="text-[9px] font-mono tracking-wider opacity-60 ml-2 shrink-0">
+                          {cls.duration}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>

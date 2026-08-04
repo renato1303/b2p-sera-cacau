@@ -32,6 +32,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
   setSelectedProduct
 }) => {
   const [activeFilter, setActiveFilter] = useState<string>('todos');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Filter products by collection line
   const filteredProducts = activeFilter === 'todos' 
@@ -102,7 +103,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
               id={`product-card-${prod.id}`}
               key={prod.id}
               onClick={() => setSelectedProduct(prod)}
-              className="bg-surface rounded-2xl p-6 border border-border-color flex flex-col justify-between h-[450px] cursor-pointer hover:border-primary-accent/40 shadow-sm transition-all duration-300 group"
+              className="bg-surface rounded-2xl p-6 border border-border-color flex flex-col justify-between min-h-[460px] cursor-pointer hover:border-primary-accent/40 shadow-sm transition-all duration-300 group"
             >
               <div className="flex flex-col gap-5">
                 {/* Image Section */}
@@ -128,6 +129,35 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                   </p>
                 </div>
               </div>
+
+              {/* Discount Code Section */}
+              {prod.discountCode && (
+                <div 
+                  className="mt-4 p-3 rounded-lg border border-dashed border-luxury-accent/50 bg-luxury-accent/5 flex items-center justify-between gap-2"
+                  onClick={(e) => e.stopPropagation()} // Prevent card navigation
+                >
+                  <div className="min-w-0">
+                    <span className="text-[9px] font-bold tracking-wider text-luxury-accent font-mono block">
+                      CUPOM ATIVO: {prod.discountCode}
+                    </span>
+                    <span className="text-[8px] text-secondary-text block leading-tight mt-0.5">
+                      {prod.discountDescription || 'Sua indicação ganha desconto exclusivo.'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(prod.discountCode || '');
+                      setCopiedId(prod.id);
+                      setTimeout(() => setCopiedId(null), 2000);
+                    }}
+                    className="px-2 py-1 bg-primary-forest hover:bg-primary-forest/90 text-[8px] uppercase tracking-widest font-bold text-white rounded font-mono transition-colors shrink-0 cursor-pointer"
+                  >
+                    {copiedId === prod.id ? 'Copiado!' : 'Copiar'}
+                  </button>
+                </div>
+              )}
 
               {/* Price and Navigation trigger */}
               <div className="pt-4 border-t border-border-color/60 flex justify-between items-center mt-4 font-mono">
@@ -192,6 +222,31 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                 "{selectedProduct.tagline}"
               </p>
             </div>
+
+            {/* Discount Code Section in detailed view */}
+            {selectedProduct.discountCode && (
+              <div className="bg-luxury-accent/5 border border-dashed border-luxury-accent/50 rounded-xl p-4 flex items-center justify-between gap-4 -mt-2 shadow-sm">
+                <div className="min-w-0">
+                  <span className="text-[10px] font-bold tracking-wider text-luxury-accent font-mono block">
+                    CUPOM ATIVO: {selectedProduct.discountCode}
+                  </span>
+                  <span className="text-xs text-secondary-text block leading-relaxed mt-1">
+                    {selectedProduct.discountDescription || 'Sua indicação ganha desconto exclusivo.'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedProduct.discountCode || '');
+                    setCopiedId(selectedProduct.id);
+                    setTimeout(() => setCopiedId(null), 2000);
+                  }}
+                  className="px-3.5 py-2 bg-primary-forest hover:bg-primary-forest/90 text-xs uppercase tracking-widest font-bold text-white rounded-lg font-mono transition-colors shrink-0 cursor-pointer"
+                >
+                  {copiedId === selectedProduct.id ? 'Copiado!' : 'Copiar Código'}
+                </button>
+              </div>
+            )}
 
             {/* Cooperativa and Shopify quick integrate widget */}
             <div className="bg-surface rounded-xl p-5 border border-border-color flex flex-col sm:flex-row justify-between items-center gap-6 shadow-sm">

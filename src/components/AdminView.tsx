@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { 
   Plus, 
   Users, 
@@ -28,9 +29,10 @@ import {
   HelpCircle,
   ToggleLeft,
   ToggleRight,
-  ChevronRight
+  ChevronRight,
+  PlusCircle
 } from 'lucide-react';
-import { Course, Product, FileAttachment, Member, CourseModule, CourseClass } from '../types';
+import { Course, Product, FileAttachment, Member, CourseModule, CourseClass, PointsEntry } from '../types';
 
 interface AdminViewProps {
   courses: Course[];
@@ -42,6 +44,9 @@ interface AdminViewProps {
   metricDownloads: number;
   members: Member[];
   onUpdateCourse: (course: Course) => void;
+  pointsHistory: PointsEntry[];
+  setPointsHistory: React.Dispatch<React.SetStateAction<PointsEntry[]>>;
+  setMembers: React.Dispatch<React.SetStateAction<Member[]>>;
 }
 
 export const AdminView: React.FC<AdminViewProps> = ({
@@ -53,9 +58,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
   onAddAttachment,
   metricDownloads,
   members,
-  onUpdateCourse
+  onUpdateCourse,
+  pointsHistory,
+  setPointsHistory,
+  setMembers
 }) => {
   const [successMsg, setSuccessMsg] = useState<string>('');
+
+  // Points Launch Form States
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || '');
+  const [launchPoints, setLaunchPoints] = useState<string>('');
+  const [launchReason, setLaunchReason] = useState<string>('');
 
   // Course addition form state
   const [courseTitle, setCourseTitle] = useState('');
@@ -95,6 +108,89 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   // Active Collapsed Accordion state for Published Courses
   const [openCourseAccordionId, setOpenCourseAccordionId] = useState<string | null>(null);
+
+  const handleLaunchPoints = (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetId = selectedMemberId || (members[0]?.id || '');
+    if (!targetId || !launchPoints || !launchReason) {
+      alert('Por favor, preencha todos os campos do formulário de lançamento.');
+      return;
+    }
+
+    const memberToUpdate = members.find(m => m.id === targetId);
+    if (!memberToUpdate) return;
+
+    const pointsToAdd = parseInt(launchPoints, 10);
+    if (isNaN(pointsToAdd)) {
+      alert('Por favor, digite um número válido de pontos.');
+      return;
+    }
+
+    const updatedPoints = (memberToUpdate.totalPoints || 0) + pointsToAdd;
+
+    // Determine new tier
+    let updatedTier: 'Bronze' | 'Prata' | 'Ouro' | 'Diamante' = 'Bronze';
+    if (updatedPoints > 1200) {
+      updatedTier = 'Diamante';
+    } else if (updatedPoints > 700) {
+      updatedTier = 'Ouro';
+    } else if (updatedPoints > 300) {
+      updatedTier = 'Prata';
+    }
+
+    // Write to Supabase if configured and is a valid UUID
+    if (isSupabaseConfigured) {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(targetId);
+      if (isUuid) {
+        supabase.from('points_history').insert({
+          member_id: targetId,
+          points: pointsToAdd,
+          reason: launchReason
+        }).then(({ error: histError }) => {
+          if (histError) console.error('Erro ao salvar pontos no histórico:', histError);
+        });
+
+        supabase.from('profiles').update({
+          total_points: updatedPoints,
+          tier: updatedTier
+        }).eq('id', targetId).then(({ error: profError }) => {
+          if (profError) console.error('Erro ao atualizar perfil do membro:', profError);
+        });
+      }
+    }
+
+    // Update Member list state
+    setMembers(prev => prev.map(m => {
+      if (m.id === targetId) {
+        return {
+          ...m,
+          totalPoints: updatedPoints,
+          tier: updatedTier
+        };
+      }
+      return m;
+    }));
+
+    // Create PointsEntry
+    const newEntry: PointsEntry = {
+      id: `pe-${Date.now()}`,
+      memberId: targetId,
+      points: pointsToAdd,
+      reason: launchReason,
+      date: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+
+    // Update Points History state
+    setPointsHistory(prev => [newEntry, ...prev]);
+
+    // Success notice
+    setSuccessMsg(`+${pointsToAdd} pontos creditados com sucesso para ${memberToUpdate.name}!`);
+    setTimeout(() => setSuccessMsg(''), 5000);
+
+    // Reset fields
+    setLaunchPoints('');
+    setLaunchReason('');
+  };
 
   // Add module to temporary course build
   const handleAddModule = () => {
@@ -909,66 +1005,142 @@ export const AdminView: React.FC<AdminViewProps> = ({
         <div className="flex justify-between items-center border-b border-border-color pb-3">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-primary-accent" />
-            <h3 className="text-xl font-bold text-primary-forest">Membros & Matrículas</h3>
+            <h3 className="text-xl font-bold text-primary-forest">Membros, Rankings & Bonificações</h3>
           </div>
           <span className="text-[10px] tracking-widest uppercase text-primary-accent font-bold font-mono">crm ativo</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-secondary-text">
-            <thead>
-              <tr className="border-b border-border-color text-secondary-text/80 font-bold uppercase text-[9px] tracking-wider font-mono">
-                <th className="py-3 px-4">Nome Profissional</th>
-                <th className="py-3 px-4">Registro (CRN)</th>
-                <th className="py-3 px-4">Cidade / UF</th>
-                <th className="py-3 px-4">Matrículas Ativas</th>
-                <th className="py-3 px-4 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((member) => (
-                <tr key={member.id} className="border-b border-border-color hover:bg-secondary-surface transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-primary-forest">
-                    <div className="flex flex-col">
-                      <span>{member.name}</span>
-                      <span className="text-[9px] text-secondary-text/60 font-mono font-normal uppercase mt-0.5">{member.email}</span>
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 font-mono text-[10px] text-primary-accent">{member.crn}</td>
-                  <td className="py-3.5 px-4">{member.city} - {member.state}</td>
-                  <td className="py-3.5 px-4">
-                    <div className="flex flex-wrap gap-1">
-                      {member.enrolledCourseIds.length === 0 ? (
-                        <span className="text-[9px] font-mono text-secondary-text/40 italic">Sem matrículas</span>
-                      ) : (
-                        member.enrolledCourseIds.map(courseId => {
-                          const course = courses.find(c => c.id === courseId);
-                          return (
-                            <span 
-                              key={courseId}
-                              className="text-[8px] bg-primary-accent/15 border border-primary-accent/30 text-primary-accent px-2 py-0.5 rounded font-sans font-medium uppercase tracking-wider"
-                              title={course?.title}
-                            >
-                              {course ? course.title.substring(0, 15) + '...' : courseId}
-                            </span>
-                          );
-                        })
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() => alert(`Gerenciar permissões de matrícula para Dra. ${member.name.split(' ').slice(1).join(' ')} (CRN: ${member.crn}).`)}
-                      className="text-[9px] uppercase font-bold tracking-widest text-primary-accent hover:text-primary-forest transition-colors font-mono cursor-pointer"
-                    >
-                      Editar Matrícula
-                    </button>
-                  </td>
+        {/* 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* COLUMN 1: Registered list table (8/12) */}
+          <div className="lg:col-span-8 overflow-x-auto">
+            <table className="w-full text-left text-xs text-secondary-text">
+              <thead>
+                <tr className="border-b border-border-color text-secondary-text/80 font-bold uppercase text-[9px] tracking-wider font-mono">
+                  <th className="py-3 px-4">Nome Profissional</th>
+                  <th className="py-3 px-4">Pontos / Nível</th>
+                  <th className="py-3 px-4">Registro (CRN)</th>
+                  <th className="py-3 px-4">Cidade / UF</th>
+                  <th className="py-3 px-4">Matrículas</th>
+                  <th className="py-3 px-4 text-right">Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {members.map((member) => (
+                  <tr key={member.id} className="border-b border-border-color hover:bg-secondary-surface transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-primary-forest">
+                      <div className="flex flex-col">
+                        <span>{member.name}</span>
+                        <span className="text-[9px] text-secondary-text/60 font-mono font-normal uppercase mt-0.5">{member.email}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-primary-accent">{member.totalPoints || 0} pts</span>
+                        <span className="text-[9px] text-luxury-accent font-bold uppercase tracking-wider font-mono mt-0.5">{member.tier || 'Bronze'}</span>
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 font-mono text-[10px] text-primary-accent">{member.crn}</td>
+                    <td className="py-3.5 px-4">{member.city} - {member.state}</td>
+                    <td className="py-3.5 px-4">
+                      <div className="flex flex-wrap gap-1">
+                        {member.enrolledCourseIds.length === 0 ? (
+                          <span className="text-[9px] font-mono text-secondary-text/40 italic">Sem matrículas</span>
+                        ) : (
+                          member.enrolledCourseIds.map(courseId => {
+                            const course = courses.find(c => c.id === courseId);
+                            return (
+                              <span 
+                                key={courseId}
+                                className="text-[8px] bg-primary-accent/15 border border-primary-accent/30 text-primary-accent px-2 py-0.5 rounded font-sans font-medium uppercase tracking-wider"
+                                title={course?.title}
+                              >
+                                {course ? course.title.substring(0, 15) + '...' : courseId}
+                              </span>
+                            );
+                          })
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => alert(`Gerenciar permissões de matrícula para Dra. ${member.name.split(' ').slice(1).join(' ')} (CRN: ${member.crn}).`)}
+                        className="text-[9px] uppercase font-bold tracking-widest text-primary-accent hover:text-primary-forest transition-colors font-mono cursor-pointer"
+                      >
+                        Editar Matrícula
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* COLUMN 2: Lançar Pontos Form (4/12) */}
+          <div className="lg:col-span-4 bg-[#F7F3EC]/70 border border-border-color rounded-xl p-5 flex flex-col gap-4">
+            <div className="flex items-center gap-1.5 border-b border-border-color pb-2">
+              <PlusCircle className="w-4 h-4 text-primary-accent" />
+              <h4 className="text-sm font-bold text-primary-forest uppercase tracking-wider font-mono">Lançar Pontos</h4>
+            </div>
+
+            <form onSubmit={handleLaunchPoints} className="flex flex-col gap-3.5">
+              
+              {/* Select Nutricionista */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] tracking-widest uppercase text-secondary-text font-bold font-mono">Selecionar Nutricionista</label>
+                <select
+                  value={selectedMemberId}
+                  onChange={(e) => setSelectedMemberId(e.target.value)}
+                  className="w-full px-3 py-2 rounded border border-border-color bg-surface text-xs text-primary-text focus:outline-none focus:border-primary-accent"
+                  required
+                >
+                  <option value="" disabled>Selecione uma profissional</option>
+                  {members.map(member => (
+                    <option key={member.id} value={member.id}>
+                      {member.name} ({member.crn})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Points field */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] tracking-widest uppercase text-secondary-text font-bold font-mono">Valor dos Pontos</label>
+                <input
+                  type="number"
+                  placeholder="Ex: 150"
+                  value={launchPoints}
+                  onChange={(e) => setLaunchPoints(e.target.value)}
+                  required
+                  min="1"
+                  className="w-full px-3 py-2 rounded border border-border-color bg-surface text-xs text-primary-text focus:outline-none focus:border-primary-accent"
+                />
+              </div>
+
+              {/* Reason field */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[9px] tracking-widest uppercase text-secondary-text font-bold font-mono">Motivo da Bonificação</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Prescrição de Gotas 210g"
+                  value={launchReason}
+                  onChange={(e) => setLaunchReason(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 rounded border border-border-color bg-surface text-xs text-primary-text focus:outline-none focus:border-primary-accent"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-primary-forest hover:bg-primary-forest/95 text-white rounded font-mono text-[10px] uppercase tracking-widest font-bold transition-all cursor-pointer shadow-sm mt-1"
+              >
+                + Lançar Pontos
+              </button>
+            </form>
+          </div>
+
         </div>
       </section>
 

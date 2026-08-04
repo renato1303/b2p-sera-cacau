@@ -17,7 +17,8 @@ import {
   LogOut,
   CheckCircle,
   HelpCircle,
-  ChevronRight
+  ChevronRight,
+  Trophy
 } from 'lucide-react';
 import { UserRole, UserProfile } from '../types';
 
@@ -43,6 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { id: 'dashboard', label: 'Início', icon: Home, badge: null },
     { id: 'academia', label: 'Cursos & Aulas', icon: GraduationCap, badge: 'Premium' },
+    { id: 'gamificacao', label: 'Meu Progresso', icon: CheckCircle, badge: null },
     { id: 'produtos', label: 'Produtos', icon: Sprout, badge: null },
     { id: 'biblioteca', label: 'Central de Arquivos', icon: BookOpen, badge: 'Laudos' },
   ];
@@ -187,23 +189,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="text-xs tracking-wider uppercase font-medium">Minha Conta</span>
           </button>
 
-          {/* Quick switch simulator styled like elegant logout / disconnect */}
-          <button
-            id="role-switcher-btn"
-            onClick={switchUserRole}
-            className="flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-white/5 hover:border-luxury-accent text-left hover:bg-white/5 transition-all duration-300 group"
-          >
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4 text-luxury-accent group-hover:text-primary-accent transition-colors" />
-              <span className="text-xs tracking-wider uppercase font-medium text-[#EFE6D7]/80 group-hover:text-white">
-                Mudar de Perfil
-              </span>
-            </div>
-            <span className="text-[8px] px-1.5 py-0.5 rounded bg-white/10 text-luxury-accent group-hover:text-white group-hover:bg-luxury-accent/15 uppercase font-bold transition-all">
-              {user.role === UserRole.ADMIN ? 'Nutri' : 'Admin'}
-            </span>
-          </button>
-
           {/* Luxury Logout Accent */}
           <button
             onClick={onLogout}
@@ -238,15 +223,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <span className="text-[8px] uppercase tracking-wider text-[#EFE6D7]/60">Progresso</span>
               <span className="text-[9px] font-mono font-bold text-luxury-accent">{progressPercent}%</span>
             </div>
-
-            <button
-              id="mobile-role-switcher-btn"
-              onClick={switchUserRole}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 border border-white/10 rounded-lg text-[9px] tracking-widest uppercase text-luxury-accent"
-            >
-              <Sparkles className="w-3 h-3 text-luxury-accent" />
-              <span>{user.role === UserRole.ADMIN ? 'Nutri' : 'Admin'}</span>
-            </button>
           </div>
         </header>
 

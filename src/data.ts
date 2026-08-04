@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Course, Product, Campaign, NewsletterArticle, FileAttachment, Member, CommunityPost } from './types';
+import { Course, Product, Campaign, NewsletterArticle, FileAttachment, Member, CommunityPost, GamificationReward, PointsEntry, GamificationTier } from './types';
 
 export const ATTACHMENTS: FileAttachment[] = [
   {
@@ -82,7 +82,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '/images/gotas210.jpeg',
     shopifyId: 'sh_gotas_210g',
     price: 'R$ 129,00',
-    originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia'
+    originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
   },
   {
     id: 'prod-2',
@@ -113,7 +115,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '/images/gotas105.jpeg',
     shopifyId: 'sh_gotas_105g',
     price: 'R$ 79,00',
-    originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia'
+    originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
   },
   {
     id: 'prod-3',
@@ -142,7 +146,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '/images/disc.jpeg',
     shopifyId: 'sh_disc_36g',
     price: 'R$ 39,00',
-    originCooperativa: 'Associação Agroflorestal de Serra Grande'
+    originCooperativa: 'Associação Agroflorestal de Serra Grande',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
   },
   {
     id: 'prod-4',
@@ -173,7 +179,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '/images/baunilha.jpg',
     shopifyId: 'sh_vanilla_1fava',
     price: 'R$ 38,00',
-    originCooperativa: 'Agricultura familiar integrada de Serra Grande, Bahia'
+    originCooperativa: 'Agricultura familiar integrada de Serra Grande, Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
   }
 ];
 
@@ -181,133 +189,90 @@ export const COURSES: Course[] = [
   {
     id: 'course-1',
     title: 'A Jornada do Cacau Cabruca',
-    description: 'Compreenda a fundo a história, o cultivo agroflorestal tradicional baiano e o impacto ecológico e social da preservação florestal sem intermediários.',
+    description: 'Compreenda a fundo a história, o cultivo agroflorestal tradicional baiano, a fitoquímica do cacau puro e a prescrição prática em consultório com a nutricionista Luna Azevedo.',
     category: 'História',
-    instructor: 'Madeleine (Fundadora)',
-    duration: '3h',
+    instructor: 'Luna Azevedo',
+    duration: '7 Aulas + Intro',
     coverImage: '/src/assets/images/cabruca_forest_1783964129461.jpg',
     certificateEnabled: true,
     communityEnabled: true,
     visibility: 'Somente Matriculadas',
-    enrolledMemberIds: ['mem-1', 'mem-2', 'mem-3'],
+    enrolledMemberIds: ['mem-1', 'mem-2', 'mem-3', 'mem-4'],
     modules: [
       {
         id: 'c1-m1',
-        title: 'Origem e Fundamentação Ecológica',
-        description: 'Do que é feita a história do cacau livre de intermediários.',
+        title: 'Módulo 1: Fundamentos e Origem Agroflorestal',
+        description: 'Boas-vindas, história e imersão no solo da floresta Cabruca.',
         locked: false,
         classes: [
           {
-            id: 'c1-m1-cl1',
-            title: 'Boas-vindas ao Nosso Solo',
-            duration: '12 min',
-            videoUrl: 'https://player.vimeo.com/video/example1',
-            summary: 'Conheça o nascimento da Será Cacau, fundado na Costa do Cacau por Madeleine, integrando raízes alemãs com o calor acolhedor baiano. Descubra os valores e a intenção de desconectar para conectar.',
+            id: 'c1-m1-cl0',
+            title: 'Intro: Boas-vindas à Jornada Cabruca',
+            duration: '10 min',
+            videoUrl: 'https://vimeo.com/1215499110?fl=tl&fe=ec',
+            summary: 'Apresentação oficial do treinamento com Luna Azevedo. Boas-vindas ao ecossistema Será Cacau, introdução à história da Mata Atlântica e o propósito da formação.',
             pdfAttachment: ATTACHMENTS[4]
           },
           {
-            id: 'c1-m1-cl2',
-            title: 'O Sistema Cabruca de Agrofloresta',
-            duration: '22 min',
-            videoUrl: 'https://player.vimeo.com/video/example2',
-            summary: 'Entenda os 400 anos de história do sistema Cabruca, onde o cacau cresce abrigado pela copa da Mata Atlântica nativa, preservando mais de 278 espécies documentadas.',
+            id: 'c1-m1-cl1',
+            title: 'Aula 01: O Sistema Agroflorestal Cabruca',
+            duration: '18 min',
+            videoUrl: 'https://vimeo.com/1215510972?fl=tl&fe=ec',
+            summary: 'Compreenda a fundo os princípios da agricultura biodiversa sob a sombra nativa da floresta, a preservação da fauna e flora e a diferença entre o sistema Cabruca e a monocultura.',
             pdfAttachment: ATTACHMENTS[0]
           },
           {
+            id: 'c1-m1-cl2',
+            title: 'Aula 02: Fitoquímica e Ativos Moleculares do Cacau',
+            duration: '20 min',
+            videoUrl: 'https://vimeo.com/1215498725?share=copy&fl=sv&fe=ci',
+            summary: 'Análise técnica da teobromina, flavonoides, anandamida e compostos polifenólicos presentes no cacau 100% puro e não alcalinizado.',
+            pdfAttachment: ATTACHMENTS[1]
+          },
+          {
             id: 'c1-m1-cl3',
-            title: 'Quiz: Fixando o Sistema Cabruca',
-            duration: '3 min',
-            videoUrl: '',
-            type: 'quiz',
-            summary: 'Confira se os conceitos da agrofloresta Cabruca ficaram claros antes de avançar.',
-            quiz: {
-              id: 'quiz-c1-m1',
-              question: 'O que caracteriza o sistema agroflorestal Cabruca?',
-              options: [
-                { id: 'a', text: 'Monocultivo de cacau em campo aberto, sem sombreamento' },
-                { id: 'b', text: 'Cacau cultivado sob a copa nativa da Mata Atlântica preservada' },
-                { id: 'c', text: 'Cultivo hidropônico em estufa controlada' }
-              ],
-              correctOptionId: 'b'
-            }
+            title: 'Aula 03: Colheita, Fermentação e Secagem Artesanal',
+            duration: '22 min',
+            videoUrl: 'https://vimeo.com/1215498630?fl=tl&fe=ec',
+            summary: 'Os segredos do manejo pós-colheita no sul da Bahia. Como o processo de fermentação natural desenvolve o perfil sensorial único e preserva os fitoativos nutricionais.'
           }
         ]
       },
       {
         id: 'c1-m2',
-        title: 'A Relação Humana na Cadeia de Valor',
-        description: 'Justiça social e cooperação no sul da Bahia.',
-        locked: true,
-        classes: [
-          {
-            id: 'c1-m2-cl1',
-            title: 'Cooperativa de Mulheres e Comércio Direto',
-            duration: '18 min',
-            videoUrl: 'https://player.vimeo.com/video/example3',
-            summary: 'Como organizamos a produção para que o valor gerado permaneça inteiramente na nossa região, eliminando atravessadores e empoderando comunidades femininas locais.',
-            completed: false
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'course-2',
-    title: 'Ciência, Ativos Neurocognitivos e Presença',
-    description: 'Capacitação técnica para prescrição e recomendação clínica de cacau 100% puro. O fim das alegações místicas e o começo da fundamentação científica de alto impacto.',
-    category: 'Nutrição',
-    instructor: 'Dra. Luna (Nutricionista Consultora)',
-    duration: '4h 30min',
-    coverImage: '/src/assets/images/cacao_science_1783964140124.jpg',
-    certificateEnabled: true,
-    communityEnabled: true,
-    visibility: 'Somente Matriculadas',
-    enrolledMemberIds: ['mem-1', 'mem-3'],
-    modules: [
-      {
-        id: 'c2-m1',
-        title: 'Fitoquímica do Cacau Puro',
-        description: 'Investigação profunda sobre as moléculas ativas de Será Cacau.',
+        title: 'Módulo 2: Prática Clínica, Ritual e Prescrição',
+        description: 'Cadeia de valor, ritual de preparo e condução do paciente em consultório.',
         locked: false,
         classes: [
           {
-            id: 'c2-m1-cl1',
-            title: 'Teobromina vs Cafeína: Foco Limpo',
-            duration: '25 min',
-            videoUrl: 'https://player.vimeo.com/video/example4',
-            summary: 'Análise neuroquímica da teobromina. Descubra por que este estimulante atua na circulação e proporciona energia estável por mais de 5 hours sem causar o efeito rebote de ansiedade ou crash adrenal.',
-            pdfAttachment: ATTACHMENTS[1]
+            id: 'c1-m2-cl4',
+            title: 'Aula 04: Impacto Social e Cooperação de Mulheres',
+            duration: '15 min',
+            videoUrl: 'https://vimeo.com/1215498477?fl=tl&fe=ec',
+            summary: 'Cadeia de valor justa: o trabalho das produtoras e cooperativas parceiras na Costa do Cacau, valorização da agricultura familiar sustentável e empoderamento feminino.'
           },
           {
-            id: 'c2-m1-cl2',
-            title: 'A Química do Bem-Estar: Anandamida e PEA',
-            duration: '20 min',
-            videoUrl: 'https://player.vimeo.com/video/example5',
-            summary: 'Conheça o neurotransmissor anandamida ("a molécula do êxtase") e a Feniletilamina (PEA, a molécula da paixão e do foco criativo) presentes no nosso cacau artesanal.'
-          }
-        ]
-      },
-      {
-        id: 'c2-m2',
-        title: 'Modulação e Prescrição em Consultório',
-        description: 'Práticas clínicas e protocolos para introduzir na rotina dos pacientes.',
-        locked: false,
-        classes: [
+            id: 'c1-m2-cl5',
+            title: 'Aula 05: O Ritual de Preparo e Experiência de Presença',
+            duration: '16 min',
+            videoUrl: 'https://vimeo.com/1215498476?fl=tl&fe=ec',
+            summary: 'Como preparar a bebida de cacau em temperatura adequada (até 60ºC), estimulando a pausa consciente, o foco sustentado e a conexão através dos sentidos.',
+            pdfAttachment: ATTACHMENTS[3]
+          },
           {
-            id: 'c2-m2-cl1',
-            title: 'Estruturação de Protocolos para Gestão de Estresse',
-            duration: '30 min',
-            videoUrl: 'https://player.vimeo.com/video/example6',
-            summary: 'Uso de cacau puro com fitoativos para redução do cortisol vespertino, modulando as compulsões alimentares e melhorando a qualidade do sono profundo.',
+            id: 'c1-m2-cl6',
+            title: 'Aula 06: Protocolos Clínicos e Prescrição Nutricional',
+            duration: '25 min',
+            videoUrl: 'https://vimeo.com/1215498478?fl=tl&fe=ec',
+            summary: 'Aplicações práticas no consultório: modulação de estresse e ansiedade, regulação do cortisol, melhora do foco cognitivo e integração em planos alimentares funcionais.',
             pdfAttachment: ATTACHMENTS[2]
           },
           {
-            id: 'c2-m2-cl2',
-            title: 'O Ritual de Preparo Perfeito como Terapia de Pausa',
-            duration: '15 min',
-            videoUrl: 'https://player.vimeo.com/video/example7',
-            summary: 'Como ensinar o paciente a fazer uma pausa verdadeira, deixando o celular de lado, aquecendo a bebida a 60ºC para preservar todos os compostos ativos.',
-            pdfAttachment: ATTACHMENTS[3]
+            id: 'c1-m2-cl7',
+            title: 'Aula 07: Apresentação ao Paciente e Encerramento',
+            duration: '14 min',
+            videoUrl: 'https://vimeo.com/1215498475?fl=tl&fe=ec',
+            summary: 'Como comunicar o valor do cacau artesanal, estruturar orientações claras ao paciente, disponibilizar o cupom exclusivo e concluir o processo educativo com sucesso.'
           }
         ]
       }
@@ -316,18 +281,18 @@ export const COURSES: Course[] = [
 ];
 
 export const MEMBERS: Member[] = [
-  { id: 'mem-1', name: 'Dra. Marina Silva', email: 'marina.silva@saude.com.br', crn: 'CRN-3 71830', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1','course-2'], joinedDate: '12 Jan 2026' },
-  { id: 'mem-2', name: 'Dra. Rebeca Lemos', email: 'rebeca.lemos@nutriclin.com.br', crn: 'CRN-3 82193', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '03 Fev 2026' },
-  { id: 'mem-3', name: 'Dr. Thiago Medeiros', email: 'thiago.medeiros@consultorio.com.br', crn: 'CRN-5 45210', city: 'Salvador', state: 'BA', enrolledCourseIds: ['course-1','course-2'], joinedDate: '21 Mar 2026' },
-  { id: 'mem-4', name: 'Dra. Gabriela Sales', email: 'gabriela.sales@nutri.com.br', crn: 'CRN-1 90218', city: 'Brasília', state: 'DF', enrolledCourseIds: [], joinedDate: '02 Jun 2026' }
+  { id: 'mem-1', name: 'Dra. Marina Silva', email: 'marina.silva@saude.com.br', crn: 'CRN-3 71830', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '12 Jan 2026', totalPoints: 760, tier: 'Ouro' },
+  { id: 'mem-2', name: 'Dra. Rebeca Lemos', email: 'rebeca.lemos@nutriclin.com.br', crn: 'CRN-3 82193', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '03 Fev 2026', totalPoints: 450, tier: 'Prata' },
+  { id: 'mem-3', name: 'Dr. Thiago Medeiros', email: 'thiago.medeiros@consultorio.com.br', crn: 'CRN-5 45210', city: 'Salvador', state: 'BA', enrolledCourseIds: ['course-1'], joinedDate: '21 Mar 2026', totalPoints: 1400, tier: 'Diamante' },
+  { id: 'mem-4', name: 'Dra. Gabriela Sales', email: 'gabriela.sales@nutri.com.br', crn: 'CRN-1 90218', city: 'Brasília', state: 'DF', enrolledCourseIds: ['course-1'], joinedDate: '02 Jun 2026', totalPoints: 50, tier: 'Bronze' }
 ];
 
 export const COMMUNITY_POSTS: CommunityPost[] = [
   { id: 'post-1', courseId: 'course-1', authorName: 'Dra. Rebeca Lemos', authorRole: 'Nutricionista Clínica', content: 'Fiquei encantada com a aula sobre o sistema Cabruca! Já comecei a citar os dados de biodiversidade nas minhas consultas.', date: 'Há 2 dias', likes: 14, replies: [
     { id: 'reply-1', authorName: 'Dra. Marina Silva', content: 'Sim! Uso como gancho pra falar de consumo consciente com pacientes engajadas em sustentabilidade.', date: 'Há 1 dia' }
   ]},
-  { id: 'post-2', courseId: 'course-1', authorName: 'Madeleine (Fundadora)', authorRole: 'Curadora Cabruca', content: 'Bem-vindas à turma de julho! Qualquer dúvida sobre a origem do cacau, pode postar aqui — respondo pessoalmente todas as quintas.', date: 'Há 5 dias', likes: 22, replies: [] },
-  { id: 'post-3', courseId: 'course-2', authorName: 'Dr. Thiago Medeiros', authorRole: 'Nutricionista Esportivo', content: 'Alguém já testou o protocolo de gestão de estresse com pacientes que treinam à noite? Resultado ótimo reduzindo insônia leve.', date: 'Há 8 horas', likes: 6, replies: [] }
+  { id: 'post-2', courseId: 'course-1', authorName: 'Luna Azevedo', authorRole: 'Instrutora', content: 'Bem-vindas à turma! Qualquer dúvida sobre a origem do cacau Cabruca e seu manejo, pode postar aqui — respondo pessoalmente.', date: 'Há 5 dias', likes: 22, replies: [] },
+  { id: 'post-3', courseId: 'course-1', authorName: 'Dr. Thiago Medeiros', authorRole: 'Nutricionista Esportivo', content: 'Excelente conteúdo sobre a produção agroflorestal da Costa do Cacau!', date: 'Há 8 horas', likes: 6, replies: [] }
 ];
 
 export const CAMPAIGNS: Campaign[] = [
@@ -373,4 +338,29 @@ export const NEWSLETTER: NewsletterArticle[] = [
     author: 'Dra. Luna',
     readTime: '6 min'
   }
+];
+
+export const POINTS_HISTORY: PointsEntry[] = [
+  { id: 'pe-1', memberId: 'mem-1', points: 150, reason: 'Indicação de nova nutricionista parceira', date: '10 Abr 2026' },
+  { id: 'pe-2', memberId: 'mem-1', points: 100, reason: 'Conclusão do curso A Jornada do Cacau Cabruca', date: '15 Abr 2026' },
+  { id: 'pe-3', memberId: 'mem-1', points: 360, reason: 'Prescrição e venda de 12 unidades Gotas 210g', date: '02 Mai 2026' },
+  { id: 'pe-4', memberId: 'mem-1', points: 150, reason: 'Conclusão do curso Ciência, Ativos Neurocognitivos e Presença', date: '10 Mai 2026' },
+  
+  { id: 'pe-5', memberId: 'mem-2', points: 100, reason: 'Conclusão do curso A Jornada do Cacau Cabruca', date: '15 Abr 2026' },
+  { id: 'pe-6', memberId: 'mem-2', points: 150, reason: 'Indicação de nova nutricionista parceira', date: '20 Abr 2026' },
+  { id: 'pe-7', memberId: 'mem-2', points: 200, reason: 'Prescrição e venda de 5 unidades Gotas 210g', date: '04 Mai 2026' },
+
+  { id: 'pe-8', memberId: 'mem-3', points: 100, reason: 'Conclusão do curso A Jornada do Cacau Cabruca', date: '15 Abr 2026' },
+  { id: 'pe-9', memberId: 'mem-3', points: 150, reason: 'Conclusão do curso Ciência, Ativos Neurocognitivos e Presença', date: '22 Abr 2026' },
+  { id: 'pe-10', memberId: 'mem-3', points: 900, reason: 'Prescrição e venda de 30 unidades Gotas 210g', date: '05 Mai 2026' },
+  { id: 'pe-11', memberId: 'mem-3', points: 250, reason: 'Palestra técnica sobre cacau na nutrição esportiva', date: '12 Mai 2026' },
+
+  { id: 'pe-12', memberId: 'mem-4', points: 50, reason: 'Cadastro no portal de parceiras', date: '02 Jun 2026' }
+];
+
+export const REWARDS: GamificationReward[] = [
+  { id: 'rew-1', title: 'Kit de Amostras Grátis', description: 'Pote compacto de Gotas 105g para demonstração clínica no consultório.', pointsRequired: 200, icon: 'Gift' },
+  { id: 'rew-2', title: 'Desconto de 15% na próxima compra', description: 'Cupom de desconto adicional para reabastecimento do estoque do consultório.', pointsRequired: 500, icon: 'Tag' },
+  { id: 'rew-3', title: 'Mentoria Científica com Dra. Luna', description: 'Sessão individual de 45 minutos para alinhar protocolos clínicos personalizados para seus pacientes.', pointsRequired: 800, icon: 'Award' },
+  { id: 'rew-4', title: 'Convite para Encontro Anual Será Cacau', description: 'Ingresso exclusivo com tudo pago para o encontro anual agroflorestal na Cabruca (Bahia).', pointsRequired: 1200, icon: 'Sparkles' }
 ];

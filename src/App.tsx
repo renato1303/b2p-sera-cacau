@@ -13,6 +13,8 @@ import { CampaignsView } from './components/CampaignsView';
 import { ProfileView } from './components/ProfileView';
 import { AdminView } from './components/AdminView';
 import { LoginView } from './components/LoginView';
+import { GamificationView } from './components/GamificationView';
+import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
 
 import { 
   Search, 
@@ -35,17 +37,19 @@ import {
   NEWSLETTER, 
   ATTACHMENTS,
   MEMBERS,
-  COMMUNITY_POSTS
+  COMMUNITY_POSTS,
+  POINTS_HISTORY,
+  REWARDS
 } from './data';
-import { UserRole, UserProfile, Course, Product, FileAttachment, Campaign, Member, CommunityPost } from './types';
+import { UserRole, UserProfile, Course, Product, FileAttachment, Campaign, Member, CommunityPost, PointsEntry, GamificationReward } from './types';
 
 export default function App() {
   // Profiles
   const nutriProfile: UserProfile = {
-    name: 'Dra. Marina Silva',
-    email: 'marina.silva@saude.com.br',
+    name: 'Renato Santos',
+    email: 'renato.santos@nutri.com.br',
     phone: '(11) 98765-4321',
-    instagram: '@dra.marinasilva',
+    instagram: '@renatonutri',
     specialty: 'Nutrição Clínica Funcional',
     city: 'São Paulo',
     state: 'SP',
@@ -70,20 +74,116 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
-  // Sync session state from localStorage
+  // Sync session state from Supabase / LocalStorage
   useEffect(() => {
-    const auth = localStorage.getItem('sera_cacau_authenticated') === 'true';
-    const savedUser = localStorage.getItem('sera_cacau_user');
-    if (auth && savedUser) {
-      try {
-        const parsed = JSON.parse(savedUser);
-        setCurrentUser(parsed);
-        setIsAuthenticated(true);
-      } catch (e) {
-        // Fallback
+    setIsAuthLoading(true);
+
+    if (!isSupabaseConfigured) {
+      // Fallback if Supabase is not configured yet (so developers can still use/review the UI using mock/local states)
+      const auth = localStorage.getItem('sera_cacau_authenticated') === 'true';
+      const savedUser = localStorage.getItem('sera_cacau_user');
+      if (auth && savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          setCurrentUser(parsed);
+          setIsAuthenticated(true);
+        } catch (e) {
+          // Fallback
+        }
       }
+      setIsAuthLoading(false);
+      return;
     }
-    setIsAuthLoading(false);
+
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && session.user) {
+        // Fetch real profile from db
+        supabase.from('profiles').select('*').eq('id', session.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile) {
+              const mappedProfile: UserProfile = {
+                id: profile.id,
+                name: profile.name,
+                email: profile.email,
+                phone: profile.phone || '',
+                instagram: profile.instagram || '',
+                specialty: profile.specialty || 'Nutrição Integrativa',
+                city: profile.city || '',
+                state: profile.state || '',
+                role: (profile.role === 'ADMIN' ? UserRole.ADMIN : UserRole.NUTRICIONISTA),
+                crn: profile.crn || '',
+                totalPoints: profile.total_points ?? 0,
+                tier: profile.tier || 'Bronze'
+              };
+              setCurrentUser(mappedProfile);
+              setIsAuthenticated(true);
+              if (mappedProfile.role === UserRole.ADMIN) {
+                setCurrentTab('admin');
+              } else {
+                setCurrentTab('dashboard');
+              }
+            } else {
+              // Fallback if profile trigger is slow but auth session is active
+              const fallbackProfile: UserProfile = {
+                id: session.user.id,
+                name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Nutricionista',
+                email: session.user.email || '',
+                phone: session.user.user_metadata?.phone || '',
+                instagram: session.user.user_metadata?.instagram || '',
+                specialty: session.user.user_metadata?.specialty || 'Nutrição Integrativa',
+                city: session.user.user_metadata?.city || '',
+                state: session.user.user_metadata?.state || '',
+                role: session.user.user_metadata?.role || UserRole.NUTRICIONISTA,
+                crn: session.user.user_metadata?.crn || '',
+                totalPoints: 0,
+                tier: 'Bronze'
+              };
+              setCurrentUser(fallbackProfile);
+              setIsAuthenticated(true);
+            }
+            setIsAuthLoading(false);
+          });
+      } else {
+        setIsAuthLoading(false);
+      }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        setCurrentUser(null as any);
+        setIsAuthenticated(false);
+      } else if (session.user) {
+        // Fetch or wait for profile
+        supabase.from('profiles').select('*').eq('id', session.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile) {
+              const mappedProfile: UserProfile = {
+                id: profile.id,
+                name: profile.name,
+                email: profile.email,
+                phone: profile.phone || '',
+                instagram: profile.instagram || '',
+                specialty: profile.specialty || 'Nutrição Integrativa',
+                city: profile.city || '',
+                state: profile.state || '',
+                role: (profile.role === 'ADMIN' ? UserRole.ADMIN : UserRole.NUTRICIONISTA),
+                crn: profile.crn || '',
+                totalPoints: profile.total_points ?? 0,
+                tier: profile.tier || 'Bronze'
+              };
+              setCurrentUser(mappedProfile);
+              setIsAuthenticated(true);
+            }
+          });
+      }
+    });
+
+    return () => {
+      if (listener?.subscription) {
+        listener.subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const handleLogin = (user: UserProfile) => {
@@ -98,14 +198,34 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     const confirmExit = window.confirm("Deseja realmente sair da plataforma?");
     if (confirmExit) {
+      if (isSupabaseConfigured) {
+        await supabase.auth.signOut();
+      }
       setIsAuthenticated(false);
+      setCurrentUser(null as any);
       localStorage.removeItem('sera_cacau_authenticated');
       localStorage.removeItem('sera_cacau_user');
     }
   };
+
+  // Load completed class progress from Supabase when currentUser is loaded
+  useEffect(() => {
+    if (isSupabaseConfigured && currentUser && currentUser.id) {
+      supabase
+        .from('course_progress')
+        .select('class_id')
+        .eq('member_id', currentUser.id)
+        .then(({ data, error }) => {
+          if (data && !error) {
+            const ids = data.map((item: any) => item.class_id);
+            setCompletedClassIds(ids);
+          }
+        });
+    }
+  }, [currentUser]);
   
   // Data State (allows admin edits to persist during session)
   const [courses, setCourses] = useState<Course[]>(COURSES);
@@ -114,7 +234,8 @@ export default function App() {
   const [newsletters, setNewsletters] = useState<any[]>(NEWSLETTER);
   const [attachments, setAttachments] = useState<FileAttachment[]>(ATTACHMENTS);
 
-  const [members] = useState<Member[]>(MEMBERS);
+  const [members, setMembers] = useState<Member[]>(MEMBERS);
+  const [pointsHistory, setPointsHistory] = useState<PointsEntry[]>(POINTS_HISTORY);
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(COMMUNITY_POSTS);
 
   const handleUpdateCourse = (updated: Course) => {
@@ -192,12 +313,59 @@ export default function App() {
     }
   };
 
-  const toggleCompleteClass = (classId: string) => {
-    setCompletedClassIds(prev => 
-      prev.includes(classId) 
-        ? prev.filter(id => id !== classId)
-        : [...prev, classId]
-    );
+  const toggleCompleteClass = async (classId: string) => {
+    if (!isSupabaseConfigured || !currentUser || !currentUser.id) {
+      // Fallback for unconfigured environment
+      setCompletedClassIds(prev => 
+        prev.includes(classId) 
+          ? prev.filter(id => id !== classId)
+          : [...prev, classId]
+      );
+      return;
+    }
+
+    const isCurrentlyCompleted = completedClassIds.includes(classId);
+
+    // Find courseId associated with this classId
+    let foundCourseId = 'c1'; // Default fallback
+    for (const course of courses) {
+      for (const mod of course.modules) {
+        if (mod.classes.some(cls => cls.id === classId)) {
+          foundCourseId = course.id;
+          break;
+        }
+      }
+    }
+
+    try {
+      if (isCurrentlyCompleted) {
+        // Delete course progress entry from Supabase
+        const { error } = await supabase
+          .from('course_progress')
+          .delete()
+          .eq('member_id', currentUser.id)
+          .eq('class_id', classId);
+        
+        if (!error) {
+          setCompletedClassIds(prev => prev.filter(id => id !== classId));
+        }
+      } else {
+        // Upsert course progress entry into Supabase
+        const { error } = await supabase
+          .from('course_progress')
+          .upsert({
+            member_id: currentUser.id,
+            course_id: foundCourseId,
+            class_id: classId
+          });
+
+        if (!error) {
+          setCompletedClassIds(prev => [...prev, classId]);
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao salvar progresso do curso:', err);
+    }
   };
 
   const handleNavigateWithTarget = (tabId: string, productOrCourse?: any) => {
@@ -533,6 +701,15 @@ export default function App() {
             />
           )}
 
+          {currentTab === 'gamificacao' && (
+            <GamificationView 
+              user={currentUser}
+              members={members}
+              pointsHistory={pointsHistory}
+              rewards={REWARDS}
+            />
+          )}
+
           {currentTab === 'biblioteca' && (
             <LibraryView 
               attachments={attachments}
@@ -564,6 +741,9 @@ export default function App() {
               metricDownloads={metricDownloads}
               members={members}
               onUpdateCourse={handleUpdateCourse}
+              pointsHistory={pointsHistory}
+              setPointsHistory={setPointsHistory}
+              setMembers={setMembers}
             />
           )}
         </div>
