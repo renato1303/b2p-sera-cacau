@@ -70,23 +70,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="relative group">
               {/* Vibrant organic aura behind logo */}
               <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-primary-accent to-luxury-accent opacity-30 group-hover:opacity-60 blur transition-opacity duration-500"></div>
-              <svg 
-                className="relative w-9 h-9 text-luxury-accent transition-transform duration-700 hover:scale-105" 
-                viewBox="0 0 100 100" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path 
-                  d="M50 15C42 22 35 34 35 48C35 65 44 78 50 85C56 78 65 65 65 48C65 34 58 22 50 15Z" 
-                  stroke="currentColor" 
-                  strokeWidth="4" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                />
-                <path d="M50 15V85" stroke="currentColor" strokeWidth="2" strokeDasharray="3 3" />
-                <path d="M42 30C46 36 46 44 42 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M58 35C54 41 54 49 58 55" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
+              <img 
+                src="/images/logo_sera_trimmed.png" 
+                alt="Será Cacau" 
+                className="relative w-9 h-9 object-contain transition-transform duration-700 hover:scale-105" 
+              />
             </div>
             <div className="flex flex-col">
               <span className="font-sans font-extrabold text-[15px] tracking-[0.2em] uppercase text-white leading-none">SERÁ CACAU</span>
@@ -208,9 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="md:hidden flex flex-col w-full bg-primary-forest text-[#F7F3EC] sticky top-0 z-40">
         <header className="flex items-center justify-between px-5 py-3.5 border-b border-secondary-forest/40 shadow-md">
           <div className="flex items-center gap-2.5">
-            <svg className="w-7 h-7 text-luxury-accent" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 15C42 22 35 34 35 48C35 65 44 78 50 85C56 78 65 65 65 48C65 34 58 22 50 15Z" stroke="currentColor" strokeWidth="3" />
-            </svg>
+            <img src="/images/logo_sera_trimmed.png" alt="Será Cacau" className="w-7 h-7 object-contain" />
             <div className="flex flex-col">
               <span className="font-sans font-extrabold text-sm tracking-wider uppercase text-white leading-none">SERÁ CACAU</span>
               <span className="text-[7px] tracking-widest uppercase text-luxury-accent mt-0.5">MEMBER</span>

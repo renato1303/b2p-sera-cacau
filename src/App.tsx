@@ -751,9 +751,7 @@ export default function App() {
         {/* Minimalist Page Footer */}
         <footer className="w-full border-t border-border-color/60 mt-12 py-6 px-12 text-center flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-sans tracking-widest uppercase text-secondary-text/50 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 text-luxury-accent" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 15C42 22 35 34 35 48C35 65 44 78 50 85C56 78 65 65 65 48C65 34 58 22 50 15Z" stroke="currentColor" strokeWidth="4" />
-            </svg>
+            <img src="/images/logo_sera_trimmed.png" alt="Será Cacau" className="w-4 h-4 object-contain" />
             <span>Será Cacau Ltda © 2026</span>
           </div>
           <div className="flex gap-4">

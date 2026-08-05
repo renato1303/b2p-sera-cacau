@@ -312,23 +312,11 @@ export const LoginView: React.FC<LoginViewProps> = ({
         <div className="flex flex-col items-center text-center gap-2">
           <div className="relative group">
             <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-primary-accent to-luxury-accent opacity-15 group-hover:opacity-25 blur transition-all duration-500" />
-            <svg 
-              className="relative w-12 h-12 text-primary-accent transition-transform duration-700 hover:scale-105" 
-              viewBox="0 0 100 100" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                d="M50 15C42 22 35 34 35 48C35 65 44 78 50 85C56 78 65 65 65 48C65 34 58 22 50 15Z" 
-                stroke="currentColor" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-              />
-              <path d="M50 15V85" stroke="currentColor" strokeWidth="2" strokeDasharray="3 3" />
-              <path d="M42 30C46 36 46 44 42 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M58 35C54 41 54 49 58 55" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <img 
+              src="/images/logo_sera_trimmed.png" 
+              alt="Será Cacau Logo" 
+              className="relative w-16 h-16 object-contain transition-transform duration-700 hover:scale-105" 
+            />
           </div>
           <div className="flex flex-col mt-2">
             <span className="font-sans font-extrabold text-xl tracking-[0.25em] text-primary-forest leading-none">SERÁ CACAU</span>
