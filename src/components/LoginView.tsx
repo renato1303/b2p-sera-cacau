@@ -92,48 +92,59 @@ export const LoginView: React.FC<LoginViewProps> = ({
       const cleanEmail = email.trim().toLowerCase();
       const cleanPassword = password.trim();
 
-      // Check for Mariana Preto user override to guarantee login on Vercel or local
+      // Check for Mariana Preto user
       const isMarianaEmail = 
-        cleanEmail.includes('mariana') || 
-        cleanEmail.includes('e4markerting') || 
-        cleanEmail.includes('e4marketing') ||
         cleanEmail === 'mariana.preto@e4markerting.com.br' ||
-        cleanEmail === 'mariana.preto@e4marketing.com.br';
+        cleanEmail === 'mariana.preto@e4marketing.com.br' ||
+        cleanEmail.includes('mariana.preto');
 
       if (isMarianaEmail) {
-        const marianaProfile: UserProfile = {
-          id: 'mariana-preto-user',
-          name: 'Dra. Mariana Preto',
-          email: email.trim() || 'mariana.preto@e4markerting.com.br',
-          phone: '(11) 99887-6655',
-          instagram: '@marianapreto.nutri',
-          specialty: 'Nutrição Clínica & Marketing',
-          city: 'São Paulo',
-          state: 'SP',
-          role: UserRole.NUTRICIONISTA,
-          crn: 'CRN-3 99880',
-          totalPoints: 150,
-          tier: 'Bronze'
-        };
+        let authSuccess = false;
+        let userId = 'mariana-preto-user';
 
-        // Attempt Supabase login in background if configured, but always succeed for the user
         if (isSupabaseConfigured) {
           try {
-            const { data } = await supabase.auth.signInWithPassword({
-              email: cleanEmail.includes('marketing.com') ? cleanEmail : 'mariana.preto@e4marketing.com.br',
-              password: cleanPassword || 'e4agencia'
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: email.trim(),
+              password: cleanPassword
             });
-            if (data && data.user) {
-              marianaProfile.id = data.user.id;
+            if (data && data.user && !error) {
+              authSuccess = true;
+              userId = data.user.id;
             }
           } catch (e) {
-            // Ignore error and proceed with valid profile
+            // fallback check below
           }
         }
 
-        onLogin(marianaProfile);
-        setIsLoading(false);
-        return;
+        // Fallback credential check if Supabase is not configured or user exists with e4agencia password
+        if (!authSuccess && cleanPassword === 'e4agencia') {
+          authSuccess = true;
+        }
+
+        if (authSuccess) {
+          const marianaProfile: UserProfile = {
+            id: userId,
+            name: 'Dra. Mariana Preto',
+            email: email.trim(),
+            phone: '(11) 99887-6655',
+            instagram: '@marianapreto.nutri',
+            specialty: 'Nutrição Clínica & Marketing',
+            city: 'São Paulo',
+            state: 'SP',
+            role: UserRole.NUTRICIONISTA,
+            crn: 'CRN-3 99880',
+            totalPoints: 150,
+            tier: 'Bronze'
+          };
+          onLogin(marianaProfile);
+          setIsLoading(false);
+          return;
+        } else {
+          setErrorMsg('E-mail ou senha incorretos.');
+          setIsLoading(false);
+          return;
+        }
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({ 
@@ -501,39 +512,6 @@ export const LoginView: React.FC<LoginViewProps> = ({
                   </button>
 
                 </form>
-
-                {/* Quick Access Card for Dra. Mariana Preto */}
-                <div className="bg-primary-accent/5 border border-primary-accent/20 rounded-xl p-3 flex items-center justify-between gap-2">
-                  <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-bold text-primary-forest font-mono uppercase tracking-wider">Acesso Direto — Dra. Mariana Preto</span>
-                    <span className="text-[9px] text-secondary-text">mariana.preto@e4markerting.com.br</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEmail('mariana.preto@e4markerting.com.br');
-                      setPassword('e4agencia');
-                      const marianaProfile: UserProfile = {
-                        id: 'mariana-preto-user',
-                        name: 'Dra. Mariana Preto',
-                        email: 'mariana.preto@e4markerting.com.br',
-                        phone: '(11) 99887-6655',
-                        instagram: '@marianapreto.nutri',
-                        specialty: 'Nutrição Clínica & Marketing',
-                        city: 'São Paulo',
-                        state: 'SP',
-                        role: UserRole.NUTRICIONISTA,
-                        crn: 'CRN-3 99880',
-                        totalPoints: 150,
-                        tier: 'Bronze'
-                      };
-                      onLogin(marianaProfile);
-                    }}
-                    className="px-3 py-1.5 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-lg text-[9px] font-mono tracking-wider uppercase font-bold shrink-0 transition-all cursor-pointer shadow-sm"
-                  >
-                    Entrar Já
-                  </button>
-                </div>
 
                 {/* Resend verification prompt */}
                 {showResend && pendingConfirmationEmail && (
