@@ -284,7 +284,8 @@ export const MEMBERS: Member[] = [
   { id: 'mem-1', name: 'Dra. Marina Silva', email: 'marina.silva@saude.com.br', crn: 'CRN-3 71830', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '12 Jan 2026', totalPoints: 760, tier: 'Ouro' },
   { id: 'mem-2', name: 'Dra. Rebeca Lemos', email: 'rebeca.lemos@nutriclin.com.br', crn: 'CRN-3 82193', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '03 Fev 2026', totalPoints: 450, tier: 'Prata' },
   { id: 'mem-3', name: 'Dr. Thiago Medeiros', email: 'thiago.medeiros@consultorio.com.br', crn: 'CRN-5 45210', city: 'Salvador', state: 'BA', enrolledCourseIds: ['course-1'], joinedDate: '21 Mar 2026', totalPoints: 1400, tier: 'Diamante' },
-  { id: 'mem-4', name: 'Dra. Gabriela Sales', email: 'gabriela.sales@nutri.com.br', crn: 'CRN-1 90218', city: 'Brasília', state: 'DF', enrolledCourseIds: ['course-1'], joinedDate: '02 Jun 2026', totalPoints: 50, tier: 'Bronze' }
+  { id: 'mem-4', name: 'Dra. Gabriela Sales', email: 'gabriela.sales@nutri.com.br', crn: 'CRN-1 90218', city: 'Brasília', state: 'DF', enrolledCourseIds: ['course-1'], joinedDate: '02 Jun 2026', totalPoints: 50, tier: 'Bronze' },
+  { id: 'mem-5', name: 'Dra. Mariana Preto', email: 'mariana.preto@e4markerting.com.br', crn: 'CRN-3 99880', city: 'São Paulo', state: 'SP', enrolledCourseIds: ['course-1'], joinedDate: '04 Ago 2026', totalPoints: 150, tier: 'Bronze' }
 ];
 
 export const COMMUNITY_POSTS: CommunityPost[] = [
