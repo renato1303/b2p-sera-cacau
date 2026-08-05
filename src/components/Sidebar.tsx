@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { SERA_CACAU_LOGO } from '../assets/logo';
 import { 
   Home, 
   GraduationCap, 
@@ -71,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Vibrant organic aura behind logo */}
               <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-primary-accent to-luxury-accent opacity-30 group-hover:opacity-60 blur transition-opacity duration-500"></div>
               <img 
-                src="/images/logo_sera_trimmed.png" 
+                src={SERA_CACAU_LOGO} 
                 alt="Será Cacau" 
                 className="relative w-9 h-9 object-contain transition-transform duration-700 hover:scale-105" 
               />
@@ -196,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="md:hidden flex flex-col w-full bg-primary-forest text-[#F7F3EC] sticky top-0 z-40">
         <header className="flex items-center justify-between px-5 py-3.5 border-b border-secondary-forest/40 shadow-md">
           <div className="flex items-center gap-2.5">
-            <img src="/images/logo_sera_trimmed.png" alt="Será Cacau" className="w-7 h-7 object-contain" />
+            <img src={SERA_CACAU_LOGO} alt="Será Cacau" className="w-7 h-7 object-contain" />
             <div className="flex flex-col">
               <span className="font-sans font-extrabold text-sm tracking-wider uppercase text-white leading-none">SERÁ CACAU</span>
               <span className="text-[7px] tracking-widest uppercase text-luxury-accent mt-0.5">MEMBER</span>

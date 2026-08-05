@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { SERA_CACAU_LOGO } from './assets/logo';
 import { Sidebar } from './components/Sidebar';
 import { DashboardView } from './components/DashboardView';
 import { AcademyView } from './components/AcademyView';
@@ -751,7 +752,7 @@ export default function App() {
         {/* Minimalist Page Footer */}
         <footer className="w-full border-t border-border-color/60 mt-12 py-6 px-12 text-center flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-sans tracking-widest uppercase text-secondary-text/50 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <img src="/images/logo_sera_trimmed.png" alt="Será Cacau" className="w-4 h-4 object-contain" />
+            <img src={SERA_CACAU_LOGO} alt="Será Cacau" className="w-4 h-4 object-contain" />
             <span>Será Cacau Ltda © 2026</span>
           </div>
           <div className="flex gap-4">
