@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { SeraCacauIcon } from './SeraCacauIcon';
 import { 
   ArrowLeft, 
   ShoppingBag, 
@@ -53,8 +54,9 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
               <span className="w-1.5 h-1.5 rounded-full bg-primary-accent animate-pulse"></span>
               SESSÃO PRESCRITOR SEGURA • PORTAL DE MEMBROS
             </span>
-            <h2 className="text-3xl font-extrabold tracking-tight text-primary-forest">
-              Produtos
+            <h2 className="text-3xl font-extrabold tracking-tight text-primary-forest flex items-center gap-3">
+              <SeraCacauIcon className="w-8 h-8 text-primary-forest" />
+              <span>Produtos</span>
             </h2>
             <p className="text-xs text-secondary-text max-w-xl">
               Acesso exclusivo a lotes de fitoativos certificados, cacau selvagem com rastreabilidade Cabruca e fichas técnicas para prescrição clínica integrada.
@@ -259,15 +261,28 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                 </div>
               </div>
 
-              {/* Shopify simulated integration trigger */}
-              <button
-                id={`shopify-integrate-${selectedProduct.id}`}
-                onClick={() => alert(`Integração Sucedida!\nO produto "${selectedProduct.name}" foi sincronizado com seu carrinho de pedidos.`)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-primary-accent hover:bg-primary-accent/90 text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow-md hover:scale-102 font-mono cursor-pointer"
+              {/* Direct e-commerce purchase link */}
+              <a
+                id={`buy-now-${selectedProduct.id}`}
+                href={selectedProduct.buyUrl || (
+                  selectedProduct.name.toLowerCase().includes('210g')
+                    ? 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-210g'
+                    : selectedProduct.name.toLowerCase().includes('105g')
+                    ? 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-105g'
+                    : selectedProduct.name.toLowerCase().includes('disc') || selectedProduct.name.toLowerCase().includes('disco') || selectedProduct.name.toLowerCase().includes('36g')
+                    ? 'https://www.seracacau.com.br/products/disco-sera-cacau-36g'
+                    : selectedProduct.name.toLowerCase().includes('baunilha') || selectedProduct.name.toLowerCase().includes('fava')
+                    ? 'https://www.seracacau.com.br/products/sera-baunilha-1-fava'
+                    : 'https://www.seracacau.com.br'
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow-md hover:scale-102 font-mono cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Indicar Produto ({selectedProduct.price})</span>
-              </button>
+                <span>Comprar Agora</span>
+                <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-80" />
+              </a>
             </div>
 
             {/* TAB SELECTOR FOR MONOGRAPH */}

@@ -236,8 +236,8 @@ export const LoginView: React.FC<LoginViewProps> = ({
         state: regState.trim() || 'SP',
         role: UserRole.NUTRICIONISTA,
         crn: regCrn.trim(),
-        totalPoints: 760,
-        tier: 'Ouro'
+        totalPoints: 0,
+        tier: 'Bronze'
       };
       onLogin(newProfile);
       return;

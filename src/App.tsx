@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { SERA_CACAU_LOGO } from './assets/logo';
+import { SeraCacauIcon } from './components/SeraCacauIcon';
 import { Sidebar } from './components/Sidebar';
 import { DashboardView } from './components/DashboardView';
 import { AcademyView } from './components/AcademyView';
@@ -223,8 +223,12 @@ export default function App() {
           if (data && !error) {
             const ids = data.map((item: any) => item.class_id);
             setCompletedClassIds(ids);
+          } else {
+            setCompletedClassIds([]);
           }
         });
+    } else {
+      setCompletedClassIds([]);
     }
   }, [currentUser]);
   
@@ -243,8 +247,8 @@ export default function App() {
     setCourses(prev => prev.map(c => c.id === updated.id ? updated : c));
   };
   
-  // Completed Classes tracking
-  const [completedClassIds, setCompletedClassIds] = useState<string[]>(['c1-m1-cl1']); // Starts with first class complete for realism
+  // Completed Classes tracking (starts empty for new users)
+  const [completedClassIds, setCompletedClassIds] = useState<string[]>([]);
   const [metricDownloads, setMetricDownloads] = useState<number>(34); // Starting simulated download metric
 
   // Product & Course focus state (for deep links/detailed views)
@@ -752,7 +756,7 @@ export default function App() {
         {/* Minimalist Page Footer */}
         <footer className="w-full border-t border-border-color/60 mt-12 py-6 px-12 text-center flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-sans tracking-widest uppercase text-secondary-text/50 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <img src={SERA_CACAU_LOGO} alt="Será Cacau" className="w-4 h-4 object-contain" />
+            <SeraCacauIcon className="w-4 h-4 text-primary-accent" />
             <span>Será Cacau Ltda © 2026</span>
           </div>
           <div className="flex gap-4">

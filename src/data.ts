@@ -84,7 +84,8 @@ export const PRODUCTS: Product[] = [
     price: 'R$ 129,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
-    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-210g'
   },
   {
     id: 'prod-2',
@@ -117,7 +118,8 @@ export const PRODUCTS: Product[] = [
     price: 'R$ 79,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
-    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-105g'
   },
   {
     id: 'prod-3',
@@ -148,7 +150,8 @@ export const PRODUCTS: Product[] = [
     price: 'R$ 39,00',
     originCooperativa: 'Associação Agroflorestal de Serra Grande',
     discountCode: 'NUTRI15',
-    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/disco-sera-cacau-36g'
   },
   {
     id: 'prod-4',
@@ -181,7 +184,8 @@ export const PRODUCTS: Product[] = [
     price: 'R$ 38,00',
     originCooperativa: 'Agricultura familiar integrada de Serra Grande, Bahia',
     discountCode: 'NUTRI15',
-    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras'
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/sera-baunilha-1-fava'
   }
 ];
 

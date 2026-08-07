@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { SeraCacauIcon } from './SeraCacauIcon';
 import { 
   Play, 
   ArrowRight, 
@@ -278,7 +279,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <section className="flex flex-col gap-5">
         <div className="flex justify-between items-end border-b border-border-color/60 pb-3">
           <div className="flex items-center gap-2.5">
-            <Sprout className="w-5 h-5 text-primary-accent" />
+            <SeraCacauIcon className="w-5 h-5 text-primary-accent" />
             <h3 className="text-xl font-extrabold tracking-tight text-primary-forest flex flex-wrap items-center gap-2">
               <span>Nossos Produtos</span>
               <span className="bg-secondary-accent/15 text-secondary-accent text-[8px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-full font-bold flex items-center gap-1 border border-secondary-accent/20">

@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { SERA_CACAU_LOGO } from '../assets/logo';
+import { SeraCacauIcon } from './SeraCacauIcon';
 import { 
   Home, 
   GraduationCap, 
@@ -140,9 +141,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }`}
                   >
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <Icon className={`w-4.5 h-4.5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${
-                        isActive ? 'text-luxury-accent drop-shadow-[0_0_5px_rgba(198,165,106,0.5)]' : 'text-[#9BA98E]'
-                      }`} />
+                      {item.id === 'produtos' ? (
+                        <SeraCacauIcon className={`w-4.5 h-4.5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${
+                          isActive ? 'text-luxury-accent drop-shadow-[0_0_5px_rgba(198,165,106,0.5)]' : 'text-[#9BA98E]'
+                        }`} />
+                      ) : (
+                        <Icon className={`w-4.5 h-4.5 shrink-0 transition-transform duration-300 group-hover:scale-110 ${
+                          isActive ? 'text-luxury-accent drop-shadow-[0_0_5px_rgba(198,165,106,0.5)]' : 'text-[#9BA98E]'
+                        }`} />
+                      )}
                       <span className="text-xs tracking-wider uppercase font-semibold">{item.label}</span>
                     </div>
 
@@ -229,7 +236,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   isActive ? 'text-luxury-accent font-semibold bg-white/5' : 'text-[#EFE6D7]/80'
                 }`}
               >
-                <Icon className="w-4.5 h-4.5" />
+                {item.id === 'produtos' ? (
+                  <SeraCacauIcon className="w-4.5 h-4.5" />
+                ) : (
+                  <Icon className="w-4.5 h-4.5" />
+                )}
                 <span className="text-[8px] font-sans tracking-widest uppercase font-medium">{item.label}</span>
               </button>
             );

@@ -42,10 +42,10 @@ export const GamificationView: React.FC<GamificationViewProps> = ({
   // Find current member or fallback to logged-in user details
   const foundMember = members.find(m => m.email?.toLowerCase() === user.email?.toLowerCase() || m.name?.toLowerCase() === user.name?.toLowerCase());
   const displayName = user.name || foundMember?.name || 'Membro';
-  const points = (user.totalPoints !== undefined && user.totalPoints !== null) ? user.totalPoints : (foundMember?.totalPoints || 760);
+  const points = (user.totalPoints !== undefined && user.totalPoints !== null) ? user.totalPoints : (foundMember?.totalPoints || 0);
 
   // Determine tier and progress
-  let tier = user.tier || foundMember?.tier || 'Ouro';
+  let tier = user.tier || foundMember?.tier || 'Bronze';
   let nextLimit = 300;
   let prevLimit = 0;
   let nextTier = 'Prata';

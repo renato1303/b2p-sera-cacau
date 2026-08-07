@@ -79,6 +79,7 @@ export interface Product {
   originCooperativa: string;
   discountCode?: string;
   discountDescription?: string;
+  buyUrl?: string;
 }
 
 export interface QuizOption {

@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { SeraCacauIcon } from './SeraCacauIcon';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { 
   Plus, 
@@ -431,7 +432,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         {/* Metric 3: Products */}
         <div className="bg-surface border border-border-color rounded-lg p-5 flex flex-col gap-2.5 shadow-sm">
           <div className="flex justify-between items-center text-primary-accent">
-            <Sprout className="w-5 h-5" />
+            <SeraCacauIcon className="w-5 h-5 text-primary-accent" />
             <span className="text-[9px] tracking-widest uppercase font-bold text-primary-accent font-mono">produtos</span>
           </div>
           <div className="flex flex-col">
