@@ -248,10 +248,15 @@ export const LoginView: React.FC<LoginViewProps> = ({
     setSuccessMsg('');
 
     try {
+      const redirectUrl = typeof window !== 'undefined' && window.location.origin.startsWith('http')
+        ? (window.location.origin.includes('seracacau.com.br') ? window.location.origin : 'https://areademembros.seracacau.com.br')
+        : 'https://areademembros.seracacau.com.br';
+
       const { data, error } = await supabase.auth.signUp({
         email: regEmail.trim(),
         password: regPassword,
         options: {
+          emailRedirectTo: redirectUrl,
           data: { 
             name: regName.trim(), 
             city: regCity.trim(), 
@@ -282,9 +287,16 @@ export const LoginView: React.FC<LoginViewProps> = ({
     if (resendCooldown > 0 || !pendingConfirmationEmail) return;
 
     try {
+      const redirectUrl = typeof window !== 'undefined' && window.location.origin.startsWith('http')
+        ? (window.location.origin.includes('seracacau.com.br') ? window.location.origin : 'https://areademembros.seracacau.com.br')
+        : 'https://areademembros.seracacau.com.br';
+
       const { error } = await supabase.auth.resend({
         type: 'signup',
-        email: pendingConfirmationEmail
+        email: pendingConfirmationEmail,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
       });
 
       if (error) {

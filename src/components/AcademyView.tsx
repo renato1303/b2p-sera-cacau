@@ -388,7 +388,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                               src={(() => {
                                 const match = activeClass.videoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
                                 const id = match && match[1] ? match[1] : '';
-                                return id ? `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&badge=0&dnt=1` : activeClass.videoUrl;
+                                return id ? `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&badge=0&pip=0&speed=0&fullscreen=0&cc=0&vimeo_logo=0&dnt=1` : activeClass.videoUrl;
                               })()}
                               className="w-full h-full border-0"
                               allow="autoplay; fullscreen; picture-in-picture"
