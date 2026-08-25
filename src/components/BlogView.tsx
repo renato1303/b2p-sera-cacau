@@ -25,6 +25,102 @@ import {
 } from 'lucide-react';
 import { SeraCacauIcon } from './SeraCacauIcon';
 
+// Helper to render inline formatting (**bold** and *italic*)
+const renderInlineFormatting = (text: string) => {
+  const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={index} className="font-bold text-primary-forest">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return (
+        <em key={index} className="italic text-primary-forest/90">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    return part;
+  });
+};
+
+// Component to render formatted blog body with standard typography
+const FormattedBlogContent: React.FC<{ content: string }> = ({ content }) => {
+  const paragraphs = content.split(/\n\s*\n/);
+
+  return (
+    <div className="space-y-5 text-sm sm:text-base leading-relaxed text-[#364238]">
+      {paragraphs.map((paragraph, index) => {
+        const trimmed = paragraph.trim();
+        if (!trimmed) return null;
+
+        // Heading Level 3 (###)
+        if (trimmed.startsWith('### ')) {
+          const headingText = trimmed.replace(/^###\s+/, '');
+          return (
+            <div key={index} className="pt-6 pb-1 border-b border-border-color/60">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-primary-forest leading-snug">
+                {renderInlineFormatting(headingText)}
+              </h3>
+            </div>
+          );
+        }
+
+        // Heading Level 4 (####)
+        if (trimmed.startsWith('#### ')) {
+          const headingText = trimmed.replace(/^####\s+/, '');
+          return (
+            <h4 key={index} className="text-base sm:text-lg font-serif font-bold text-cocoa pt-3">
+              {renderInlineFormatting(headingText)}
+            </h4>
+          );
+        }
+
+        // Blockquote (> )
+        if (trimmed.startsWith('> ')) {
+          const quoteText = trimmed.replace(/^>\s+/, '');
+          return (
+            <blockquote key={index} className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F2] border-l-4 border-luxury-accent text-secondary-text italic text-sm sm:text-base my-4 shadow-sm">
+              {renderInlineFormatting(quoteText)}
+            </blockquote>
+          );
+        }
+
+        // Bullet List Block (contains lines starting with * or - or •)
+        const lines = trimmed.split('\n');
+        const isList = lines.some(line => /^[*\-•]\s+/.test(line.trim()));
+
+        if (isList) {
+          return (
+            <ul key={index} className="space-y-2.5 my-4 pl-1 sm:pl-2">
+              {lines.map((line, lIdx) => {
+                const cleanLine = line.replace(/^[*\-•]\s*/, '').trim();
+                if (!cleanLine) return null;
+                return (
+                  <li key={lIdx} className="flex items-start gap-2.5 text-xs sm:text-sm md:text-[15px] leading-relaxed text-secondary-text">
+                    <span className="w-1.5 h-1.5 rounded-full bg-luxury-accent mt-2 shrink-0" />
+                    <span>{renderInlineFormatting(cleanLine)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        }
+
+        // Standard Paragraph
+        return (
+          <p key={index} className="text-xs sm:text-sm md:text-[15px] leading-relaxed text-secondary-text">
+            {renderInlineFormatting(trimmed)}
+          </p>
+        );
+      })}
+    </div>
+  );
+};
+
 export const BlogView: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
@@ -289,50 +385,8 @@ export const BlogView: React.FC = () => {
                 />
               </div>
 
-              {/* Markdown / Formatted Text Content */}
-              <div className="prose prose-stone max-w-none text-primary-text space-y-4 text-sm sm:text-base leading-relaxed">
-                {selectedArticle.content.split('\n\n').map((paragraph, index) => {
-                  const trimmed = paragraph.trim();
-                  
-                  // Check if subheader ###
-                  if (trimmed.startsWith('### ')) {
-                    return (
-                      <h3 key={index} className="text-xl font-serif font-bold text-primary-forest pt-4 pb-1 border-b border-border-color/60">
-                        {trimmed.replace('### ', '')}
-                      </h3>
-                    );
-                  }
-                  
-                  // Check if subheader ####
-                  if (trimmed.startsWith('#### ')) {
-                    return (
-                      <h4 key={index} className="text-base font-serif font-bold text-primary-forest pt-2 text-cocoa">
-                        {trimmed.replace('#### ', '')}
-                      </h4>
-                    );
-                  }
-
-                  // Check if bullet list
-                  if (trimmed.startsWith('* ') || trimmed.startsWith('• ')) {
-                    const items = trimmed.split('\n').map(item => item.replace(/^[*\-•]\s*/, '').trim());
-                    return (
-                      <ul key={index} className="space-y-1.5 pl-5 list-disc text-primary-text my-3 marker:text-primary-accent">
-                        {items.map((it, iIdx) => (
-                          <li key={iIdx} className="text-xs sm:text-sm">
-                            {it}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  }
-
-                  return (
-                    <p key={index} className="text-xs sm:text-sm leading-relaxed text-secondary-text">
-                      {trimmed}
-                    </p>
-                  );
-                })}
-              </div>
+              {/* Formatted Text Content */}
+              <FormattedBlogContent content={selectedArticle.content} />
 
               {/* Video Section at the end of the post (if available) */}
               {selectedArticle.vimeoVideoId && (

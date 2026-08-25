@@ -417,7 +417,7 @@ export const COURSES: Course[] = [
     category: 'História',
     instructor: 'Luna Azevedo',
     duration: '7 Aulas + Intro',
-    coverImage: '/images/IMG_4189 copiar.jpg',
+    coverImage: '/images/img_4189.jpg',
     certificateEnabled: true,
     communityEnabled: true,
     visibility: 'Somente Matriculadas',

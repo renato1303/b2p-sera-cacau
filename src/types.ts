@@ -211,21 +211,31 @@ export interface RecipeSpecification {
 
 export interface Recipe {
   id: string;
+  numberCode?: string; // e.g. '01', '02', '03' ...
+  badgeHeader?: string; // e.g. '01 BEBIDA QUENTE · 5 MIN' or 'NUTRIÇÃO NA SAÚDE DA MULHER'
   title: string;
+  subtitle?: string; // e.g. 'Nutrir é um ato diário de cuidado com o corpo feminino.'
   slug: string;
-  category: 'cozinha' | 'clinica'; // cozinha = Dani (Culinárias & Rituais), clinica = Luna (Terapêuticas para Pacientes)
+  category: 'dani' | 'cozinha' | 'clinica'; // dani = Receitas da Dani, clinica = Luna (Prescrições para Pacientes)
   author: 'Dani' | 'Luna';
   authorRole: string;
   prepTime: string;
   yield: string;
   difficulty: 'Fácil' | 'Médio' | 'Avançado';
   description: string;
+  tip?: string; // "DICA DA SERÁ" (receitas Dani)
+  variations?: string[]; // "VARIAÇÕES" (receitas Luna)
+  indication?: string; // "INDICAÇÃO" (receitas Luna)
+  whyItWorks?: string; // "POR QUE FUNCIONA" (receitas Luna)
+  note?: string; // "NOTA" (receitas Luna)
+  footerText?: string;
   ingredients: RecipeIngredient[];
   instructions: string[];
   imageUrl: string;
   specifications: RecipeSpecification;
   tags: string[];
   recommendedProductSlug?: string;
+  pdfUrl?: string;
 }
 
 export interface ScienceArticle {
