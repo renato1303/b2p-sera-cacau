@@ -34,6 +34,8 @@ import {
   PlusCircle
 } from 'lucide-react';
 import { Course, Product, FileAttachment, Member, CourseModule, CourseClass, PointsEntry } from '../types';
+import { SHOPIFY_INTEGRATION_METHODS, SHOPIFY_SUPPORT_TEMPLATE } from '../data';
+import { ShoppingBag, Copy, ExternalLink } from 'lucide-react';
 
 interface AdminViewProps {
   courses: Course[];
@@ -1145,6 +1147,77 @@ export const AdminView: React.FC<AdminViewProps> = ({
         </div>
       </section>
 
+      {/* 5. SHOPIFY NATIVE INTEGRATION & SUPPORT WORKBENCH */}
+      <section className="bg-gradient-to-br from-[#1C261D] to-[#253626] text-[#F7F3EC] border border-[#455347]/50 rounded-2xl p-6 md:p-8 flex flex-col gap-6 shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#455347]/60 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-luxury-accent/20 text-luxury-accent flex items-center justify-center">
+              <ShoppingBag className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xl font-serif font-bold text-white">Integração Nativa Shopify & Suporte</h3>
+              <p className="text-xs text-[#C2C9C0]">
+                Diretrizes e templates oficiais para conectar a Área de Membros diretamente na loja Shopify das nutris.
+              </p>
+            </div>
+          </div>
+
+          <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold font-mono">
+            SHOPIFY NATIVE PROXY
+          </span>
+        </div>
+
+        {/* Integration Strategies Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {SHOPIFY_INTEGRATION_METHODS.map((method, idx) => (
+            <div key={idx} className="bg-black/30 p-5 rounded-xl border border-white/10 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold text-luxury-accent uppercase font-mono">{method.badge}</span>
+                <h4 className="font-serif font-bold text-base text-white">{method.title}</h4>
+                <p className="text-xs text-[#C8D1C7] leading-relaxed">{method.description}</p>
+                <div className="text-[11px] text-[#A0AAA0] bg-white/5 p-2 rounded">
+                  <strong>Vantagens:</strong> {method.pros.join(' • ')}
+                </div>
+              </div>
+
+              <div className="pt-2 text-xs text-secondary-accent font-semibold flex items-center justify-between">
+                <span>{method.recommendedFor.slice(0, 45)}...</span>
+                <span className="text-[10px] font-mono uppercase bg-white/10 px-2 py-0.5 rounded">Ativo</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Support Ticket Template */}
+        <div className="bg-black/40 p-6 rounded-xl border border-white/10 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div>
+              <span className="text-xs font-bold text-luxury-accent uppercase tracking-wider block">
+                Template de Abertura de Chamado • Suporte Shopify
+              </span>
+              <p className="text-xs text-[#A0AAA0]">Configuração de App Proxy / Custom App para o Portal de Nutricionistas</p>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText(SHOPIFY_SUPPORT_TEMPLATE);
+                alert('Template de e-mail copiado para a área de transferência!');
+              }}
+              className="flex items-center gap-1.5 px-4 py-2 bg-luxury-accent hover:bg-luxury-accent/90 text-[#1C261D] rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copiar Mensagem do Suporte</span>
+            </button>
+          </div>
+
+          <pre className="text-xs text-[#E0E6DF] bg-black/60 p-4 rounded-lg whitespace-pre-wrap font-mono leading-relaxed border border-white/5">
+            {SHOPIFY_SUPPORT_TEMPLATE}
+          </pre>
+        </div>
+      </section>
+
     </div>
   );
 };
+

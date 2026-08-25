@@ -54,7 +54,7 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  line: 'Cacau Ritual' | 'Ervas Ritual' | 'Terra Ritual';
+  line: 'Cacau Ritual' | 'Ervas Ritual' | 'Terra Ritual' | 'Cacau Puro em Barra' | 'Cacau Crocante' | 'Infusões da Floresta' | 'Kits & Presentes' | string;
   category: string;
   weight: string;
   tagline: string;
@@ -190,4 +190,77 @@ export interface ActivityMetric {
   coursesCompleted: number;
   totalDownloads: number;
   weeklyVisits: number;
+}
+
+export interface RecipeIngredient {
+  item: string;
+  amount: string;
+  notes?: string;
+}
+
+export interface RecipeSpecification {
+  theobromineMg?: string;
+  polyphenolsMg?: string;
+  calories?: string;
+  macronutrients?: string;
+  clinicalIndications?: string[];
+  contraindications?: string[];
+  optimalTiming?: string;
+  synergies?: string[];
+}
+
+export interface Recipe {
+  id: string;
+  title: string;
+  slug: string;
+  category: 'cozinha' | 'clinica'; // cozinha = Dani (Culinárias & Rituais), clinica = Luna (Terapêuticas para Pacientes)
+  author: 'Dani' | 'Luna';
+  authorRole: string;
+  prepTime: string;
+  yield: string;
+  difficulty: 'Fácil' | 'Médio' | 'Avançado';
+  description: string;
+  ingredients: RecipeIngredient[];
+  instructions: string[];
+  imageUrl: string;
+  specifications: RecipeSpecification;
+  tags: string[];
+  recommendedProductSlug?: string;
+}
+
+export interface ScienceArticle {
+  id: string;
+  title: string;
+  journal: string;
+  year: string;
+  studyType: 'Ensaio Clínico Randomizado' | 'Revisão Sistemática' | 'Estudo Mecanístico' | 'Metanálise' | 'Estudo Farmacognóstico' | string;
+  bioactiveFocus: string;
+  summary: string;
+  clinicalTakeaway: string;
+  keyFindings: string[];
+  doiUrl: string;
+  authors: string;
+  pmid?: string;
+}
+
+export interface ForumTopic {
+  id: string;
+  title: string;
+  content: string;
+  authorName: string;
+  authorRole: string;
+  authorAvatar?: string;
+  category: 'Dúvidas Clínicas' | 'Rituais do Cacau' | 'Casos de Pacientes' | 'Ideias & Sugestões';
+  date: string;
+  likes: number;
+  isLiked?: boolean;
+  replies: {
+    id: string;
+    authorName: string;
+    authorRole: string;
+    authorAvatar?: string;
+    content: string;
+    date: string;
+  }[];
+  tags: string[];
 }

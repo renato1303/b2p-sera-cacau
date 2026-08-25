@@ -63,21 +63,24 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
             </p>
           </div>
 
-          {/* Luxury Filter Bar (AstroMembers standard) */}
-          <div className="flex flex-wrap gap-2.5 border-b border-border-color/60 pb-5">
+          {/* Filter Bar */}
+          <div className="flex flex-wrap gap-2 border-b border-border-color/60 pb-5">
             {[
-              { id: 'todos', label: 'Ver Todo Catálogo' },
-              { id: 'cacau', label: 'Linha Cacau Ritual' },
-              { id: 'ervas', label: 'Linha Ervas' },
-              { id: 'terra', label: 'Acessórios Terra' }
+              { id: 'todos', label: 'Todo Catálogo (10)' },
+              { id: 'gotas', label: 'Gotas de Cacau' },
+              { id: 'barras', label: 'Barras 200g & 450g' },
+              { id: 'nibs', label: 'Nibs 250g & 75g' },
+              { id: 'chas', label: 'Chá de Casca' },
+              { id: 'baunilha', label: 'Baunilha Natural' },
+              { id: 'kits', label: 'Kits & Rituais' }
             ].map((btn) => (
               <button
                 id={`filter-btn-${btn.id}`}
                 key={btn.id}
                 onClick={() => setActiveFilter(btn.id)}
-                className={`px-4.5 py-2 rounded-full text-xs tracking-wider uppercase font-bold transition-all duration-300 font-mono cursor-pointer ${
+                className={`px-4 py-2 rounded-full text-xs tracking-wider uppercase font-bold transition-all duration-300 font-mono cursor-pointer ${
                   activeFilter === btn.id 
-                    ? 'bg-primary-forest text-white' 
+                    ? 'bg-primary-forest text-white shadow-sm' 
                     : 'bg-surface border border-border-color hover:bg-secondary-surface text-secondary-text'
                 }`}
               >

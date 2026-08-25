@@ -15,6 +15,11 @@ import { ProfileView } from './components/ProfileView';
 import { AdminView } from './components/AdminView';
 import { LoginView } from './components/LoginView';
 import { GamificationView } from './components/GamificationView';
+import { RecipesView } from './components/RecipesView';
+import { ScienceView } from './components/ScienceView';
+import { TechnicalSheetView } from './components/TechnicalSheetView';
+import { CommunityView } from './components/CommunityView';
+import { BlogView } from './components/BlogView';
 import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
 
 import { 
@@ -715,11 +720,41 @@ export default function App() {
             />
           )}
 
-          {currentTab === 'biblioteca' && (
-            <LibraryView 
-              attachments={attachments}
-              onDownloadIncrement={incrementDownloads}
+          {currentTab === 'receitas' && (
+            <RecipesView 
+              onSelectProduct={(productName) => {
+                const prod = products.find(p => p.name.toLowerCase().includes(productName.toLowerCase()));
+                if (prod) {
+                  setSelectedProduct(prod);
+                  setCurrentTab('produtos');
+                } else {
+                  setCurrentTab('produtos');
+                }
+              }}
             />
+          )}
+
+          {currentTab === 'fichas' && (
+            <TechnicalSheetView />
+          )}
+
+          {currentTab === 'ciencia' && (
+            <ScienceView />
+          )}
+
+          {currentTab === 'comunidade' && (
+            <CommunityView 
+              user={currentUser} 
+              onOpenRitualRecipe={() => setCurrentTab('receitas')}
+            />
+          )}
+
+          {currentTab === 'blog' && (
+            <BlogView />
+          )}
+
+          {currentTab === 'biblioteca' && (
+            <TechnicalSheetView />
           )}
 
           {currentTab === 'campanhas' && (

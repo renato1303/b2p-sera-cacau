@@ -4,6 +4,11 @@
  */
 
 import { Course, Product, Campaign, NewsletterArticle, FileAttachment, Member, CommunityPost, GamificationReward, PointsEntry, GamificationTier } from './types';
+export { RECIPES } from './data/recipes';
+export { SCIENCE_ARTICLES } from './data/science';
+export { INITIAL_FORUM_TOPICS } from './data/community';
+export { SHOPIFY_INTEGRATION_METHODS, SHOPIFY_SUPPORT_TEMPLATE } from './data/shopifyGuide';
+export { BLOG_POSTS, NEWSLETTER } from './data/blog';
 
 export const ATTACHMENTS: FileAttachment[] = [
   {
@@ -186,6 +191,221 @@ export const PRODUCTS: Product[] = [
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
     buyUrl: 'https://www.seracacau.com.br/products/sera-baunilha-1-fava'
+  },
+  {
+    id: 'prod-5',
+    name: 'Barra Será Cacau | 200g',
+    slug: 'barra-sera-cacau-200g',
+    line: 'Cacau Puro em Barra',
+    category: 'Barras',
+    weight: '200g',
+    tagline: 'A intensidade da floresta em barra pura para ralar, fatiar e emulsionar.',
+    story: 'A Barra de Será Cacau 200g é moldada com cacau 100% puro de origem Cabruca do sul da Bahia. Ideal para nutricionistas e amantes da culinária ancestral que preferem ralar lascas frescas sobre preparos funcionais, produzir emulsões densas ou criar sobremesas terapêuticas de alta pureza.',
+    benefits: [
+      'Cacau 100% puro não alcalinizado de fermentação controlada.',
+      'Altíssima concentração de flavonoides totais e teobromina bioativa.',
+      'Versatilidade máxima: perfeita para ralar fina, picar em pedaços ou derreter em banho-maria.',
+      'Rica em gordura saudável nobre (manteiga de cacau natural intacta).'
+    ],
+    ingredients: '100% amêndoas de cacau orgânico cultivado sob a sombra da Mata Atlântica.',
+    nutritionalTable: {
+      servingSize: '20g',
+      calories: '114 kcal',
+      carbohydrates: '6.0g',
+      proteins: '2.8g',
+      fats: '9.6g',
+      sodium: '0mg',
+      minerals: 'Magnésio: 62mg (24% VD), Ferro: 2.1mg (15% VD), Fósforo: 84mg'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Ralar 15g a 20g sobre mingau de aveia, frutas vermelhas ou derreter a 55ºC para emulsão de foco matinal.',
+    imageUrl: '/images/barra_cacau_bar_1787156448903.jpg',
+    shopifyId: 'sh_barra_200g',
+    price: 'R$ 119,00',
+    originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/barra-sera-cacau-200g'
+  },
+  {
+    id: 'prod-6',
+    name: 'Barra Será Cacau | 450g',
+    slug: 'barra-sera-cacau-450g',
+    line: 'Cacau Puro em Barra',
+    category: 'Barras',
+    weight: '450g',
+    tagline: 'O formato profissional e generoso para prescrição contínua e receitas.',
+    story: 'A Barra de Será Cacau 450g foi criada para atender consultórios, clínicas integrativas e pacientes com consumo diário estabelecido. Garante melhor rendimento e economia, oferecendo uma reserva generosa do puro cacau Cabruca em sua forma mais sólida e nobre.',
+    benefits: [
+      'Excelente custo-benefício para consumo mensal contínuo.',
+      'Permite porcionamento personalizado de acordo com o plano alimentar da nutricionista.',
+      'Densidade fitoquímica elevada com preservação integral dos polifenóis.',
+      'Embalagem sustentável e protetora contra oxidação.'
+    ],
+    ingredients: '100% cacau orgânico puro da Costa do Cacau Baiana.',
+    nutritionalTable: {
+      servingSize: '20g',
+      calories: '114 kcal',
+      carbohydrates: '6.0g',
+      proteins: '2.8g',
+      fats: '9.6g',
+      sodium: '0mg',
+      minerals: 'Magnésio: 62mg, Zinco: 1.1mg, Potássio: 195mg'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Cortar em cubos padronizados de 10g e orientar consumo de 2 cubos/dia como cardioprotetor e estimulante de eNOS.',
+    imageUrl: '/images/barra_cacau_bar_1787156448903.jpg',
+    shopifyId: 'sh_barra_450g',
+    price: 'R$ 249,00',
+    originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/barra-sera-cacau-450g'
+  },
+  {
+    id: 'prod-7',
+    name: 'Nibs de Será Cacau | 250g',
+    slug: 'nibs-de-sera-cacau-250g',
+    line: 'Cacau Crocante',
+    category: 'Nibs',
+    weight: '250g',
+    tagline: 'A pura amêndoa de cacau torrada e quebrada com crocância marcante.',
+    story: 'Os Nibs da Será Cacau são pedacinhos da amêndoa de cacau 100% puro fermentada e torrada com extrema delicadeza. Mantêm a casca removida e toda a fibra e manteiga natural da amêndoa intactas, proporcionando uma explosão de textura crocante e sabor intenso de notas florais e terrosas.',
+    benefits: [
+      'Textura crocante inigualável sem adição de açúcar ou gorduras hidrogenadas.',
+      'Rico em fibras solúveis e insolúveis que atuam como prebióticos colônicos.',
+      'Estimula a mastigação ativa e a liberação de peptídeos de saciedade (CCK e GLP-1).',
+      'Fonte abundante de antioxidantes fenólicos estáveis.'
+    ],
+    ingredients: 'Amêndoas de cacau orgânico puro tostadas e quebradas.',
+    nutritionalTable: {
+      servingSize: '15g (1 colher de sopa)',
+      calories: '86 kcal',
+      carbohydrates: '4.2g (sendo 3.1g fibras)',
+      proteins: '2.1g',
+      fats: '7.2g',
+      sodium: '0mg',
+      minerals: 'Magnésio: 42mg (16% VD), Ferro: 1.2mg'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Prescrever 1 a 2 colheres de sopa sobre iogurte vegetal, frutas picadas ou açaí puro como topping funcional sacietógeno.',
+    imageUrl: '/images/nibs_cacau_jar_1787156474516.jpg',
+    shopifyId: 'sh_nibs_250g',
+    price: 'R$ 109,00',
+    originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/nibs-de-sera-cacau-250g'
+  },
+  {
+    id: 'prod-8',
+    name: 'Nibs de Será Cacau | 75g',
+    slug: 'nibs-de-sera-cacau-75g',
+    line: 'Cacau Crocante',
+    category: 'Nibs',
+    weight: '75g',
+    tagline: 'O pote compacto para degustação e praticidade na rotina.',
+    story: 'Apresentado em pote de vidro âmbar elegante, o Nibs 75g é perfeito para deixar na mesa de trabalho, no consultório para apresentação aos pacientes ou levar na bolsa como snack limpo de emergência.',
+    benefits: [
+      'Embalagem compacta e hermética de vidro farmacêutico.',
+      'Ótima opção para kits de boas-vindas aos pacientes no consultório.',
+      'Crocância pura sem nenhum tipo de aditivo químico.'
+    ],
+    ingredients: 'Amêndoas de cacau orgânico selecionadas da Cabruca.',
+    nutritionalTable: {
+      servingSize: '15g',
+      calories: '86 kcal',
+      carbohydrates: '4.2g',
+      proteins: '2.1g',
+      fats: '7.2g',
+      sodium: '0mg',
+      minerals: 'Magnésio: 42mg, Ferro: 1.2mg'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Degustação orientada no consultório para exercitar o paladar e ensinar a mastigação consciente.',
+    imageUrl: '/images/nibs_cacau_jar_1787156474516.jpg',
+    shopifyId: 'sh_nibs_75g',
+    price: 'R$ 39,00',
+    originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/nibs-de-sera-cacau-75g'
+  },
+  {
+    id: 'prod-9',
+    name: 'Chá de Casca de Cacau | 25g',
+    slug: 'cha-de-casca-de-cacau-25g',
+    line: 'Infusões da Floresta',
+    category: 'Chás & Infusões',
+    weight: '25g',
+    tagline: 'A infusão dourada com o perfume reconfortante do cacau e zero calorias.',
+    story: 'As cascas das amêndoas de cacau guardam uma riqueza fitoquímica singular e aromas florais extremamente aconchegantes. Após a torra branda, as cascas são separadas cuidadosamente e embaladas para infusão em água quente, gerando uma bebida límpida, naturalmente perfumada e digestiva.',
+    benefits: [
+      'Zero caloria e zero carboidrato, ideal para jejum intermitente.',
+      'Aporte suave de teobromina para relaxamento muscular e alerta sereno.',
+      'Estimula a digestão pós-prandial com sabor que remete ao chocolate suave.',
+      'Aproveitamento integral e circular do fruto sagrado da Cabruca.'
+    ],
+    ingredients: 'Cascas íntegras e selecionadas de amêndoas de cacau orgânico puro.',
+    nutritionalTable: {
+      servingSize: '3g (1 colher de sopa)',
+      calories: '< 2 kcal',
+      carbohydrates: '0.4g',
+      proteins: '0g',
+      fats: '0g',
+      sodium: '0mg',
+      minerals: 'Polifenóis voláteis solúveis em água'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Infundir 1 colher de sopa em 200ml de água a 90ºC por 6 minutos. Prescrever após almoço ou lanche vespertino.',
+    imageUrl: '/images/cha_casca_cacau_1787156490097.jpg',
+    shopifyId: 'sh_cha_casca_25g',
+    price: 'R$ 22,00',
+    originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/cha-de-casca-de-cacau-25g'
+  },
+  {
+    id: 'prod-10',
+    name: 'Kit Início Será Cacau | Gotas 105g & Xícara',
+    slug: 'kit-inicio-sera-cacau-gotas-105g-xicara',
+    line: 'Kits & Presentes',
+    category: 'Kits Ritual',
+    weight: '105g + Xícara',
+    tagline: 'O conjunto completo para ancorar o ritual de presença na sua rotina.',
+    story: 'Um encontro entre a fitoquímica da floresta e o artesanato brasileiro de terra. O Kit Início reúne o pote de Gotas de Será Cacau 105g e uma xícara em cerâmica rústica modelada manualmente em alta temperatura. Desenhada para acolher o calor nas palmas das mãos e transformar o preparo em um momento diário de autocuidado.',
+    benefits: [
+      'Experiência sensorial completa: textura, sabor, aroma e ergonomia.',
+      'Acompanha xícara exclusiva feita à mão por artesãs locais.',
+      'Presente inesquecível para novas pacientes ou abertura de consultas.',
+      'Pote reutilizável de vidro nobre e sustentável.'
+    ],
+    ingredients: 'Gotas de cacau 100% puro (105g) + 1 Xícara de cerâmica artesanal brasileira (180ml).',
+    nutritionalTable: {
+      servingSize: '20g de gotas',
+      calories: '112 kcal',
+      carbohydrates: '6.2g',
+      proteins: '2.6g',
+      fats: '9.4g',
+      sodium: '0mg',
+      minerals: 'Magnésio: 58mg'
+    },
+    hasLaudo: true,
+    laudoUrl: '#',
+    protocol: 'Sugestão Clínica: Utilizar o kit como ancoragem física no consultório para demonstrar a prática de Mindfulness e alimentação consciente.',
+    imageUrl: '/images/kit_inicio_cacau_1787156506670.jpg',
+    shopifyId: 'sh_kit_inicio_gotas_xicara',
+    price: 'R$ 179,00',
+    originCooperativa: 'Cooperativa de Mulheres da Cabruca & Ateliê Terra Bahiana',
+    discountCode: 'NUTRI15',
+    discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
+    buyUrl: 'https://www.seracacau.com.br/products/kit-inicio-sera-cacau-gotas-105g-xicara'
   }
 ];
 
@@ -319,29 +539,6 @@ export const CAMPAIGNS: Campaign[] = [
     date: 'Válido em todo o Brasil',
     buttonLabel: 'Ver Detalhes da Ação',
     buttonUrl: '#'
-  }
-];
-
-export const NEWSLETTER: NewsletterArticle[] = [
-  {
-    id: 'news-1',
-    title: 'O Paradoxo da Conexão: Por que escolhemos a Pausa',
-    summary: 'Em um mundo onde cada minuto de atenção é mercantilizado, o silêncio visual e a desaceleração tornam-se ferramentas de preservação neurológica.',
-    content: 'O paradoxo bonito da nossa presença digital: usamos as redes para dizer "larga o celular". O feed e o ecossistema da Será Cacau criam desejo não pelo produto de forma fútil — mas pelo que o produto possibilita: uma pausa consciente, uma conversa de verdade na mesa de madeira, mãos aquecidas ao redor de uma cerâmica imperfeita, presença sem performance.\n\nNa prática de consultório, a recomendação de preparar uma xícara de cacau 100% puro não é apenas uma prescrição bioquímica de flavonoides e magnésio. É um convite físico e mecânico para que o paciente respire, sinta o calor do preparo a 60ºC e desfrute de dez minutos de silêncio matinal antes de abrir a lista de tarefas e notificações.\n\nPromover essa mentalidade no dia a dia fortalece a relação do paciente com a saúde de forma profunda, sustentável e acolhedora.',
-    imageUrl: '/images/artisanal_ceramics_1783964151303.jpg',
-    publishDate: '08 de Julho, 2026',
-    author: 'Madeleine',
-    readTime: '4 min'
-  },
-  {
-    id: 'news-2',
-    title: 'A Bioquímica da Felicidade: Anandamida e Estabilidade de Humor',
-    summary: 'Aprofunde-se no mecanismo fitoquímico que faz do cacau Cabruca uma excelente ferramenta clínica na regulação de impulsos e na promoção da serenidade.',
-    content: 'Muitas vezes taxado incorretamente por mídias de marketing como "superfood milagroso", o cacau puro de alta qualidade na verdade atua através de vias fitoativas extremamente bem documentadas pela literatura científica contemporânea.\n\nA Anandamida é um endocanabinoide endógeno que atua em receptores CB1 e CB2. O consumo de cacau 100% puro fornece não apenas anandamida vegetal, mas também inibidores de sua degradação enzimática (como os compostos de N-aciletanolaminas), prolongando naturalmente a sensação de paz e satisfação celular.\n\nQuando associada à teobromina, que dilata vasos suavemente sem disparar receptores beta-adrenérgicos (ao contrário da cafeína), criamos o cenário ideal para um cérebro relaxado, concentrado e resiliente a estressores cotidianos.',
-    imageUrl: '/images/cacao_science_1783964140124.jpg',
-    publishDate: '28 de Junho, 2026',
-    author: 'Dra. Luna',
-    readTime: '6 min'
   }
 ];
 
