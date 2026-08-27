@@ -118,6 +118,12 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                     alt={prod.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('gotas210.jpeg') && !target.src.includes('recipe-default.jpg')) {
+                        target.src = '/images/gotas210.jpeg';
+                      }
+                    }}
                   />
                 </div>
 
@@ -190,6 +196,12 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                 alt={selectedProduct.name}
                 className="w-full h-full object-cover filter brightness-95"
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('gotas210.jpeg') && !target.src.includes('recipe-default.jpg')) {
+                    target.src = '/images/gotas210.jpeg';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
               

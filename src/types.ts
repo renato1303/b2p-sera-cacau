@@ -45,7 +45,7 @@ export interface UserProfile {
 export interface FileAttachment {
   id: string;
   name: string;
-  category: 'PDF' | 'Apresentações' | 'Laudos' | 'Receitas' | 'Marketing' | 'Protocolos';
+  category: 'PDF' | 'Apresentações' | 'Laudos' | 'Receitas' | 'Marketing' | 'Protocolos' | 'Ficha Técnica' | 'Guia';
   size: string;
   downloadUrl: string;
 }
@@ -103,6 +103,7 @@ export interface CourseClass {
   summary: string;
   type?: 'video' | 'quiz'; // default 'video' quando ausente
   pdfAttachment?: FileAttachment;
+  pdfAttachments?: FileAttachment[];
   completed?: boolean;
   quiz?: Quiz; // obrigatório quando type === 'quiz'
 }

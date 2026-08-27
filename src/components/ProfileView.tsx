@@ -12,9 +12,13 @@ import {
   ShieldCheck, 
   FileCheck,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Tag,
+  Copy,
+  Check
 } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
+import { getNutriCoupon, getPatientCoupon } from '../lib/coupon';
 
 interface ProfileViewProps {
   user: UserProfile;
@@ -24,6 +28,23 @@ interface ProfileViewProps {
 export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile }) => {
   const [formData, setFormData] = useState<UserProfile>({ ...user });
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [copiedNutri, setCopiedNutri] = useState(false);
+  const [copiedPatient, setCopiedPatient] = useState(false);
+
+  const nutriCoupon = getNutriCoupon(formData.name);
+  const patientCoupon = getPatientCoupon(formData.name);
+
+  const handleCopyNutri = () => {
+    navigator.clipboard.writeText(nutriCoupon);
+    setCopiedNutri(true);
+    setTimeout(() => setCopiedNutri(false), 2200);
+  };
+
+  const handleCopyPatient = () => {
+    navigator.clipboard.writeText(patientCoupon);
+    setCopiedPatient(true);
+    setTimeout(() => setCopiedPatient(false), 2200);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -42,7 +63,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
   };
 
   return (
-    <div className="max-w-xl mx-auto py-8 px-6 md:px-12 flex flex-col gap-10 font-sans text-primary-text">
+    <div className="max-w-2xl mx-auto py-8 px-6 md:px-12 flex flex-col gap-8 font-sans text-primary-text">
       
       {/* Header */}
       <header className="flex flex-col gap-3">
@@ -53,10 +74,87 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
           Meu Perfil
         </h1>
         <p className="text-xs md:text-sm text-secondary-text leading-relaxed">
-          Mantenha seus dados e registro profissional atualizados para garantir acesso aos laudos, amostras físicas e campanhas exclusivas.
+          Mantenha seus dados e registro profissional atualizados para garantir acesso aos laudos, amostras físicas e cupons de prescrição.
         </p>
         <div className="h-[1px] bg-border-color/60 mt-2"></div>
       </header>
+
+      {/* Coupons Highlight Card */}
+      <div className="bg-gradient-to-br from-primary-forest via-[#1e2a1f] to-primary-forest text-white rounded-2xl p-6 border border-luxury-accent/30 shadow-lg relative overflow-hidden flex flex-col gap-4">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col">
+            <span className="text-[10px] tracking-[0.25em] font-mono text-luxury-accent font-bold uppercase flex items-center gap-1.5">
+              <Tag className="w-3.5 h-3.5 text-luxury-accent" /> Seus Cupons de Desconto Oficiais
+            </span>
+            <span className="text-xs text-[#EFE6D7]/80 mt-1">
+              Gerados automaticamente com base no seu primeiro nome homologado.
+            </span>
+          </div>
+          <span className="text-[9px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold">
+            Ativos
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          {/* Nutri Coupon */}
+          <div 
+            onClick={handleCopyNutri}
+            className="bg-black/30 hover:bg-black/40 border border-luxury-accent/30 hover:border-luxury-accent/60 rounded-xl p-4 flex flex-col justify-between gap-2.5 cursor-pointer transition-all group"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-[9px] uppercase tracking-wider font-mono text-luxury-accent font-bold">
+                Cupom da Nutri (Uso Próprio)
+              </span>
+              <span className="text-[8px] bg-luxury-accent/20 text-luxury-accent px-2 py-0.5 rounded font-bold">
+                15% OFF
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-mono font-extrabold text-white tracking-wider">
+                {nutriCoupon}
+              </span>
+              <button 
+                type="button" 
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-luxury-accent/30 text-luxury-accent transition-colors shrink-0"
+              >
+                {copiedNutri ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <span className="text-[10px] text-[#C8D1C7]">
+              {copiedNutri ? <span className="text-emerald-400 font-bold font-mono">Copiado para a área de transferência!</span> : '15% de desconto em todas as suas compras na loja Será Cacau.'}
+            </span>
+          </div>
+
+          {/* Patient Coupon */}
+          <div 
+            onClick={handleCopyPatient}
+            className="bg-black/30 hover:bg-black/40 border border-primary-accent/30 hover:border-primary-accent/60 rounded-xl p-4 flex flex-col justify-between gap-2.5 cursor-pointer transition-all group"
+          >
+            <div className="flex justify-between items-center">
+              <span className="text-[9px] uppercase tracking-wider font-mono text-secondary-accent font-bold">
+                Cupom para Seus Pacientes
+              </span>
+              <span className="text-[8px] bg-primary-accent/20 text-secondary-accent px-2 py-0.5 rounded font-bold">
+                10% OFF
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-mono font-extrabold text-white tracking-wider">
+                {patientCoupon}
+              </span>
+              <button 
+                type="button" 
+                className="p-1.5 rounded-lg bg-white/10 hover:bg-primary-accent/30 text-secondary-accent transition-colors shrink-0"
+              >
+                {copiedPatient ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <span className="text-[10px] text-[#C8D1C7]">
+              {copiedPatient ? <span className="text-emerald-400 font-bold font-mono">Copiado para a área de transferência!</span> : '10% de desconto para você prescrever e compartilhar com seus pacientes.'}
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Form Card */}
       <form onSubmit={handleSubmit} className="bg-surface border border-border-color rounded-lg p-6 md:p-8 flex flex-col gap-6 shadow-sm">

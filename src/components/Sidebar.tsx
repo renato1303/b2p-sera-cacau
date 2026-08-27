@@ -56,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'fichas', label: 'Ficha Técnica', icon: ShieldCheck, badge: 'Laudos' },
     { id: 'ciencia', label: 'Ciência do Cacau', icon: Microscope, badge: 'Artigos' },
     { id: 'blog', label: 'Blog', icon: Newspaper, badge: null },
-    { id: 'gamificacao', label: 'Meu Progresso', icon: CheckCircle, badge: null },
+    { id: 'suporte', label: 'Suporte/Ajuda', icon: HelpCircle, badge: 'WhatsApp' },
   ];
 
   if (user.role === UserRole.ADMIN) {

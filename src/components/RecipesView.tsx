@@ -19,13 +19,15 @@ import {
   AlertCircle, 
   CheckCircle2, 
   ArrowRight,
+  ArrowLeft,
   Share2,
   Bookmark,
   Download,
   FileText,
   X,
   Stethoscope,
-  Info
+  Info,
+  Compass
 } from 'lucide-react';
 import { downloadRecipePdf } from '../utils/recipePdfGenerator';
 import { 
@@ -40,6 +42,8 @@ interface RecipesViewProps {
 }
 
 export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => {
+  // Navigation mode: null = author selection screen (9:16 cards), 'dani' | 'luna' | 'todas' = recipes list
+  const [selectedAuthor, setSelectedAuthor] = useState<'dani' | 'luna' | 'todas' | null>(null);
   const [activeTab, setActiveTab] = useState<'dani' | 'clinica' | 'todas'>('dani');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -47,6 +51,25 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
   const [savedRecipeIds, setSavedRecipeIds] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  // Sync activeTab when selectedAuthor changes
+  const handleSelectAuthor = (author: 'dani' | 'luna' | 'todas') => {
+    setSelectedAuthor(author);
+    if (author === 'dani') {
+      setActiveTab('dani');
+    } else if (author === 'luna') {
+      setActiveTab('clinica');
+    } else {
+      setActiveTab('todas');
+    }
+    setSelectedTag(null);
+  };
+
+  const handleBackToAuthors = () => {
+    setSelectedAuthor(null);
+    setSelectedTag(null);
+    setSearchQuery('');
+  };
 
   // Filter recipes
   const filteredRecipes = useMemo(() => {
@@ -114,190 +137,344 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
     }
   };
 
+  const FOTO_DANI = '/foto da dani.jpeg';
+  const FOTO_LUNA = '/foto da luna.jpeg';
+
   return (
     <div className="space-y-8 animate-fadeIn max-w-7xl mx-auto pb-16">
       
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1C261D] via-[#2A382C] to-[#172018] p-8 md:p-12 text-[#F7F3EC] border border-[#455347]/40 shadow-xl">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-primary-accent/15 blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/3 -mb-16 w-64 h-64 rounded-full bg-luxury-accent/10 blur-2xl pointer-events-none"></div>
-        
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-accent/20 border border-primary-accent/40 text-primary-accent text-xs font-semibold tracking-wider uppercase">
-            <ChefHat className="w-3.5 h-3.5" />
-            Biblioteca de Receitas & Prescrições Oficiais
-          </div>
+      {/* ========================================================================= */}
+      {/* 1. SELEÇÃO DE AUTORAS COM CARDS 9:16 (Layout Exclusivo e Organizado)      */}
+      {/* ========================================================================= */}
+      {selectedAuthor === null ? (
+        <div className="space-y-10 animate-fadeIn">
           
-          <h1 className="text-3xl md:text-5xl font-serif text-white font-normal tracking-tight">
-            Receitas da Dani & Prescrições para Pacientes
-          </h1>
-          
-          <p className="text-[#C2C9C0] text-base md:text-lg leading-relaxed font-light">
-            Acesse as <strong>12 Receitas Oficiais da Dani</strong> e as <strong>13 Receitas para Pacientes da Nutricionista Luna Azevedo</strong>. Todo o texto, doses terapêuticas e modos de preparo foram preservados exatamente como nos documentos originais, com download do PDF idêntico ao anexo disponível em cada receita.
-          </p>
+          {/* Header Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1C261D] via-[#2A382C] to-[#172018] p-8 md:p-12 text-[#F7F3EC] border border-[#455347]/40 shadow-xl text-center md:text-left">
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-primary-accent/15 blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-0 left-1/3 -mb-16 w-64 h-64 rounded-full bg-luxury-accent/10 blur-2xl pointer-events-none"></div>
+            
+            <div className="relative z-10 max-w-3xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-accent/20 border border-primary-accent/40 text-primary-accent text-xs font-bold tracking-wider uppercase">
+                <ChefHat className="w-4 h-4 text-luxury-accent" />
+                Biblioteca de Receitas & Prescrições
+              </div>
+              
+              <h1 className="text-3xl md:text-5xl font-serif text-white font-normal tracking-tight">
+                Escolha a Autora para Explorar
+              </h1>
+              
+              <p className="text-[#C2C9C0] text-base md:text-lg leading-relaxed font-light">
+                Selecione abaixo para navegar pelas <strong>12 Receitas Oficiais da Dani</strong> ou pelas <strong>13 Receitas para Pacientes da Nutricionista Luna Azevedo</strong> com doses terapêuticas, fitoquímica e download de PDF oficial.
+              </p>
+            </div>
+          </div>
 
-          {/* Category Selector Buttons in Banner */}
-          <div className="flex flex-wrap gap-4 pt-2">
-            <button 
-              id="tab-dani-recipes"
-              onClick={() => { setActiveTab('dani'); setSelectedTag(null); }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                activeTab === 'dani' 
-                  ? 'bg-primary-accent text-white shadow-lg ring-2 ring-luxury-accent/50' 
-                  : 'bg-white/10 hover:bg-white/15 text-white/90 border border-white/10'
-              }`}
+          {/* Cards 9:16 Showcase */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+            
+            {/* CARD 9:16 - DANI */}
+            <div 
+              id="card-autor-dani"
+              onClick={() => handleSelectAuthor('dani')}
+              className="group relative aspect-[9/16] w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl border-2 border-luxury-accent/30 hover:border-luxury-accent transition-all duration-500 cursor-pointer flex flex-col justify-between p-6 sm:p-8 bg-[#1C261D] select-none hover:-translate-y-1.5"
             >
-              <Utensils className="w-4 h-4 text-luxury-accent" />
-              <span>Receitas da Dani ({daniCount})</span>
-            </button>
+              {/* Background Photo */}
+              <img
+                src={FOTO_DANI}
+                alt="Receitas da Dani"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src !== DEFAULT_DANI_IMAGE) {
+                    target.src = DEFAULT_DANI_IMAGE;
+                  }
+                }}
+              />
 
-            <button 
-              id="tab-luna-recipes"
-              onClick={() => { setActiveTab('clinica'); setSelectedTag(null); }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                activeTab === 'clinica' 
-                  ? 'bg-secondary-accent text-white shadow-lg ring-2 ring-luxury-accent/50' 
-                  : 'bg-white/10 hover:bg-white/15 text-white/90 border border-white/10'
-              }`}
-            >
-              <Stethoscope className="w-4 h-4 text-luxury-accent" />
-              <span>Receitas para Pacientes • Luna ({lunaCount})</span>
-            </button>
+              {/* Dark Luxury Gradient Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0E150F] via-[#0E150F]/50 to-black/25 group-hover:via-[#0E150F]/60 transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
 
-            <button 
-              id="tab-all-recipes"
-              onClick={() => { setActiveTab('todas'); setSelectedTag(null); }}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                activeTab === 'todas' 
-                  ? 'bg-white/25 text-white shadow-sm font-semibold border border-white/30' 
-                  : 'bg-white/10 hover:bg-white/15 text-white/80 border border-white/10'
-              }`}
+              {/* Top Badge */}
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-primary-forest/80 backdrop-blur-md border border-luxury-accent/50 text-luxury-accent text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-md">
+                  12 Receitas Oficiais
+                </span>
+                <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-luxury-accent border border-white/10 group-hover:border-luxury-accent transition-colors">
+                  <Utensils className="w-4 h-4" />
+                </span>
+              </div>
+
+              {/* Bottom Content Info */}
+              <div className="relative z-10 space-y-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono font-bold tracking-widest uppercase text-luxury-accent flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" /> Alquimia Culinária & Sabores
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight drop-shadow-md">
+                    Receitas da Dani
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#E2DDD5]/90 leading-relaxed line-clamp-3 pt-1">
+                    Preparações exclusivas com Cacau 100%, Nibs de Cacau Orgânico, Chá da Casca e Baunilha Natural.
+                  </p>
+                </div>
+
+                {/* Tags preview */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    Massa 100%
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    Nibs & Chá
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    PDFs Oficiais
+                  </span>
+                </div>
+
+                {/* Primary Action Button */}
+                <button
+                  type="button"
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-luxury-accent via-[#D8B778] to-luxury-accent text-[#1A251B] font-bold text-sm tracking-wide shadow-lg group-hover:shadow-luxury-accent/30 transition-all flex items-center justify-center gap-2 group-hover:gap-3"
+                >
+                  <span>Acessar Receitas da Dani</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+
+            {/* CARD 9:16 - LUNA */}
+            <div 
+              id="card-autor-luna"
+              onClick={() => handleSelectAuthor('luna')}
+              className="group relative aspect-[9/16] w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl border-2 border-secondary-accent/30 hover:border-secondary-accent transition-all duration-500 cursor-pointer flex flex-col justify-between p-6 sm:p-8 bg-[#1C261D] select-none hover:-translate-y-1.5"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Todas as Receitas ({RECIPES.length})</span>
+              {/* Background Photo */}
+              <img
+                src={FOTO_LUNA}
+                alt="Receitas da Luna"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src !== DEFAULT_LUNA_IMAGE) {
+                    target.src = DEFAULT_LUNA_IMAGE;
+                  }
+                }}
+              />
+
+              {/* Dark Luxury Gradient Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0E150F] via-[#0E150F]/50 to-black/25 group-hover:via-[#0E150F]/60 transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+
+              {/* Top Badge */}
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-primary-forest/80 backdrop-blur-md border border-secondary-accent/50 text-secondary-accent text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-md">
+                  13 Prescrições Clínicas
+                </span>
+                <span className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-secondary-accent border border-white/10 group-hover:border-secondary-accent transition-colors">
+                  <Stethoscope className="w-4 h-4" />
+                </span>
+              </div>
+
+              {/* Bottom Content Info */}
+              <div className="relative z-10 space-y-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono font-bold tracking-widest uppercase text-secondary-accent flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" /> Nutricionista Luna Azevedo
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight drop-shadow-md">
+                    Receitas para Pacientes
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#E2DDD5]/90 leading-relaxed line-clamp-3 pt-1">
+                    Receitas terapêuticas prescritas com fitoquímica, dosagens de polifenóis, indicações clínicas e variações.
+                  </p>
+                </div>
+
+                {/* Tags preview */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    Fitoquímica
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    Parâmetros Clínicos
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/15 backdrop-blur-sm text-[10px] font-mono text-white/90">
+                    PDFs Idênticos
+                  </span>
+                </div>
+
+                {/* Primary Action Button */}
+                <button
+                  type="button"
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-secondary-accent via-[#68A773] to-secondary-accent text-white font-bold text-sm tracking-wide shadow-lg group-hover:shadow-secondary-accent/30 transition-all flex items-center justify-center gap-2 group-hover:gap-3"
+                >
+                  <span>Acessar Receitas da Luna</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom Shortcut to view all 25 recipes */}
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => handleSelectAuthor('todas')}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-[#F7F3EC] text-primary-forest font-semibold text-xs border border-[#E0D8C8] shadow-sm transition-all hover:shadow-md"
+            >
+              <BookOpen className="w-4 h-4 text-primary-accent" />
+              <span>Ver catálogo completo com todas as 25 receitas ({RECIPES.length})</span>
+              <ArrowRight className="w-3.5 h-3.5 text-secondary-text" />
             </button>
           </div>
+
         </div>
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl p-5 border border-primary-forest/10 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      ) : (
+        /* ========================================================================= */
+        /* 2. LISTA DETALHADA DE RECEITAS (Após escolher a Autora)                   */
+        /* ========================================================================= */
+        <div className="space-y-8 animate-fadeIn">
           
-          {/* Tabs */}
-          <div className="flex p-1.5 bg-[#F2EDE4] rounded-xl w-full md:w-auto">
+          {/* Top Back Navigation Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-primary-forest/10 shadow-sm">
             <button
-              onClick={() => { setActiveTab('dani'); setSelectedTag(null); }}
-              className={`flex-1 md:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'dani'
-                  ? 'bg-primary-forest text-white shadow-sm font-semibold'
-                  : 'text-[#4A554B] hover:text-primary-forest'
-              }`}
+              onClick={handleBackToAuthors}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F2EDE4] hover:bg-[#E8E1D5] text-primary-forest text-xs font-bold transition-all group w-fit cursor-pointer"
             >
-              <Utensils className="w-4 h-4 text-primary-accent" />
-              <span>Receitas da Dani ({daniCount})</span>
+              <ArrowLeft className="w-4 h-4 text-primary-accent group-hover:-translate-x-1 transition-transform" />
+              <span>Voltar para Escolha de Autora (Cards 9:16)</span>
             </button>
 
-            <button
-              onClick={() => { setActiveTab('clinica'); setSelectedTag(null); }}
-              className={`flex-1 md:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'clinica'
-                  ? 'bg-primary-forest text-white shadow-sm font-semibold'
-                  : 'text-[#4A554B] hover:text-primary-forest'
-              }`}
-            >
-              <Stethoscope className="w-4 h-4 text-secondary-accent" />
-              <span>Receitas para Pacientes ({lunaCount})</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveTab('todas'); setSelectedTag(null); }}
-              className={`flex-1 md:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'todas'
-                  ? 'bg-primary-forest text-white shadow-sm font-semibold'
-                  : 'text-[#4A554B] hover:text-primary-forest'
-              }`}
-            >
-              Todas ({RECIPES.length})
-            </button>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C968B]" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar receita, número (ex: 01, 11), indicação..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[#F9F7F2] border border-[#E0D8C8] rounded-xl text-sm text-[#1C261D] placeholder-[#8C968B] focus:outline-none focus:ring-2 focus:ring-primary-forest/30 transition-all"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8C968B] hover:text-primary-forest"
+            {/* Quick Switch Tabs */}
+            <div className="flex items-center gap-1.5 p-1 bg-[#F2EDE4] rounded-xl overflow-x-auto">
+              <button
+                onClick={() => { setActiveTab('dani'); setSelectedAuthor('dani'); setSelectedTag(null); }}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === 'dani'
+                    ? 'bg-primary-forest text-white shadow-sm'
+                    : 'text-[#4A554B] hover:text-primary-forest'
+                }`}
               >
-                Limpar
+                <Utensils className="w-3.5 h-3.5 text-luxury-accent" />
+                <span>Dani ({daniCount})</span>
               </button>
-            )}
-          </div>
-        </div>
 
-        {/* Tags Row */}
-        <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-1 border-t border-[#F0EAE1]">
-          <span className="text-xs font-semibold text-[#8C968B] uppercase tracking-wider shrink-0 flex items-center gap-1">
-            <Filter className="w-3 h-3" /> Tags:
-          </span>
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`px-3 py-1 rounded-full text-xs transition-all whitespace-nowrap ${
-              selectedTag === null
-                ? 'bg-primary-forest text-white font-medium'
-                : 'bg-[#F2EDE4] text-[#4A554B] hover:bg-[#E8E1D5]'
-            }`}
-          >
-            Todas
-          </button>
-          {allTags.map(tag => (
-            <button
-              key={tag}
-              onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
-              className={`px-3 py-1 rounded-full text-xs transition-all whitespace-nowrap ${
-                selectedTag === tag
-                  ? 'bg-primary-accent text-white font-medium shadow-sm'
-                  : 'bg-[#F2EDE4] text-[#4A554B] hover:bg-[#E8E1D5]'
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
+              <button
+                onClick={() => { setActiveTab('clinica'); setSelectedAuthor('luna'); setSelectedTag(null); }}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === 'clinica'
+                    ? 'bg-primary-forest text-white shadow-sm'
+                    : 'text-[#4A554B] hover:text-primary-forest'
+                }`}
+              >
+                <Stethoscope className="w-3.5 h-3.5 text-secondary-accent" />
+                <span>Luna ({lunaCount})</span>
+              </button>
 
-      {/* Info Strip explaining the sequence */}
-      {activeTab === 'dani' && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#FAF7F2] p-4 rounded-xl border border-[#E8E1D5] text-xs text-[#4A554B]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary-accent"></span>
-            <span>Exibindo as <strong>12 receitas oficiais da Dani em ordem numérica</strong> (01 a 26). O texto de cada receita e modo de preparo foi mantido integralmente.</span>
+              <button
+                onClick={() => { setActiveTab('todas'); setSelectedAuthor('todas'); setSelectedTag(null); }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === 'todas'
+                    ? 'bg-primary-forest text-white shadow-sm'
+                    : 'text-[#4A554B] hover:text-primary-forest'
+                }`}
+              >
+                <span>Todas ({RECIPES.length})</span>
+              </button>
+            </div>
           </div>
-          <span className="font-semibold text-primary-forest flex items-center gap-1 shrink-0">
-            <FileText className="w-3.5 h-3.5 text-primary-accent" /> PDF oficial disponível para download em cada receita
-          </span>
-        </div>
-      )}
 
-      {activeTab === 'clinica' && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F2F7F3] p-4 rounded-xl border border-[#D5E3D8] text-xs text-[#2A402D]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-secondary-accent"></span>
-            <span>Exibindo as <strong>13 receitas para pacientes da nutricionista Luna Azevedo em ordem (01 a 13)</strong>. Textos, fitoquímica, variações e notas clínicas mantidos fielmente aos anexos.</span>
+          {/* Filter and Search Bar */}
+          <div className="bg-white rounded-2xl p-5 border border-primary-forest/10 shadow-sm space-y-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-serif font-bold text-primary-forest">
+                  {activeTab === 'dani' && `Receitas da Dani (${filteredRecipes.length})`}
+                  {activeTab === 'clinica' && `Receitas para Pacientes • Luna (${filteredRecipes.length})`}
+                  {activeTab === 'todas' && `Todas as Receitas (${filteredRecipes.length})`}
+                </span>
+              </div>
+
+              {/* Search Box */}
+              <div className="relative w-full md:w-80">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C968B]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar receita, número, indicação..."
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#F9F7F2] border border-[#E0D8C8] rounded-xl text-sm text-[#1C261D] placeholder-[#8C968B] focus:outline-none focus:ring-2 focus:ring-primary-forest/30 transition-all"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8C968B] hover:text-primary-forest"
+                  >
+                    Limpar
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Tags Row */}
+            <div className="flex items-center gap-2 overflow-x-auto pt-2 pb-1 border-t border-[#F0EAE1]">
+              <span className="text-xs font-semibold text-[#8C968B] uppercase tracking-wider shrink-0 flex items-center gap-1">
+                <Filter className="w-3 h-3" /> Tags:
+              </span>
+              <button
+                onClick={() => setSelectedTag(null)}
+                className={`px-3 py-1 rounded-full text-xs transition-all whitespace-nowrap ${
+                  selectedTag === null
+                    ? 'bg-primary-forest text-white font-medium'
+                    : 'bg-[#F2EDE4] text-[#4A554B] hover:bg-[#E8E1D5]'
+                }`}
+              >
+                Todas
+              </button>
+              {allTags.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => setSelectedTag(tag === selectedTag ? null : tag)}
+                  className={`px-3 py-1 rounded-full text-xs transition-all whitespace-nowrap ${
+                    selectedTag === tag
+                      ? 'bg-primary-accent text-white font-medium shadow-sm'
+                      : 'bg-[#F2EDE4] text-[#4A554B] hover:bg-[#E8E1D5]'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
-          <span className="font-semibold text-primary-forest flex items-center gap-1 shrink-0">
-            <Download className="w-3.5 h-3.5 text-secondary-accent" /> PDF idêntico ao anexo para download
-          </span>
-        </div>
-      )}
+
+          {/* Info Strip explaining the sequence */}
+          {activeTab === 'dani' && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#FAF7F2] p-4 rounded-xl border border-[#E8E1D5] text-xs text-[#4A554B]">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary-accent"></span>
+                <span>Exibindo as <strong>12 receitas oficiais da Dani em ordem numérica</strong> (01 a 26). O texto de cada receita e modo de preparo foi mantido integralmente.</span>
+              </div>
+              <span className="font-semibold text-primary-forest flex items-center gap-1 shrink-0">
+                <FileText className="w-3.5 h-3.5 text-primary-accent" /> PDF oficial disponível para download em cada receita
+              </span>
+            </div>
+          )}
+
+          {activeTab === 'clinica' && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F2F7F3] p-4 rounded-xl border border-[#D5E3D8] text-xs text-[#2A402D]">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-secondary-accent"></span>
+                <span>Exibindo as <strong>13 receitas para pacientes da nutricionista Luna Azevedo em ordem (01 a 13)</strong>. Textos, fitoquímica, variações e notas clínicas mantidos fielmente aos anexos.</span>
+              </div>
+              <span className="font-semibold text-primary-forest flex items-center gap-1 shrink-0">
+                <Download className="w-3.5 h-3.5 text-secondary-accent" /> PDF idêntico ao anexo para download
+              </span>
+            </div>
+          )}
 
       {/* Grid of Recipe Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -465,6 +642,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
           >
             Limpar Todos os Filtros
           </button>
+        </div>
+      )}
+
         </div>
       )}
 

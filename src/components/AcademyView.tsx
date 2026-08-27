@@ -22,9 +22,13 @@ import {
   Heart,
   XCircle,
   MessageSquare,
-  Send
+  Send,
+  FileText,
+  Image as ImageIcon,
+  Eye,
+  X
 } from 'lucide-react';
-import { Course, CourseClass, CourseModule, UserProfile, CommunityPost } from '../types';
+import { Course, CourseClass, CourseModule, UserProfile, CommunityPost, FileAttachment } from '../types';
 
 interface AcademyViewProps {
   courses: Course[];
@@ -56,7 +60,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
   const [volume, setVolume] = useState<number>(80);
 
   // Custom Navigation inside the course
-  const [activeTab, setActiveTab] = useState<'conteudo' | 'comunidade' | 'certificado'>('conteudo');
+  const [activeTab, setActiveTab] = useState<'conteudo' | 'comunidade'>('conteudo');
 
   // Interactive Quiz local state
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -67,10 +71,21 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
   // Local likes tracking
   const [likedPostIds, setLikedPostIds] = useState<string[]>([]);
 
+  // Preview modal for attachments (images/PDFs)
+  const [previewAttachment, setPreviewAttachment] = useState<FileAttachment | null>(null);
+
   const topRef = useRef<HTMLDivElement>(null);
 
-  // Set default class when a course is selected
+  // Set default class when a course is selected or auto-select Cabruca course if none
   useEffect(() => {
+    if (!selectedCourse && courses && courses.length > 0) {
+      const cabrucaCourse = courses.find(c => c.id === 'course-1' || c.title.toLowerCase().includes('cabruca') || c.title.toLowerCase().includes('jornada')) || courses[0];
+      if (cabrucaCourse) {
+        setSelectedCourse(cabrucaCourse);
+      }
+      return;
+    }
+
     if (selectedCourse && selectedCourse.modules && selectedCourse.modules[0]) {
       const firstModule = selectedCourse.modules[0];
       if (firstModule.classes && firstModule.classes[0]) {
@@ -81,7 +96,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
       setActiveTab('conteudo');
       setSelectedOptionId(null);
     }
-  }, [selectedCourse]);
+  }, [selectedCourse, courses, setSelectedCourse]);
 
   // Reset quiz states when active class changes
   useEffect(() => {
@@ -202,18 +217,6 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                 }`}
               >
                 Comunidade
-              </button>
-            )}
-            {selectedCourse.certificateEnabled && (
-              <button
-                onClick={() => setActiveTab('certificado')}
-                className={`px-4 py-2.5 rounded-lg text-xs tracking-widest uppercase transition-all whitespace-nowrap font-bold font-mono cursor-pointer ${
-                  activeTab === 'certificado'
-                    ? 'bg-primary-accent/15 border-l-4 border-primary-accent text-primary-forest font-extrabold'
-                    : 'bg-transparent text-secondary-text hover:text-primary-forest hover:bg-secondary-surface'
-                }`}
-              >
-                Certificado
               </button>
             )}
           </div>
@@ -470,38 +473,93 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                       </button>
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                      <h4 className="text-xs uppercase tracking-widest font-bold text-primary-accent font-mono">Descrição da Matéria</h4>
-                      <p className="text-xs text-secondary-text leading-relaxed">
+                    <div className="flex flex-col gap-3">
+                      <h4 className="text-xs uppercase tracking-widest font-bold text-primary-accent font-mono">Descrição</h4>
+                      <div className="text-xs text-secondary-text leading-relaxed whitespace-pre-line">
                         {activeClass.summary}
-                      </p>
+                      </div>
                     </div>
 
                     {/* Handouts and assets attached to this specific class */}
-                    {activeClass.pdfAttachment && (
-                      <div className="bg-bg-app rounded-xl p-4 border border-border-color/60 mt-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-primary-accent/15 border border-primary-accent/20 text-primary-accent flex items-center justify-center font-bold font-mono text-xs">
-                            PDF
+                    {(() => {
+                      const attachments: FileAttachment[] = activeClass.pdfAttachments && activeClass.pdfAttachments.length > 0
+                        ? activeClass.pdfAttachments
+                        : activeClass.pdfAttachment
+                          ? [activeClass.pdfAttachment]
+                          : [];
+
+                      if (attachments.length === 0) return null;
+
+                      return (
+                        <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border-color/60">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] uppercase tracking-widest font-bold text-primary-accent font-mono">
+                              Materiais de Apoio & Downloads ({attachments.length})
+                            </span>
                           </div>
-                          <div>
-                            <span className="text-[9px] uppercase tracking-widest font-bold text-primary-accent font-mono">Material de Apoio</span>
-                            <h5 className="text-xs font-semibold text-primary-forest">{activeClass.pdfAttachment.name}</h5>
-                            <p className="text-[9px] text-secondary-text uppercase font-mono mt-0.5">{activeClass.pdfAttachment.size}</p>
+
+                          <div className="flex flex-col gap-2.5">
+                            {attachments.map((att, idx) => {
+                              const isPdf = att.downloadUrl?.toLowerCase().endsWith('.pdf') || att.category === 'PDF' || att.name.toLowerCase().includes('pdf');
+                              const isImage = att.downloadUrl?.toLowerCase().endsWith('.jpg') || att.downloadUrl?.toLowerCase().endsWith('.jpeg') || att.downloadUrl?.toLowerCase().endsWith('.png');
+
+                              return (
+                                <div 
+                                  key={att.id || idx}
+                                  className="bg-bg-app hover:bg-secondary-surface/40 transition-colors rounded-xl p-3.5 border border-border-color/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                                >
+                                  <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-10 h-10 shrink-0 rounded-lg bg-primary-accent/15 border border-primary-accent/20 text-primary-accent flex items-center justify-center font-bold font-mono text-[11px]">
+                                      {isPdf ? (
+                                        <FileText className="w-5 h-5" />
+                                      ) : isImage ? (
+                                        <ImageIcon className="w-5 h-5" />
+                                      ) : (
+                                        <span>DOC</span>
+                                      )}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <span className="text-[9px] uppercase tracking-widest font-bold text-primary-accent font-mono block">
+                                        {isPdf ? 'Documento PDF' : isImage ? 'Cartão de Receita / Material' : 'Material de Apoio'}
+                                      </span>
+                                      <h5 className="text-xs font-semibold text-primary-forest truncate" title={att.name}>
+                                        {att.name}
+                                      </h5>
+                                      <p className="text-[9px] text-secondary-text uppercase font-mono mt-0.5">
+                                        {att.size} • {isPdf ? 'Formato PDF' : 'Imagem de Alta Resolução'}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                                    {isImage && att.downloadUrl && (
+                                      <button
+                                        onClick={() => setPreviewAttachment(att)}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-secondary-surface text-primary-forest border border-border-color rounded-lg text-[10px] uppercase font-bold tracking-widest transition-colors font-mono cursor-pointer"
+                                        title="Visualizar documento"
+                                      >
+                                        <Eye className="w-3.5 h-3.5 text-primary-accent" />
+                                        <span>Ver</span>
+                                      </button>
+                                    )}
+
+                                    <a 
+                                      id={`btn-download-handout-${activeClass.id}-${idx}`}
+                                      href={att.downloadUrl}
+                                      download={att.downloadUrl.split('/').pop() || att.name}
+                                      className="flex items-center gap-2 px-3.5 py-1.5 bg-primary-accent text-white hover:bg-primary-accent/90 rounded-lg text-[10px] uppercase font-bold tracking-widest transition-colors font-mono shadow-sm cursor-pointer"
+                                    >
+                                      <Download className="w-3.5 h-3.5" />
+                                      <span>{isPdf ? 'Baixar PDF' : 'Baixar Imagem'}</span>
+                                    </a>
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
-
-                        <a 
-                          id={`btn-download-handout-${activeClass.id}`}
-                          href="#"
-                          onClick={(e) => { e.preventDefault(); alert(`Download simulado do arquivo: ${activeClass.pdfAttachment?.name}`); }}
-                          className="flex items-center gap-2 px-3.5 py-1.5 bg-primary-accent text-white hover:bg-primary-accent/90 rounded-lg text-[10px] uppercase font-bold tracking-widest transition-colors font-mono shadow-sm cursor-pointer"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>Baixar PDF</span>
-                        </a>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 )}
               </div>
@@ -658,136 +716,50 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
             </div>
           )}
 
-          {/* TAB 3: CERTIFICADO */}
-          {activeTab === 'certificado' && (
-            <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
-              {(() => {
-                const total = getCourseClassesCount(selectedCourse);
-                const completed = getCourseCompletedCount(selectedCourse);
-                const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-                const isFinished = total > 0 && completed === total;
+        </div>
+      )}
 
-                if (isFinished) {
-                  return (
-                    <div className="flex flex-col gap-8 items-center">
-                      
-                      {/* GORGEOUS PREMIUM CERTIFICATE CARD */}
-                      <div className="w-full relative aspect-[1.414/1] bg-surface rounded-2xl border-4 border-double border-luxury-accent/45 p-8 md:p-12 flex flex-col justify-between text-center overflow-hidden shadow-md relative group">
-                        
-                        {/* Background graphical lines */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(198,165,106,0.05)_0%,transparent_70%)] pointer-events-none" />
-                        <div className="absolute inset-4 border border-luxury-accent/20 rounded pointer-events-none" />
-                        
-                        {/* Decorative leaf watermarks */}
-                        <div className="absolute top-6 left-6 text-luxury-accent/15 pointer-events-none font-serif text-5xl">❊</div>
-                        <div className="absolute top-6 right-6 text-luxury-accent/15 pointer-events-none font-serif text-5xl">❊</div>
-                        <div className="absolute bottom-6 left-6 text-luxury-accent/15 pointer-events-none font-serif text-5xl">❊</div>
-                        <div className="absolute bottom-6 right-6 text-luxury-accent/15 pointer-events-none font-serif text-5xl">❊</div>
-
-                        {/* Certificate Header */}
-                        <div className="flex flex-col gap-1 md:gap-2 items-center">
-                          <span className="text-[8px] md:text-[10px] tracking-[0.3em] uppercase text-luxury-accent font-bold font-mono">
-                            credenciamento técnico e científico
-                          </span>
-                          <h3 className="text-xl md:text-2xl font-extrabold tracking-tight text-primary-forest font-sans">
-                            CERTIFICADO DE CONCLUSÃO
-                          </h3>
-                          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-luxury-accent/40 to-transparent mt-1" />
-                        </div>
-
-                        {/* Certificate Content */}
-                        <div className="flex flex-col gap-3 md:gap-5 my-auto justify-center">
-                          <p className="text-[10px] md:text-xs text-secondary-text font-serif italic">
-                            Certificamos para os devidos fins de conformidade e excelência que a profissional
-                          </p>
-                          
-                          <h4 className="text-xl md:text-3xl font-serif font-extrabold text-primary-forest tracking-wide underline decoration-luxury-accent/40 decoration-2 underline-offset-8">
-                            {user.name}
-                          </h4>
-
-                          <p className="text-[10px] md:text-xs text-secondary-text max-w-xl mx-auto leading-relaxed">
-                            concluiu com êxito e aproveitamento máximo o treinamento profissional continuado de capacitação clínica em cacau puro e fitoativos:
-                          </p>
-
-                          <h5 className="text-sm md:text-lg font-bold text-primary-accent tracking-wide">
-                            {selectedCourse.title}
-                          </h5>
-                          
-                          <p className="text-[9px] md:text-[10px] text-secondary-text/60 tracking-wider font-mono uppercase">
-                            Carga Horária Estimada: {selectedCourse.duration} • Ministrado por {selectedCourse.instructor}
-                          </p>
-                        </div>
-
-                        {/* Certificate Footer */}
-                        <div className="flex justify-between items-end border-t border-border-color/60 pt-4 md:pt-6 mt-4">
-                          <div className="flex flex-col text-left">
-                            <span className="text-[8px] text-secondary-text/50 uppercase tracking-widest font-mono">Chave de Autenticidade</span>
-                            <span className="text-[9px] text-luxury-accent font-mono font-bold">SC-CERT-2026-{selectedCourse.id.toUpperCase()}</span>
-                          </div>
-
-                          {/* Verification Seal */}
-                          <div className="flex flex-col items-center gap-1">
-                            <div className="w-12 h-12 rounded-full border border-luxury-accent/30 bg-luxury-accent/10 flex items-center justify-center text-luxury-accent shadow-sm animate-pulse">
-                              <Award className="w-6 h-6 text-luxury-accent" />
-                            </div>
-                            <span className="text-[7px] text-emerald-600 font-mono font-bold uppercase tracking-widest">Cabruca Certified</span>
-                          </div>
-
-                          <div className="flex flex-col text-right">
-                            <span className="text-[8px] text-secondary-text/50 uppercase tracking-widest font-mono">Emissor Licenciado</span>
-                            <span className="text-[9px] text-primary-forest font-mono font-bold">SERÁ CACAU LTDA</span>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      {/* Download Button */}
-                      <button
-                        onClick={() => alert(`Certificado PDF assinado digitalmente emitido para ${user.name}.\n\nIniciando download seguro com criptografia SHA-256.`)}
-                        className="flex items-center gap-2 px-6 py-3 bg-primary-accent hover:bg-primary-accent/90 text-white rounded-xl text-xs tracking-widest uppercase transition-all font-mono font-bold shadow-md cursor-pointer"
-                      >
-                        <Download className="w-4 h-4" />
-                        Baixar Certificado em PDF
-                      </button>
-
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div className="bg-surface p-8 rounded-2xl border border-border-color shadow-sm flex flex-col items-center text-center gap-5">
-                      <div className="w-16 h-16 rounded-full bg-secondary-surface border border-border-color flex items-center justify-center text-secondary-text/40">
-                        <Award className="w-8 h-8" />
-                      </div>
-                      
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-primary-forest">Certificado Bloqueado</h3>
-                        <p className="text-xs text-secondary-text max-w-sm leading-relaxed">
-                          Você precisa concluir 100% das aulas curriculares e atividades práticas para liberar a emissão do seu certificado profissional assinado pela Será Cacau.
-                        </p>
-                      </div>
-
-                      {/* Progress widget */}
-                      <div className="w-full max-w-sm flex flex-col gap-2 mt-2">
-                        <div className="flex justify-between items-center text-[10px] uppercase font-mono tracking-widest">
-                          <span className="text-secondary-text/50">Progresso de aulas</span>
-                          <span className="text-primary-accent font-bold">{completed} / {total} Concluídas</span>
-                        </div>
-                        <div className="relative w-full h-2 bg-bg-app rounded-full overflow-hidden border border-border-color/60">
-                          <div 
-                            className="h-full bg-gradient-to-r from-primary-accent to-luxury-accent rounded-full transition-all duration-500"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                        <span className="text-[10px] text-primary-accent font-mono font-bold uppercase mt-1">Faltam {total - completed} aulas para concluir</span>
-                      </div>
-
-                    </div>
-                  );
-                }
-              })()}
+      {/* Attachment Preview Modal */}
+      {previewAttachment && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setPreviewAttachment(null)}
+        >
+          <div 
+            className="bg-surface border border-border-color rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-border-color flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] uppercase tracking-widest font-bold text-primary-accent font-mono">Visualização</span>
+                <h4 className="text-sm font-bold text-primary-forest">{previewAttachment.name}</h4>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={previewAttachment.downloadUrl}
+                  download={previewAttachment.downloadUrl.split('/').pop() || previewAttachment.name}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-accent text-white rounded-lg text-xs font-mono font-bold"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Baixar</span>
+                </a>
+                <button
+                  onClick={() => setPreviewAttachment(null)}
+                  className="p-1.5 text-secondary-text hover:text-primary-forest hover:bg-secondary-surface rounded-lg cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          )}
 
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-bg-app">
+              <img 
+                src={previewAttachment.downloadUrl} 
+                alt={previewAttachment.name} 
+                className="max-w-full max-h-[70vh] rounded-xl object-contain shadow-md"
+              />
+            </div>
+          </div>
         </div>
       )}
 

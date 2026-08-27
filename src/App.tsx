@@ -20,6 +20,7 @@ import { ScienceView } from './components/ScienceView';
 import { TechnicalSheetView } from './components/TechnicalSheetView';
 import { CommunityView } from './components/CommunityView';
 import { BlogView } from './components/BlogView';
+import { SupportView } from './components/SupportView';
 import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
 
 import { 
@@ -380,15 +381,24 @@ export default function App() {
 
   const handleNavigateWithTarget = (tabId: string, productOrCourse?: any) => {
     setCurrentTab(tabId);
-    if (tabId === 'produtos' && productOrCourse) {
-      setSelectedProduct(productOrCourse);
-    } else if (tabId === 'academia' && productOrCourse) {
-      setSelectedCourse(productOrCourse);
+    if (tabId === 'produtos') {
+      if (productOrCourse) setSelectedProduct(productOrCourse);
+      else setSelectedProduct(null);
     } else {
-      // Clear specific focuses when navigating normally
       if (tabId !== 'produtos') setSelectedProduct(null);
-      if (tabId !== 'academia') setSelectedCourse(null);
     }
+
+    if (tabId === 'academia') {
+      if (productOrCourse) {
+        setSelectedCourse(productOrCourse);
+      } else {
+        const cabrucaCourse = courses.find(c => c.id === 'course-1' || c.title.toLowerCase().includes('cabruca') || c.title.toLowerCase().includes('jornada')) || courses[0];
+        setSelectedCourse(cabrucaCourse);
+      }
+    } else {
+      setSelectedCourse(null);
+    }
+
     // Close overlay state
     setIsSearchFocused(false);
     setSearchQuery('');
@@ -711,12 +721,9 @@ export default function App() {
             />
           )}
 
-          {currentTab === 'gamificacao' && (
-            <GamificationView 
+          {(currentTab === 'suporte' || currentTab === 'gamificacao') && (
+            <SupportView 
               user={currentUser}
-              members={members}
-              pointsHistory={pointsHistory}
-              rewards={REWARDS}
             />
           )}
 
@@ -797,7 +804,7 @@ export default function App() {
           <div className="flex gap-4">
             <a href="#" className="hover:text-primary-accent transition-colors" onClick={(e) => { e.preventDefault(); alert('Políticas de Privacidade de Será Cacau: seus dados protegidos sob a LGPD.'); }}>Políticas</a>
             <span>·</span>
-            <a href="#" className="hover:text-primary-accent transition-colors" onClick={(e) => { e.preventDefault(); alert('Canal oficial de Suporte da Será: suporte@seracacau.com.br'); }}>Suporte</a>
+            <button className="hover:text-primary-accent transition-colors uppercase cursor-pointer" onClick={() => setCurrentTab('suporte')}>Suporte/Ajuda</button>
           </div>
         </footer>
 

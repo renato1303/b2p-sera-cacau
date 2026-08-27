@@ -9,49 +9,50 @@ export { SCIENCE_ARTICLES } from './data/science';
 export { INITIAL_FORUM_TOPICS } from './data/community';
 export { SHOPIFY_INTEGRATION_METHODS, SHOPIFY_SUPPORT_TEMPLATE } from './data/shopifyGuide';
 export { BLOG_POSTS, NEWSLETTER } from './data/blog';
+export { TECHNICAL_SHEETS } from './data/technicalSheets';
 
 export const ATTACHMENTS: FileAttachment[] = [
   {
-    id: 'att-1',
-    name: 'Laudo de Pureza Microbiológica - Lote SC2026',
-    category: 'Laudos',
-    size: '1.4 MB',
-    downloadUrl: '#'
+    id: 'att-ft-cacau-100',
+    name: 'Ficha Técnica — Cacau 100 % Orgânico (Massa de Cacau)',
+    category: 'Ficha Técnica',
+    size: '58 KB',
+    downloadUrl: '/Ficha_Tecnica_Cacau_100_Organico.pdf'
   },
   {
-    id: 'att-2',
-    name: 'Laudo de Análise de Antioxidantes e Flavonoides',
-    category: 'Laudos',
-    size: '1.1 MB',
-    downloadUrl: '#'
+    id: 'att-ft-cha-casca',
+    name: 'Ficha Técnica — Chá da Casca de Cacau',
+    category: 'Ficha Técnica',
+    size: '52 KB',
+    downloadUrl: '/Ficha_Tecnica_Cha_da_Casca_de_Cacau.pdf'
   },
   {
-    id: 'att-3',
-    name: 'Protocolo de Recomendação Clinical: Gestão de Estresse',
-    category: 'Protocolos',
-    size: '2.8 MB',
-    downloadUrl: '#'
+    id: 'att-ft-nibs',
+    name: 'Ficha Técnica — Nibs de Cacau Orgânico',
+    category: 'Ficha Técnica',
+    size: '57 KB',
+    downloadUrl: '/Ficha_Tecnica_Nibs_de_Cacau_Organico.pdf'
   },
   {
-    id: 'att-4',
-    name: 'Protocolo Desjejum Concluido: Foco e Energia sem Ansiedade',
-    category: 'Protocolos',
-    size: '3.1 MB',
-    downloadUrl: '#'
+    id: 'att-ft-baunilha',
+    name: 'Ficha Técnica — Baunilha Orgânica (Favas Curadas)',
+    category: 'Ficha Técnica',
+    size: '57 KB',
+    downloadUrl: '/Ficha_Tecnica_Baunilha_Organica.pdf'
   },
   {
-    id: 'att-5',
-    name: 'Guia de Preparo de Bebida de Cacau - Impresso Consultório',
-    category: 'Marketing',
-    size: '8.4 MB',
-    downloadUrl: '#'
+    id: 'att-guia-preparo',
+    name: 'Guia de Preparo — Como preparar o seu cacau em casa',
+    category: 'Guia',
+    size: '22 KB',
+    downloadUrl: '/Sera_Cacau_Guia_de_Preparo.pdf'
   },
   {
-    id: 'att-6',
-    name: 'Receituário Ilustrado: Blends Saudáveis de Outono-Inverno',
-    category: 'Receitas',
-    size: '4.6 MB',
-    downloadUrl: '#'
+    id: 'att-lista-compras',
+    name: 'Lista de Compras — Sete xícaras, uma lista',
+    category: 'Guia',
+    size: '25 KB',
+    downloadUrl: '/Sera_Cacau_Lista_de_Compras.pdf'
   }
 ];
 
@@ -220,7 +221,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Ralar 15g a 20g sobre mingau de aveia, frutas vermelhas ou derreter a 55ºC para emulsão de foco matinal.',
-    imageUrl: '/images/barra_cacau_bar_1787156448903.jpg',
+    imageUrl: '/images/barra200g.jpeg',
     shopifyId: 'sh_barra_200g',
     price: 'R$ 119,00',
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
@@ -256,7 +257,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Cortar em cubos padronizados de 10g e orientar consumo de 2 cubos/dia como cardioprotetor e estimulante de eNOS.',
-    imageUrl: '/images/barra_cacau_bar_1787156448903.jpg',
+    imageUrl: '/images/barras450g.jpeg',
     shopifyId: 'sh_barra_450g',
     price: 'R$ 249,00',
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
@@ -292,7 +293,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Prescrever 1 a 2 colheres de sopa sobre iogurte vegetal, frutas picadas ou açaí puro como topping funcional sacietógeno.',
-    imageUrl: '/images/nibs_cacau_jar_1787156474516.jpg',
+    imageUrl: '/images/nibssera250.jpeg',
     shopifyId: 'sh_nibs_250g',
     price: 'R$ 109,00',
     originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
@@ -327,7 +328,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Degustação orientada no consultório para exercitar o paladar e ensinar a mastigação consciente.',
-    imageUrl: '/images/nibs_cacau_jar_1787156474516.jpg',
+    imageUrl: '/images/nibssera75.jpeg',
     shopifyId: 'sh_nibs_75g',
     price: 'R$ 39,00',
     originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
@@ -363,7 +364,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Infundir 1 colher de sopa em 200ml de água a 90ºC por 6 minutos. Prescrever após almoço ou lanche vespertino.',
-    imageUrl: '/images/cha_casca_cacau_1787156490097.jpg',
+    imageUrl: '/images/chadecasca.jpeg',
     shopifyId: 'sh_cha_casca_25g',
     price: 'R$ 22,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
@@ -399,7 +400,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Utilizar o kit como ancoragem física no consultório para demonstrar a prática de Mindfulness e alimentação consciente.',
-    imageUrl: '/images/kit_inicio_cacau_1787156506670.jpg',
+    imageUrl: '/images/kitseracacau.jpeg',
     shopifyId: 'sh_kit_inicio_gotas_xicara',
     price: 'R$ 179,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca & Ateliê Terra Bahiana',
@@ -416,7 +417,7 @@ export const COURSES: Course[] = [
     description: 'Compreenda a fundo a história, o cultivo agroflorestal tradicional baiano, a fitoquímica do cacau puro e a prescrição prática em consultório com a nutricionista Luna Azevedo.',
     category: 'História',
     instructor: 'Luna Azevedo',
-    duration: '7 Aulas + Intro',
+    duration: '7 Dias + Introdução',
     coverImage: '/images/img_4189.jpg',
     certificateEnabled: true,
     communityEnabled: true,
@@ -431,34 +432,104 @@ export const COURSES: Course[] = [
         classes: [
           {
             id: 'c1-m1-cl0',
-            title: 'Intro: Boas-vindas à Jornada Cabruca',
+            title: 'Introdução',
             duration: '10 min',
             videoUrl: 'https://vimeo.com/1215499110?fl=tl&fe=ec',
-            summary: 'Apresentação oficial do treinamento com Luna Azevedo. Boas-vindas ao ecossistema Será Cacau, introdução à história da Mata Atlântica e o propósito da formação.',
-            pdfAttachment: ATTACHMENTS[4]
+            summary: `Oi, nutris! Que alegria ter você aqui.
+
+Amanhã começa o Cacau na Prática — sete manhãs, sete xícaras, sete temas. A cada dia, a Luna traz uma aula curta e uma receita nova para você preparar em casa e, depois, levar para a consulta.
+
+Antes de começar, dois presentes para hoje:
+
+→ O vídeo de boas-vindas da Luna (aqui em cima)
+→ O guia de preparo (PDF anexo): como fazer o seu cacau em casa — na panela, no espumador ou direto na xícara. A Luna também gravou um vídeo mostrando o passo a passo.
+
+Separe as suas Gotas de Cacau Puro (105 g, já no seu kit) e a primeira especiaria: canela-do-Ceilão. Amanhã a gente começa do começo — da floresta.
+
+Até amanhã. Bom descanso.`,
+            pdfAttachments: [
+              {
+                id: 'att-intro-1',
+                name: 'Lista de Compras — Sete xícaras, uma lista',
+                category: 'PDF',
+                size: '25 KB',
+                downloadUrl: '/Sera_Cacau_Lista_de_Compras.pdf'
+              },
+              {
+                id: 'att-intro-2',
+                name: 'Guia de Preparo — Como preparar o seu cacau em casa',
+                category: 'PDF',
+                size: '22 KB',
+                downloadUrl: '/Sera_Cacau_Guia_de_Preparo.pdf'
+              }
+            ]
           },
           {
             id: 'c1-m1-cl1',
-            title: 'Aula 01: O Sistema Agroflorestal Cabruca',
+            title: 'Dia 01',
             duration: '18 min',
             videoUrl: 'https://vimeo.com/1215510972?fl=tl&fe=ec',
-            summary: 'Compreenda a fundo os princípios da agricultura biodiversa sob a sombra nativa da floresta, a preservação da fauna e flora e a diferença entre o sistema Cabruca e a monocultura.',
-            pdfAttachment: ATTACHMENTS[0]
+            summary: `Hoje não começa pela receita — começa pela floresta.
+
+A Luna te leva à Cabruca, o sistema de agrofloresta da Costa do Cacau, e mostra por que o cacau cultivado à sombra tem mais polifenóis e flavonoides — e por que isso importa na sua prescrição.
+
+→ Aula do dia: de onde vem esse cacau (e a diferença que importa)
+→ Receita do dia: Cacau + Canela-do-Ceilão — a primeira xícara, a mais simples e a mais clínica (imagem abaixo)
+
+Prepare, prove antes de adoçar e me conta: como foi a sua primeira xícara?`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-01',
+                name: 'Material da Aula e Receita — Dia 01',
+                category: 'PDF',
+                size: '280 KB',
+                downloadUrl: '/Sera_Cacau_Dia01.jpg'
+              }
+            ]
           },
           {
             id: 'c1-m1-cl2',
-            title: 'Aula 02: Fitoquímica e Ativos Moleculares do Cacau',
+            title: 'Dia 02',
             duration: '20 min',
             videoUrl: 'https://vimeo.com/1215498725?share=copy&fl=sv&fe=ci',
-            summary: 'Análise técnica da teobromina, flavonoides, anandamida e compostos polifenólicos presentes no cacau 100% puro e não alcalinizado.',
-            pdfAttachment: ATTACHMENTS[1]
+            summary: `Bom dia, nutris. Segunda xícara.
+"Mas cacau não tem cafeína? Não vai me agitar?" A resposta é química — e hoje a Luna explica. Teobromina não é cafeína: estímulo mais gradual, sem o pico e a queda do café. E o cacau puro é uma das fontes mais densas de magnésio que existem (~520 mg/100 g).
+
+→ Aula do dia: o que o cacau faz no seu sistema nervoso
+→ Receita do dia: Cacau + Cardamomo — calma e lucidez na mesma xícara (imagem abaixo)
+
+Dica: uma pitada de sal marinho realça o amargor. Prove antes de adoçar.`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-02',
+                name: 'Material da Aula e Receita — Dia 02',
+                category: 'PDF',
+                size: '229 KB',
+                downloadUrl: '/Sera_Cacau_Dia02.jpg'
+              }
+            ]
           },
           {
             id: 'c1-m1-cl3',
-            title: 'Aula 03: Colheita, Fermentação e Secagem Artesanal',
+            title: 'Dia 03',
             duration: '22 min',
             videoUrl: 'https://vimeo.com/1215498630?fl=tl&fe=ec',
-            summary: 'Os segredos do manejo pós-colheita no sul da Bahia. Como o processo de fermentação natural desenvolve o perfil sensorial único e preserva os fitoativos nutricionais.'
+            summary: `Bom dia, nutris. Terceira xícara — e talvez o dia favorito da Luna.
+Aquela vontade de chocolate nos dias antes da menstruação não é frescura: na fase lútea, o magnésio intracelular cai. O chocolate industrializado responde com açúcar; o cacau puro responde com magnésio de verdade e triptofano.
+
+→ Aula do dia: cacau, magnésio e o ciclo feminino
+→ Receita do dia: Cacau + Gengibre + Baunilha Bourbon Será — a xícara que o corpo pede quando a lua se aproxima (imagem abaixo)
+
+Protocolo: 15 g por dia, nos 10 dias antes da menstruação.`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-03',
+                name: 'Material da Aula e Receita — Dia 03',
+                category: 'PDF',
+                size: '255 KB',
+                downloadUrl: '/Sera_Cacau_Dia03.jpg'
+              }
+            ]
           }
         ]
       },
@@ -470,33 +541,94 @@ export const COURSES: Course[] = [
         classes: [
           {
             id: 'c1-m2-cl4',
-            title: 'Aula 04: Impacto Social e Cooperação de Mulheres',
+            title: 'Dia 04',
             duration: '15 min',
             videoUrl: 'https://vimeo.com/1215498477?fl=tl&fe=ec',
-            summary: 'Cadeia de valor justa: o trabalho das produtoras e cooperativas parceiras na Costa do Cacau, valorização da agricultura familiar sustentável e empoderamento feminino.'
+            summary: `Bom dia, nutris. Quarta xícara.
+Hoje a Luna não recomenda nenhum app de produtividade. Pelo contrário: ela fala sobre virar o celular para baixo, pegar a xícara e não fazer nada por um momento — e por que, neurologicamente, isso é das coisas mais produtivas que existem (oi, Default Mode Network). Desconectar para reconectar.
+
+→ Aula do dia: foco, criatividade e o que acontece quando você desconecta
+→ Receita do dia: Cacau + Cúrcuma + Pimenta-do-Reino — quando o foco precisa vir de dentro (imagem abaixo)
+
+A pimenta não é opcional: ela eleva muito a biodisponibilidade da curcumina.`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-04',
+                name: 'Material da Aula e Receita — Dia 04',
+                category: 'PDF',
+                size: '234 KB',
+                downloadUrl: '/Sera_Cacau_Dia04.jpg'
+              }
+            ]
           },
           {
             id: 'c1-m2-cl5',
-            title: 'Aula 05: O Ritual de Preparo e Experiência de Presença',
+            title: 'Dia 05',
             duration: '16 min',
             videoUrl: 'https://vimeo.com/1215498476?fl=tl&fe=ec',
-            summary: 'Como preparar a bebida de cacau em temperatura adequada (até 60ºC), estimulando a pausa consciente, o foco sustentado e a conexão através dos sentidos.',
-            pdfAttachment: ATTACHMENTS[3]
+            summary: `Bom dia, nutris. Quinta xícara.
+
+Onde está 90% da sua serotonina? No intestino. Hoje a Luna mostra como os flavonoides do cacau — sobretudo as procianidinas — chegam ao cólon e funcionam como prebiótico, alimentando Lactobacillus e Bifidobacterium.
+
+→ Aula do dia: microbioma, eixo intestino-cérebro e o cacau como alimento funcional
+→ Receita do dia: Cacau + Erva-Doce + Gengibre — a xícara que se senta com o seu intestino (imagem abaixo)
+
+Boa para depois do almoço.`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-05',
+                name: 'Material da Aula e Receita — Dia 05',
+                category: 'PDF',
+                size: '252 KB',
+                downloadUrl: '/Sera_Cacau_Dia05.jpg'
+              }
+            ]
           },
           {
             id: 'c1-m2-cl6',
-            title: 'Aula 06: Protocolos Clínicos e Prescrição Nutricional',
+            title: 'Dia 06',
             duration: '25 min',
             videoUrl: 'https://vimeo.com/1215498478?fl=tl&fe=ec',
-            summary: 'Aplicações práticas no consultório: modulação de estresse e ansiedade, regulação do cortisol, melhora do foco cognitivo e integração em planos alimentares funcionais.',
-            pdfAttachment: ATTACHMENTS[2]
+            summary: `Bom dia, nutris. Sexta xícara.
+Energia que sustenta — não a que sobe rápido e cai duas horas depois. Hoje a Luna fala de cacau no esporte (epicatequina, óxido nítrico, recuperação) e de uma saída honesta do ciclo café-exaustão-café.
+
+→ Aula do dia: energia, movimento e a conversa sobre o café
+→ Receita do dia: Cacau + Ashwagandha + Canela — a xícara para quando tudo está pedindo muito (imagem abaixo)
+
+O desafio da Luna: troque o segundo café pelo cacau essa semana. Só isso.`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-06',
+                name: 'Material da Aula e Receita — Dia 06',
+                category: 'PDF',
+                size: '238 KB',
+                downloadUrl: '/Sera_Cacau_Dia06.jpg'
+              }
+            ]
           },
           {
             id: 'c1-m2-cl7',
-            title: 'Aula 07: Apresentação ao Paciente e Encerramento',
+            title: 'Dia 07',
             duration: '14 min',
             videoUrl: 'https://vimeo.com/1215498475?fl=tl&fe=ec',
-            summary: 'Como comunicar o valor do cacau artesanal, estruturar orientações claras ao paciente, disponibilizar o cupom exclusivo e concluir o processo educativo com sucesso.'
+            summary: `Boa tarde, nutris. 
+Sétima e última xícara.
+
+Hoje não tem conteúdo novo — tem integração. Como você leva tudo isso para a consulta: dose, frequência, para quem, e o que responder quando a paciente pergunta “mas não é só chocolate?”. A Luna fecha com o guia de prescrição e os cinco perfis que mais se beneficiam.
+
+→ Aula do dia: da xícara à consulta — prescrever com segurança e confiança
+→ Receita do dia: Cacau + Hibisco + Gengibre — a última xícara, a que guarda o coração (imagem abaixo)
+
+Obrigada por esses sete dias com a gente. Isso é só o começo`,
+            pdfAttachments: [
+              {
+                id: 'att-dia-07',
+                name: 'Material da Aula e Receita — Dia 07',
+                category: 'PDF',
+                size: '284 KB',
+                downloadUrl: '/Sera_Cacau_Dia07.jpg'
+              }
+            ]
           }
         ]
       }
