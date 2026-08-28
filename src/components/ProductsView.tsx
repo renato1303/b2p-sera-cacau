@@ -125,6 +125,17 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                       }
                     }}
                   />
+                  {/* IBD Certified Badge */}
+                  <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-sm rounded-lg p-1 shadow-sm border border-black/5 flex items-center gap-1.5 px-2">
+                    <img 
+                      src="/selo-ibd.png" 
+                      alt="Selo IBD Orgânico" 
+                      className="w-4 h-4 object-contain"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => { e.currentTarget.src = '/selo ibd.png'; }}
+                    />
+                    <span className="text-[9px] font-bold font-mono text-emerald-800 tracking-tight">IBD Orgânico</span>
+                  </div>
                 </div>
 
                 {/* Typography and brief info */}
@@ -210,15 +221,28 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
               </span>
             </div>
 
-            {/* Quality Stamp Box */}
-            <div className="bg-surface text-primary-text rounded-xl p-5 border border-border-color flex gap-4 items-center shadow-sm">
-              <div className="w-10 h-10 rounded-full bg-primary-accent/10 border border-primary-accent/20 flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5 text-primary-accent" />
+            {/* IBD Certified Organic Seal Box */}
+            <div className="bg-surface text-primary-text rounded-xl p-4 sm:p-5 border border-border-color flex gap-4 items-center shadow-sm">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white border border-border-color p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                <img 
+                  src="/selo-ibd.png" 
+                  alt="Selo IBD Certificações Orgânico Brasil" 
+                  className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.src = '/selo ibd.png';
+                  }}
+                />
               </div>
               <div className="min-w-0">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-primary-forest">Selo Agroflorestal Cabruca</h4>
-                <p className="text-[10px] text-secondary-text mt-0.5 leading-relaxed">
-                  Cacau cultivado sob a sombra de árvores nativas da Mata Atlântica do Sul da Bahia, preservando fauna e flora locais.
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-primary-forest">Certificação Orgânica IBD</h4>
+                  <span className="px-2 py-0.5 rounded text-[8px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Orgânico Brasil
+                  </span>
+                </div>
+                <p className="text-[11px] text-secondary-text mt-1 leading-relaxed">
+                  Cacau cultivado com certificação orgânica IBD, livre de pesticidas, agrotóxicos e aditivos sintéticos, com 100% de pureza e rastreabilidade botânica.
                 </p>
               </div>
             </div>

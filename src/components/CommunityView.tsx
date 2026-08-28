@@ -22,7 +22,7 @@ interface CommunityViewProps {
 
 export const CommunityView: React.FC<CommunityViewProps> = ({ user }) => {
   // Link da Comunidade Oficial de Prescritoras Será Cacau
-  const communityUrl = 'https://chat.whatsapp.com/invite/seracacau-prescritoras';
+  const communityUrl = 'https://chat.whatsapp.com/JPRRRnGlicB0wYFkTiGvUT';
 
   const handleOpenCommunity = () => {
     window.open(communityUrl, '_blank', 'noopener,noreferrer');
