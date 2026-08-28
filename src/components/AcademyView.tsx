@@ -245,6 +245,12 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95 saturate-100"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('img_4189.jpg') && !target.src.includes('cabruca_forest')) {
+                        target.src = '/images/img_4189.jpg';
+                      }
+                    }}
                   />
                   {/* Subtle vignette layer */}
                   <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-black/25 z-10" />

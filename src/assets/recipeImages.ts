@@ -12,7 +12,10 @@ export const DEFAULT_RECIPE_IMAGE = defaultRecipeImg;
 export const DEFAULT_DANI_IMAGE = defaultDaniImg;
 export const DEFAULT_LUNA_IMAGE = defaultLunaImg;
 
-export function getRecipeDefaultImage(category?: string, author?: string): string {
+export function getRecipeDefaultImage(category?: string, author?: string, imageUrl?: string): string {
+  if (imageUrl && imageUrl !== '/images/recipe-default.jpg' && imageUrl.trim() !== '') {
+    return imageUrl;
+  }
   if (author === 'Dani' || category === 'dani') {
     return defaultDaniImg || defaultRecipeImg;
   }
@@ -20,4 +23,8 @@ export function getRecipeDefaultImage(category?: string, author?: string): strin
     return defaultLunaImg || defaultRecipeImg;
   }
   return defaultRecipeImg;
+}
+
+export function getRecipeImage(recipe: { imageUrl?: string; category?: string; author?: string }): string {
+  return getRecipeDefaultImage(recipe.category, recipe.author, recipe.imageUrl);
 }

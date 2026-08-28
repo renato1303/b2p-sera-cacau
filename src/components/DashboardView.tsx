@@ -105,16 +105,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </p>
           </div>
 
-          {/* Quick Stats & Coupons Bar - Perfectly Aligned */}
+          {/* Quick Stats & Coupons Bar - Uniform, aligned cards */}
           <div className="border-t border-border-color/60 pt-4 mt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 items-stretch">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 items-stretch">
               
               {/* 1. Status */}
-              <div className="flex flex-col justify-between bg-surface/50 sm:bg-transparent p-2 sm:p-0 rounded-lg">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/70 font-mono font-semibold whitespace-nowrap">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Status da Conta
                 </span>
-                <div className="flex items-center gap-1.5 mt-1 min-h-[22px]">
+                <div className="flex items-center gap-1.5 mt-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
                   <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide whitespace-nowrap">
                     Ativa
@@ -123,11 +123,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* 2. Nível */}
-              <div className="flex flex-col justify-between bg-surface/50 sm:bg-transparent p-2 sm:p-0 rounded-lg">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/70 font-mono font-semibold whitespace-nowrap">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Nível de Membro
                 </span>
-                <div className="flex items-center mt-1 min-h-[22px]">
+                <div className="flex items-center mt-1">
                   <span className="text-xs font-bold text-primary-accent uppercase tracking-wide whitespace-nowrap">
                     Cabruca
                   </span>
@@ -135,69 +135,71 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               {/* 3. Registro Clínico */}
-              <div className="flex flex-col justify-between bg-surface/50 sm:bg-transparent p-2 sm:p-0 rounded-lg">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/70 font-mono font-semibold whitespace-nowrap">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Registro Clínico
                 </span>
-                <div className="flex items-center mt-1 min-h-[22px]">
+                <div className="flex items-center mt-1">
                   <span className="text-xs font-bold text-primary-text font-mono tracking-tight whitespace-nowrap">
-                    {user.crn || '1562422'}
+                    {user.crn || 'CRN-3 71830'}
                   </span>
                 </div>
               </div>
 
               {/* 4. Cupom Nutri */}
-              <div className="flex flex-col justify-between bg-surface/50 sm:bg-transparent p-2 sm:p-0 rounded-lg">
-                <div className="flex items-center gap-1">
-                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/70 font-mono font-semibold whitespace-nowrap">
+              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/nutri">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Cupom Nutri
                   </span>
-                  <span className="text-[8px] bg-luxury-accent/15 text-[#7A5B1D] font-mono font-bold px-1 rounded">
-                    15%
+                  <span className="text-[8px] bg-luxury-accent/20 text-[#7A5B1D] font-mono font-bold px-1.5 py-0.2 rounded">
+                    15% OFF
                   </span>
                 </div>
-                <div className="mt-1 min-h-[22px] flex items-center">
-                  <button
-                    type="button"
-                    onClick={handleCopyNutri}
-                    title="Clique para copiar o cupom de 15% da nutri"
-                    className="group/nutri inline-flex items-center gap-1.5 text-xs font-mono font-extrabold text-[#8A6726] hover:text-[#5A4523] transition-colors cursor-pointer"
-                  >
-                    <span className="whitespace-nowrap">{nutriCoupon}</span>
-                    {copiedNutri ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    ) : (
-                      <Copy className="w-3 h-3 text-secondary-text/40 group-hover/nutri:text-[#8A6726] transition-colors shrink-0" />
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyNutri}
+                  title="Clique para copiar o cupom de 15% da nutri"
+                  className="mt-1 flex items-center justify-between gap-1 text-xs font-mono font-extrabold text-[#8A6726] hover:text-[#5A4523] transition-colors cursor-pointer w-full text-left"
+                >
+                  <span className="whitespace-nowrap truncate">{nutriCoupon}</span>
+                  {copiedNutri ? (
+                    <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-sans font-bold">
+                      <Check className="w-3.5 h-3.5 shrink-0" />
+                      Copiado!
+                    </span>
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-secondary-text/40 group-hover/nutri:text-[#8A6726] transition-colors shrink-0" />
+                  )}
+                </button>
               </div>
 
               {/* 5. Cupom Pacientes */}
-              <div className="flex flex-col justify-between bg-surface/50 sm:bg-transparent p-2 sm:p-0 rounded-lg">
-                <div className="flex items-center gap-1">
-                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/70 font-mono font-semibold whitespace-nowrap">
+              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Cupom Pacientes
                   </span>
-                  <span className="text-[8px] bg-primary-accent/15 text-primary-accent font-mono font-bold px-1 rounded">
-                    10%
+                  <span className="text-[8px] bg-primary-accent/20 text-primary-accent font-mono font-bold px-1.5 py-0.2 rounded">
+                    10% OFF
                   </span>
                 </div>
-                <div className="mt-1 min-h-[22px] flex items-center">
-                  <button
-                    type="button"
-                    onClick={handleCopyPatient}
-                    title="Clique para copiar o cupom de 10% para os pacientes"
-                    className="group/pac inline-flex items-center gap-1.5 text-xs font-mono font-extrabold text-primary-accent hover:text-primary-forest transition-colors cursor-pointer"
-                  >
-                    <span className="whitespace-nowrap">{patientCoupon}</span>
-                    {copiedPatient ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    ) : (
-                      <Copy className="w-3 h-3 text-secondary-text/40 group-hover/pac:text-primary-accent transition-colors shrink-0" />
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyPatient}
+                  title="Clique para copiar o cupom de 10% para os pacientes"
+                  className="mt-1 flex items-center justify-between gap-1 text-xs font-mono font-extrabold text-primary-accent hover:text-primary-forest transition-colors cursor-pointer w-full text-left"
+                >
+                  <span className="whitespace-nowrap truncate">{patientCoupon}</span>
+                  {copiedPatient ? (
+                    <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-sans font-bold">
+                      <Check className="w-3.5 h-3.5 shrink-0" />
+                      Copiado!
+                    </span>
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-secondary-text/40 group-hover/pac:text-primary-accent transition-colors shrink-0" />
+                  )}
+                </button>
               </div>
 
             </div>
@@ -329,6 +331,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               alt={activeCourse.title} 
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.includes('img_4189.jpg') && !target.src.includes('cabruca_forest')) {
+                  target.src = '/images/img_4189.jpg';
+                }
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
             

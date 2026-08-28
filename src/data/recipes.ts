@@ -33,7 +33,7 @@ export const RECIPES: Recipe[] = [
       'Complete com o restante da água, acerte com o sal e mexa mais uma vez.'
     ],
     tip: 'O sal não deixa a bebida salgada — ele apara o amargor e traz a fruta do cacau para frente.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaupuro.jpeg',
     tags: ['Bebida Quente', 'Cacau Puro', 'Ritual Matinal', 'Cabruca', 'Zero Açúcar'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -77,7 +77,7 @@ export const RECIPES: Recipe[] = [
       'Finalize com canela, baunilha e sal. Sirva imediatamente.'
     ],
     tip: 'Bata com um mixer de leite por dez segundos antes de servir — a espuma muda a experiência inteira.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacauquentecalmante.jpeg',
     tags: ['Bebida Quente', 'Calmante', 'Canela & Baunilha', 'Fim de Tarde', 'Conforto'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -121,7 +121,7 @@ export const RECIPES: Recipe[] = [
       'Despeje o café com cacau por cima, deixando o desenho aparecer no vidro.'
     ],
     tip: 'Sirva sem misturar. As camadas se encontram no primeiro gole e o contraste faz parte.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/mochasemacucar.png',
     tags: ['Bebida Gelada', 'Mocha', 'Café & Cacau', 'Foco', 'Sem Açúcar'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -165,7 +165,7 @@ export const RECIPES: Recipe[] = [
       'Complete com a água com gás, o limão e a hortelã. Mexa devagar, para não perder o gás.'
     ],
     tip: 'Amasse a hortelã na palma da mão antes de colocar. O aroma sai sem o amargor da folha rasgada.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/tonicadecacau.png',
     tags: ['Drink Refrescante', 'Bebida Gelada', 'Hortelã & Limão', 'Água com Gás', 'Sem Álcool'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -206,10 +206,10 @@ export const RECIPES: Recipe[] = [
     instructions: [
       'Dissolva as gotas na água quente e reserve.',
       'Bata o suco, a banana e o gelo até ficar cremoso.',
-      'Junte o cacau dissolvido e bata mais dez segundos. Finalize com nibs por cima.'
+      'Junte o cacau dissolvido e bata mais dez segundos. Finalize com nibs por cima.',
     ],
     tip: 'Congele a banana em rodelas na noite anterior. O smoothie fica com textura de sorvete sem precisar de mais gelo.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/smoothie.png',
     tags: ['Smoothie', 'Vitamina C & Ferro', 'Bebida Gelada', 'Pós-Treino', 'Nibs'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -252,7 +252,7 @@ export const RECIPES: Recipe[] = [
       'Finalize com baunilha e sal. Leve à geladeira por 30 minutos.'
     ],
     tip: 'Se a ganache talhar, junte uma colher de sopa de leite quente e mexa com energia. Ela volta.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/ganachegeladeira.png',
     tags: ['Doce', 'Ganache', 'Sobremesa', 'Cremoso', 'Cacau Puro'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -297,7 +297,7 @@ export const RECIPES: Recipe[] = [
       'Leve à geladeira de um dia para o outro.'
     ],
     tip: 'Dura três dias na geladeira. Faça três potes de uma vez e resolva a semana.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/pudimdechia.png',
     tags: ['Doce', 'Pudim de Chia', 'Café da Manhã', 'Overnight', 'Fibras & Ômega-3'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -342,7 +342,7 @@ export const RECIPES: Recipe[] = [
       'Finalize com canela, frutas e nozes.'
     ],
     tip: 'Deixe a calda esfriar um pouco antes de despejar. No iogurte muito frio ela endurece na hora e vira casquinha — o que também é bom, mas é outra coisa.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/bowliogurte.png',
     tags: ['Doce', 'Bowl Funcional', 'Anti-Crash', 'Iogurte & Frutas', 'Prático'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -385,7 +385,7 @@ export const RECIPES: Recipe[] = [
       'Despeje sobre as frutas ainda geladas e sirva na hora.'
     ],
     tip: 'Com frutas congeladas a calda endurece no contato e vira uma casquinha fina. Vale experimentar.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/berries.png',
     tags: ['Doce', 'Frutas Vermelhas', 'Antioxidantes', 'Calda Quente', 'Rápido'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -429,7 +429,7 @@ export const RECIPES: Recipe[] = [
       'Despeje sobre papel-manteiga, espalhe e deixe esfriar antes de quebrar.'
     ],
     tip: 'Junte o cacau fora do fogo. No calor direto ele queima e amarga de um jeito que não volta.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/pedemolque.png',
     tags: ['Doce', 'Pé de Moleque', 'Amendoim & Cacau', 'Snack', 'Sem Glúten'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -472,7 +472,7 @@ export const RECIPES: Recipe[] = [
       'Leve à geladeira por 20 minutos até firmar.'
     ],
     tip: 'Guarde em pote fechado, fora da geladeira. Assim mantém o brilho e a textura.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/castanhascobertas.png',
     tags: ['Doce', 'Snack', 'Castanhas & Nibs', 'Gorduras Boas', 'Mesa de Trabalho'],
     recommendedProductSlug: 'nibs-de-sera-cacau-250g',
     specifications: {
@@ -519,7 +519,7 @@ export const RECIPES: Recipe[] = [
       'Deixe esfriar por completo e quebre em pedaços irregulares.'
     ],
     tip: 'Quanto mais fino você abrir, mais crocante fica. Se o centro ficar mole, volte ao forno desligado ainda quente por 10 minutos.',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/crackers.png',
     tags: ['Salgado', 'Crackers', 'Sementes & Cacau', 'Lanche Salgado', 'Sem Glúten'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -576,7 +576,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Saúde da mulher · metabolismo hormonal · aporte de magnésio e ferro',
     whyItWorks: 'Os flavonoides do cacau — epicatequina, catequina e procianidinas — somados aos gingeróis do gengibre, aos curcuminoides da cúrcuma e à piperina da pimenta-do-reino ampliam a diversidade de fitoquímicos da refeição. O cacau puro também fornece magnésio, ferro e cobre, minerais que atuam como cofatores do metabolismo hormonal e energético e da formação das hemácias — presentes na saúde da mulher em todas as fases da vida.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 01 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaugengibre.png',
     tags: ['Saúde da Mulher', 'Metabolismo Hormonal', 'Magnésio e Ferro', 'Gengibre & Cúrcuma', 'Prescrição'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -630,7 +630,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Estética · saúde da pele · microcirculação',
     whyItWorks: 'Esta combinação reúne flavanóis do cacau — epicatequina, catequina e procianidinas —, gingeróis, curcuminoides, cinamaldeído e piperina: compostos bioativos estudados por favorecerem a biodisponibilidade de óxido nítrico (NO), a função endotelial e a microcirculação. O cacau puro fornece ainda magnésio e cobre, minerais que atuam como cofatores enzimáticos importantes para o metabolismo energético e para a organização das fibras de colágeno e elastina.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 02 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/especiarianibs.png',
     tags: ['Nutrição Estética', 'Saúde da Pele', 'Microcirculação', 'Colágeno', 'Nibs'],
     recommendedProductSlug: 'nibs-de-sera-cacau-250g',
     specifications: {
@@ -684,7 +684,7 @@ export const RECIPES: Recipe[] = [
     whyItWorks: 'O cacau fornece flavonoides — epicatequina, catequina e procianidinas —, enquanto a baunilha é rica em vanilina e o anis-estrelado contém anetol e compostos fenólicos. A combinação amplia a diversidade de fitoquímicos da alimentação, favorece a palatabilidade da bebida e contribui para uma preparação nutricionalmente densa e sensorialmente acolhedora.',
     note: 'Qualquer adaptação durante o tratamento oncológico deve ser conversada com a equipe que acompanha a paciente.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 03 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/anisestrelado.png',
     tags: ['Nutrição Oncológica', 'Palatabilidade', 'Densidade Nutricional', 'Conforto', 'Acolhimento'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -736,7 +736,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Pré-concepção · formação de reservas de ferro e cálcio',
     whyItWorks: 'Os flavonoides do cacau — epicatequina, catequina e procianidinas — associados à vitamina C, à hesperidina e à narirutina do limão-siciliano favorecem a absorção do ferro não heme. A bebida vegetal enriquecida contribui com cálcio e vitamina D, importantes para a formação das reservas nutricionais antes da gestação, enquanto a hortelã fornece mentol e ácido rosmarínico, que dão suporte à digestão e ao intestino.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 04 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacauchortela.png',
     tags: ['Pré-Concepção', 'Reservas de Ferro', 'Cálcio & Vitamina D', 'Hortelã & Limão', 'Digestão'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -790,7 +790,7 @@ export const RECIPES: Recipe[] = [
     whyItWorks: 'Os flavonoides do cacau, os gingeróis do gengibre e as flavanonas cítricas da laranja — hesperidina e narirutina — ampliam a diversidade de compostos bioativos da receita. A vitamina C favorece a absorção do ferro não heme, enquanto o gengibre pode auxiliar no manejo das náuseas. A tâmara é indicada preferencialmente no terceiro trimestre, período em que estudos sugerem associação com melhores desfechos relacionados ao trabalho de parto.',
     note: 'Manter até 15 g de cacau por dia na gestação — ver folha de contraindicações.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 05 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaularanjatamara.png',
     tags: ['Gestação', 'Materno-Infantil', 'Náusea', 'Absorção de Ferro', 'Gengibre & Laranja'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -843,7 +843,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Fase lútea · TPM · demanda aumentada',
     whyItWorks: 'Na fase lútea, o aumento da progesterona justifica uma concentração maior de cacau, ampliando o aporte de flavonoides, magnésio, teobromina e triptofano. A teobromina proporciona uma estimulação mais suave que a cafeína, mantendo os efeitos benéficos sobre a disposição, enquanto o triptofano é precursor da serotonina e da melatonina. A vanilina, composto fenólico da baunilha, soma ação antioxidante — além do dulçor natural e da experiência sensorial.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 06 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/combaunilhaecoco.png',
     tags: ['Fase Lútea', 'TPM', 'Dose Concentrada', 'Baunilha & Coco', 'Acolhimento'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -897,7 +897,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Fase folicular · disposição · aporte antioxidante',
     whyItWorks: 'A fase folicular é marcada pelo aumento gradual do estradiol e, em muitas mulheres, por maior disposição. Os flavonoides do cacau, associados às antocianinas da framboesa e aos flavonoides do limão-siciliano, ampliam a diversidade de compostos bioativos da receita, enquanto o cinamaldeído da canela e os compostos fenólicos do cardamomo enriquecem o perfil aromático e antioxidante da xícara.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 07 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaucomframboesa.png',
     tags: ['Fase Folicular', 'Disposição', 'Antioxidantes', 'Cardamomo & Framboesa', 'Frescor'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -949,7 +949,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Glicemia · resistência insulínica · SOP',
     whyItWorks: 'A canela-do-Ceilão (*Cinnamomum verum*) possui cinamaldeído e procianidinas que atuam sinergicamente com os flavonoides do cacau, modulando a sinalização de insulina e a captação periférica de glicose via transportadores GLUT-4, com baixíssimo teor de cumarina.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 08 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/ceilao.png',
     tags: ['Glicemia', 'Resistência Insulínica', 'SOP', 'Canela-do-Ceilão', 'Clínica Base'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -1001,7 +1001,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Ansiedade leve · TPM · foco',
     whyItWorks: 'O acetato de terpenila e o 1,8-cineol presentes no cardamomo conferem propriedades ansiolíticas e neuroprotetoras suaves, modulando receptores GABAérgicos em sinergia com o magnésio e a anandamida naturalmente presentes no cacau puro.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 09 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaucomcardamo.png',
     tags: ['Sistema Nervoso', 'Ansiedade Leve', 'Foco Sereno', 'Cardamomo', 'Lucidez'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -1053,7 +1053,7 @@ export const RECIPES: Recipe[] = [
     indication: 'TPM · dismenorreia · fase lútea',
     whyItWorks: 'A sinergia entre os gingeróis anti-inflamatórios (inibidores de ciclooxigenase e síntese de prostaglandinas uterinas), a vanilina calmante e o alto teor de magnésio biodisponível do cacau alivia dores pélvicas e estabiliza as oscilações de humor pré-menstruais.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 10 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/gengibrebaunilha.png',
     tags: ['Ciclo Feminino', 'TPM', 'Dismenorreia', 'Gengibre & Baunilha', 'Fase Lútea'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -1105,7 +1105,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Foco · inflamação · burnout',
     whyItWorks: 'A piperina da pimenta-do-reino potencializa a biodisponibilidade dos curcuminoides da cúrcuma em até 2000%. Juntos com a teobromina e a epicatequina do cacau 100%, promovem fluxo sanguíneo cerebral sustentado e proteção contra estresse oxidativo neuronal.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 11 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/curcumaepimenta.png',
     tags: ['Foco & Criatividade', 'Anti-Inflamatório', 'Burnout', 'Cúrcuma & Pimenta', 'Neuroproteção'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -1158,7 +1158,7 @@ export const RECIPES: Recipe[] = [
     whyItWorks: 'Os withanolídeos da ashwagandha modulam o eixo HPA, atenuando a secreção desregulada de cortisol, enquanto a teobromina do cacau promove vasodilatação e suporte energético contínuo sem os picos e quedas da cafeína.',
     note: 'KSM-66 e Sensoril são extratos padronizados dosados em miligramas, não em colheres. A quantidade acima substitui a medida original em colher de chá — a confirmar com Luna.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 12 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/cacaucaswhatgstz.png',
     tags: ['Energia & Movimento', 'Ashwagandha', 'Pré-Treino', 'Burnout', 'Adaptógeno'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -1210,7 +1210,7 @@ export const RECIPES: Recipe[] = [
     indication: 'Pressão · cardiovascular · retenção',
     whyItWorks: 'As antocianinas do hibisco somam-se aos flavanóis do cacau estimulando a via eNOS (óxido nítrico sintase endotelial), favorecendo a complacência vascular, a diurese suave e o equilíbrio da pressão arterial.',
     footerText: 'Da floresta. De verdade. · 1 GOTA = 1 GRAMA · AQUEÇA ENTRE 60 E 70 °C · RECEITA 13 · LUNA AZEVEDO, NUTRICIONISTA · SERACACAU.COM.BR',
-    imageUrl: '/images/recipe-default.jpg',
+    imageUrl: '/hibiscoegengibre.png',
     tags: ['Cardiovascular', 'Pressão Arterial', 'Retenção Hídrica', 'Hibisco & Gengibre', 'Óxido Nítrico'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {

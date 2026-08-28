@@ -4,12 +4,6 @@
  */
 
 import { NewsletterArticle } from '../types';
-import blogTreeBarImg from '../assets/images/blog_tree_bar_1787673774355.jpg';
-import blogCacaoStagesImg from '../assets/images/blog_cacao_stages_1787673790395.jpg';
-import blogCacaoRitualImg from '../assets/images/blog_cacao_ritual_1787673807596.jpg';
-import blogClinicalCacaoImg from '../assets/images/blog_clinical_cacao_1787673822681.jpg';
-import blogWomensHealthImg from '../assets/images/blog_womens_health_1787673836419.jpg';
-import blogCardioCacaoImg from '../assets/images/blog_cardio_cacao_1787673851283.jpg';
 
 export interface BlogPostReference {
   title: string;
@@ -34,7 +28,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: 'Será Cacau',
     publishDate: '25 de Agosto, 2026',
     readTime: '5 min',
-    imageUrl: blogTreeBarImg,
+    imageUrl: '/blog1.jpeg',
     tags: ['Tree to Bar', 'Bean to Bar', 'Torra Suave', 'Flavonoides', 'Artesanal', 'Cabruca'],
     content: `O universo do chocolate passou por uma profunda revolução nas últimas décadas. Hoje, o cacau de alta qualidade é compreendido e valorizado sob a mesma ótica dos vinhos finos e cafés especiais: fatores como origem geográfica, *terroir*, métodos de fermentação biológica e controle de torra determinam diretamente o perfil sensorial, as notas aromáticas e a preservação fitoquímica do produto final.
 
@@ -110,7 +104,7 @@ Para nutricionistas e prescritores funcionais, a distinção entre esses process
     author: 'Será Cacau',
     publishDate: '24 de Agosto, 2026',
     readTime: '6 min',
-    imageUrl: blogCacaoStagesImg,
+    imageUrl: '/blog2.jpeg',
     tags: ['Theobroma Cacao', 'Fermentação', 'Nibs', 'Manteiga de Cacau', 'Pasta de Cacau', 'Botânica'],
     content: `Quando degustamos um pedaço de chocolate de alta qualidade, raramente visualizamos a complexa sequência de etapas agrícolas, biológicas e físicas necessárias para transformar o fruto do cacaueiro naquele produto final.
 
@@ -193,7 +187,7 @@ O cacau deixou de ser meramente uma matéria-prima industrial para consolidar-se
     author: 'Será Cacau',
     publishDate: '23 de Agosto, 2026',
     readTime: '5 min',
-    imageUrl: blogCacaoRitualImg,
+    imageUrl: '/blog3.jpeg',
     tags: ['Ritual do Cacau', 'Maias e Astecas', 'Teobromina', 'Sagrado Feminino', 'Presença', 'Neuroquímica'],
     content: `Muito antes de ser industrializado na forma de guloseima adoçada, o cacau era reverenciado como uma planta sagrada por civilizações originárias da Mesoamérica. Povos ancestrais, em especial os Maias e os Astecas, utilizavam preparações puras de cacau em cerimônias de passagem, ritos matrimoniais, oferendas sagradas e celebrações espirituais.
 
@@ -265,7 +259,7 @@ O ritual do cacau moderno demonstra que a ciência nutricional e as práticas de
     author: 'Será Cacau',
     publishDate: '22 de Agosto, 2026',
     readTime: '5 min',
-    imageUrl: blogClinicalCacaoImg,
+    imageUrl: '/blog4.jpeg',
     tags: ['Prática Clínica', 'Agroflorestal', '100% Cacau', 'Prescrição', 'Adesão Alimentar', 'Fitoquímica'],
     content: `Durante décadas, o chocolate foi categorizado no consultório nutricional exclusivamente como um alimento de indulgência calórica ou transgressão dietética. No entanto, os avanços da nutrição funcional demonstraram que o cacau puro (100%), quando cultivado de forma agroecológica e processado minimamente, constitui uma das mais potentes matrizes fitoquímicas disponíveis na prática clínica.
 
@@ -329,7 +323,7 @@ Essa experiência gustativa nobre satisfaz o centro de recompensa límbico do pa
     author: 'Será Cacau',
     publishDate: '21 de Agosto, 2026',
     readTime: '6 min',
-    imageUrl: blogWomensHealthImg,
+    imageUrl: '/blog6.jpeg',
     tags: ['Saúde da Mulher', 'TPM', 'Ciclo Menstrual', 'Serotonina', 'Magnésio', 'Fase Lútea'],
     content: `A compulsão ou o desejo intensificado por chocolate durante o período pré-menstrual é um relato quase unânime nos consultórios de saúde feminina. No entanto, longe de ser apenas um hábito comportamental ou falta de autocontrole, essa busca reflete alterações neuroendócrinas precisas que ocorrem durante o ciclo ovariano.
 
@@ -387,7 +381,7 @@ A recomendação clínica usual situa-se entre **10 g a 15 g de cacau puro 100%*
     author: 'Será Cacau',
     publishDate: '20 de Agosto, 2026',
     readTime: '5 min',
-    imageUrl: blogCardioCacaoImg,
+    imageUrl: '/blog5.jpeg',
     tags: ['Saúde Cardiovascular', 'Óxido Nítrico', 'Função Endotelial', 'Pressão Arterial', 'Flavanóis', 'Cardiologia'],
     content: `A literatura científica cardiológica das últimas três décadas transformou radicalmente a percepção sobre o cacau. Antes considerado apenas uma fonte de calorias e gorduras, o cacau não alcalinizado e de alta pureza consolidou-se como uma das mais eficazes matrizes alimentares para a preservação e restauração da saúde endotelial e controle da pressão arterial.
 
