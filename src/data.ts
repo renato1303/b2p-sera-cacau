@@ -491,7 +491,7 @@ Prepare, prove antes de adoçar e me conta: como foi a sua primeira xícara?`,
             id: 'c1-m1-cl2',
             title: 'Dia 02',
             duration: '20 min',
-            videoUrl: 'https://vimeo.com/1215498725?share=copy&fl=sv&fe=ci',
+            videoUrl: 'https://vimeo.com/1222772421?share=copy',
             summary: `Bom dia, nutris. Segunda xícara.
 "Mas cacau não tem cafeína? Não vai me agitar?" A resposta é química — e hoje a Luna explica. Teobromina não é cafeína: estímulo mais gradual, sem o pico e a queda do café. E o cacau puro é uma das fontes mais densas de magnésio que existem (~520 mg/100 g).
 
@@ -513,7 +513,7 @@ Dica: uma pitada de sal marinho realça o amargor. Prove antes de adoçar.`,
             id: 'c1-m1-cl3',
             title: 'Dia 03',
             duration: '22 min',
-            videoUrl: 'https://vimeo.com/1215498630?fl=tl&fe=ec',
+            videoUrl: 'https://vimeo.com/1222782711?share=copy&fl=sv&fe=ci',
             summary: `Bom dia, nutris. Terceira xícara — e talvez o dia favorito da Luna.
 Aquela vontade de chocolate nos dias antes da menstruação não é frescura: na fase lútea, o magnésio intracelular cai. O chocolate industrializado responde com açúcar; o cacau puro responde com magnésio de verdade e triptofano.
 
@@ -588,7 +588,7 @@ Boa para depois do almoço.`,
             id: 'c1-m2-cl6',
             title: 'Dia 06',
             duration: '25 min',
-            videoUrl: 'https://vimeo.com/1215498478?fl=tl&fe=ec',
+            videoUrl: 'https://vimeo.com/1222789958?share=copy&fl=sv&fe=ci',
             summary: `Bom dia, nutris. Sexta xícara.
 Energia que sustenta — não a que sobe rápido e cai duas horas depois. Hoje a Luna fala de cacau no esporte (epicatequina, óxido nítrico, recuperação) e de uma saída honesta do ciclo café-exaustão-café.
 
