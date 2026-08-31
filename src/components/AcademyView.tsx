@@ -395,9 +395,20 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                           <div className="absolute inset-0 w-full h-full bg-black z-20">
                             <iframe 
                               src={(() => {
+                                // Support unlisted Vimeo URLs (e.g. vimeo.com/123456789/abcdef123 or ?h=abcdef123)
+                                const unlistedMatch = activeClass.videoUrl.match(/(?:vimeo\.com\/(?:video\/)?)(\d+)\/([a-zA-Z0-9]+)/);
+                                if (unlistedMatch) {
+                                  const id = unlistedMatch[1];
+                                  const hash = unlistedMatch[2];
+                                  return `https://player.vimeo.com/video/${id}?h=${hash}&autoplay=1&title=0&byline=0&portrait=0&badge=0&pip=0&speed=0&fullscreen=0&cc=0&vimeo_logo=0&dnt=1`;
+                                }
+
                                 const match = activeClass.videoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
                                 const id = match && match[1] ? match[1] : '';
-                                return id ? `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0&badge=0&pip=0&speed=0&fullscreen=0&cc=0&vimeo_logo=0&dnt=1` : activeClass.videoUrl;
+                                const hashMatch = activeClass.videoUrl.match(/[?&]h=([a-zA-Z0-9]+)/);
+                                const hashParam = hashMatch ? `&h=${hashMatch[1]}` : '';
+
+                                return id ? `https://player.vimeo.com/video/${id}?autoplay=1${hashParam}&title=0&byline=0&portrait=0&badge=0&pip=0&speed=0&fullscreen=0&cc=0&vimeo_logo=0&dnt=1` : activeClass.videoUrl;
                               })()}
                               className="w-full h-full border-0"
                               allow="autoplay; fullscreen; picture-in-picture"

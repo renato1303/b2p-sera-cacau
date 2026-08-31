@@ -20,12 +20,12 @@ interface SupportViewProps {
 }
 
 export const SupportView: React.FC<SupportViewProps> = ({ user }) => {
-  // Link oficial do WhatsApp de Suporte Será Cacau (+55 11 94087-1955)
+  // Link oficial do WhatsApp de Suporte Será Cacau (+55 73 99907-1306)
   const whatsappMessage = encodeURIComponent(
     `Olá equipe Será Cacau! Meu nome é ${user.name} (${user.specialty || 'Prescritora'}). Gostaria de tirar uma dúvida sobre a Área de Membros.`
   );
   // Link para abertura do WhatsApp
-  const supportWhatsappUrl = `https://wa.me/5511940871955?text=${whatsappMessage}`;
+  const supportWhatsappUrl = `https://wa.me/5573999071306?text=${whatsappMessage}`;
 
   return (
     <div className="px-4 sm:px-6 md:px-12 py-10 max-w-5xl mx-auto w-full flex flex-col items-center justify-center font-sans text-primary-text animate-fadeIn min-h-[70vh]">
