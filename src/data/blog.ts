@@ -13,6 +13,8 @@ export interface BlogPostReference {
 export interface BlogPost extends NewsletterArticle {
   category: string;
   tags: string[];
+  authorRole?: string;
+  authorPhoto?: string;
   referencesList?: BlogPostReference[];
   vimeoVideoId?: string;
   videoTitle?: string;
@@ -25,7 +27,9 @@ export const BLOG_POSTS: BlogPost[] = [
     title: 'Qual a diferença de cacau Tree to Bar, Bean to Bar e Industrializado',
     summary: 'O universo do chocolate evoluiu e hoje é apreciado com o mesmo rigor de cafés especiais e vinhos finos. Compreenda as diferenças fundamentais entre a escala industrial convencional, o movimento artesanal Bean to Bar e o controle integral do Tree to Bar.',
     category: 'Origem & Processamento',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '25 de Agosto, 2026',
     readTime: '5 min',
     imageUrl: '/blog1.jpeg',
@@ -101,7 +105,9 @@ Para nutricionistas e prescritores funcionais, a distinção entre esses process
     title: 'O que é cacau e quais são todas as etapas até virar chocolate',
     summary: 'Acompanhe a fascinante trajetória botânica e tecnológica do Theobroma cacao: desde o fruto fresco na mata tropical até a fermentação biológica, secagem solar, obtenção dos nibs, pasta pura e formulações de chocolates.',
     category: 'Botânica & Produção',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '24 de Agosto, 2026',
     readTime: '6 min',
     imageUrl: '/blog2.jpeg',
@@ -184,7 +190,9 @@ O cacau deixou de ser meramente uma matéria-prima industrial para consolidar-se
     title: 'O que é o ritual do cacau e quando surgiu',
     summary: 'A história milenar do cacau como planta mestra e alimento sagrado dos povos Maias e Astecas, sua redescoberta nos rituais modernos de presença e acolhimento feminino, e as bases neuroquímicas que sustentam a sensação de bem-estar.',
     category: 'Cultura & Ancestralidade',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '23 de Agosto, 2026',
     readTime: '5 min',
     imageUrl: '/blog3.jpeg',
@@ -256,7 +264,9 @@ O ritual do cacau moderno demonstra que a ciência nutricional e as práticas de
     title: 'Como usar o cacau 100% orgânico e agroflorestal na prática clínica',
     summary: 'Um guia objetivo para nutricionistas e médicos integrativos: da preservação da densidade fitoquímica no sistema Cabruca à posologia ideal de 10g a 15g ao dia, aumento da adesão alimentar e controle do craving por doces.',
     category: 'Nutrição Clínica & Prática',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '22 de Agosto, 2026',
     readTime: '5 min',
     imageUrl: '/blog4.jpeg',
@@ -320,7 +330,9 @@ Essa experiência gustativa nobre satisfaz o centro de recompensa límbico do pa
     title: 'O cacau na saúde da mulher: TPM, ciclo menstrual e concentração de cacau',
     summary: 'A bioquímica por trás do desejo de cacau na fase lútea: como as oscilações de estrogênio e progesterona interagem com o triptofano, magnésio e flavanóis, e por que a concentração (70%, 80% e 100%) faz toda a diferença.',
     category: 'Saúde da Mulher & Hormônios',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '21 de Agosto, 2026',
     readTime: '6 min',
     imageUrl: '/blog6.jpeg',
@@ -378,7 +390,9 @@ A recomendação clínica usual situa-se entre **10 g a 15 g de cacau puro 100%*
     title: 'Cacau e saúde cardiovascular: o que a ciência mostra?',
     summary: 'Uma revisão aprofundada dos mecanismos vasculares: ativação da eNOS, aumento da biodisponibilidade de óxido nítrico, melhora da dilatação mediada por fluxo (FMD) e redução da pressão arterial pelo cacau rico em flavanóis.',
     category: 'Cardiometabolismo & Ciência',
-    author: 'Será Cacau',
+    author: 'Luna Azevedo',
+    authorRole: 'Nutricionista & Curadora Científica',
+    authorPhoto: '/foto-luna.jpeg',
     publishDate: '20 de Agosto, 2026',
     readTime: '5 min',
     imageUrl: '/blog5.jpeg',

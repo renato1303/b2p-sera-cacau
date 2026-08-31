@@ -18,7 +18,7 @@ import {
   Check
 } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
-import { getNutriCoupon, getPatientCoupon } from '../lib/coupon';
+import { getPatientCoupon } from '../lib/coupon';
 
 interface ProfileViewProps {
   user: UserProfile;
@@ -28,17 +28,9 @@ interface ProfileViewProps {
 export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile }) => {
   const [formData, setFormData] = useState<UserProfile>({ ...user });
   const [isSaved, setIsSaved] = useState<boolean>(false);
-  const [copiedNutri, setCopiedNutri] = useState(false);
   const [copiedPatient, setCopiedPatient] = useState(false);
 
-  const nutriCoupon = getNutriCoupon(formData.name);
   const patientCoupon = getPatientCoupon(formData.name);
-
-  const handleCopyNutri = () => {
-    navigator.clipboard.writeText(nutriCoupon);
-    setCopiedNutri(true);
-    setTimeout(() => setCopiedNutri(false), 2200);
-  };
 
   const handleCopyPatient = () => {
     navigator.clipboard.writeText(patientCoupon);
@@ -84,10 +76,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
         <div className="flex justify-between items-start">
           <div className="flex flex-col">
             <span className="text-[10px] tracking-[0.25em] font-mono text-luxury-accent font-bold uppercase flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-luxury-accent" /> Seus Cupons de Desconto Oficiais
+              <Tag className="w-3.5 h-3.5 text-luxury-accent" /> Seus Benefícios & Descontos Oficiais
             </span>
             <span className="text-xs text-[#EFE6D7]/80 mt-1">
-              Gerados automaticamente com base no seu primeiro nome homologado.
+              Descontos exclusivos configurados para prescritoras homologadas e seus pacientes.
             </span>
           </div>
           <span className="text-[9px] font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold">
@@ -96,52 +88,51 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-          {/* Nutri Coupon */}
-          <div 
-            onClick={handleCopyNutri}
-            className="bg-black/30 hover:bg-black/40 border border-luxury-accent/30 hover:border-luxury-accent/60 rounded-xl p-4 flex flex-col justify-between gap-2.5 cursor-pointer transition-all group"
-          >
+          {/* Nutri Discount Linked to Email */}
+          <div className="bg-black/30 border border-luxury-accent/30 rounded-xl p-4 flex flex-col justify-between gap-2.5">
             <div className="flex justify-between items-center">
               <span className="text-[9px] uppercase tracking-wider font-mono text-luxury-accent font-bold">
-                Cupom da Nutri (Uso Próprio)
+                Desconto da Nutri (Uso Próprio)
               </span>
               <span className="text-[8px] bg-luxury-accent/20 text-luxury-accent px-2 py-0.5 rounded font-bold">
                 15% OFF
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-mono font-extrabold text-white tracking-wider">
-                {nutriCoupon}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] text-[#C8D1C7]">
+                Desconto de 15% automaticamente vinculado a este e-mail:
               </span>
-              <button 
-                type="button" 
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-luxury-accent/30 text-luxury-accent transition-colors shrink-0"
-              >
-                {copiedNutri ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              </button>
+              <span className="text-sm font-mono font-extrabold text-luxury-accent tracking-wide break-all">
+                {formData.email}
+              </span>
             </div>
-            <span className="text-[10px] text-[#C8D1C7]">
-              {copiedNutri ? <span className="text-emerald-400 font-bold font-mono">Copiado para a área de transferência!</span> : '15% de desconto em todas as suas compras na loja Será Cacau.'}
+            <span className="text-[10px] text-[#C8D1C7]/70 italic">
+              Não precisa de cupom no checkout: o desconto é aplicado diretamente ao finalizar a compra com seu e-mail cadastrado.
             </span>
           </div>
 
-          {/* Patient Coupon */}
+          {/* Patient Coupon 8% */}
           <div 
             onClick={handleCopyPatient}
             className="bg-black/30 hover:bg-black/40 border border-primary-accent/30 hover:border-primary-accent/60 rounded-xl p-4 flex flex-col justify-between gap-2.5 cursor-pointer transition-all group"
           >
             <div className="flex justify-between items-center">
               <span className="text-[9px] uppercase tracking-wider font-mono text-secondary-accent font-bold">
-                Cupom para Seus Pacientes
+                Desconto para Pacientes
               </span>
               <span className="text-[8px] bg-primary-accent/20 text-secondary-accent px-2 py-0.5 rounded font-bold">
-                10% OFF
+                8% OFF
               </span>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-mono font-extrabold text-white tracking-wider">
-                {patientCoupon}
-              </span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] text-[#C8D1C7]">
+                  Código de checkout:
+                </span>
+                <span className="text-base font-mono font-extrabold text-white tracking-wider">
+                  {patientCoupon}
+                </span>
+              </div>
               <button 
                 type="button" 
                 className="p-1.5 rounded-lg bg-white/10 hover:bg-primary-accent/30 text-secondary-accent transition-colors shrink-0"
@@ -150,7 +141,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
               </button>
             </div>
             <span className="text-[10px] text-[#C8D1C7]">
-              {copiedPatient ? <span className="text-emerald-400 font-bold font-mono">Copiado para a área de transferência!</span> : '10% de desconto para você prescrever e compartilhar com seus pacientes.'}
+              {copiedPatient ? <span className="text-emerald-400 font-bold font-mono">Copiado para a área de transferência!</span> : 'Desconto de 8% para pacientes com o código de checkout.'}
             </span>
           </div>
         </div>

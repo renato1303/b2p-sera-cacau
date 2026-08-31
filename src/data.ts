@@ -433,7 +433,7 @@ export const COURSES: Course[] = [
           {
             id: 'c1-m1-cl0',
             title: 'Introdução',
-            duration: '10 min',
+            duration: '0:55 min',
             videoUrl: 'https://vimeo.com/1215499110?fl=tl&fe=ec',
             summary: `Oi, nutris! Que alegria ter você aqui.
 
@@ -467,7 +467,7 @@ Até amanhã. Bom descanso.`,
           {
             id: 'c1-m1-cl1',
             title: 'Dia 01',
-            duration: '18 min',
+            duration: '3:19 min',
             videoUrl: 'https://vimeo.com/1215510972?fl=tl&fe=ec',
             summary: `Hoje não começa pela receita — começa pela floresta.
 
@@ -542,7 +542,7 @@ Protocolo: 15 g por dia, nos 10 dias antes da menstruação.`,
           {
             id: 'c1-m2-cl4',
             title: 'Dia 04',
-            duration: '15 min',
+            duration: '3:55 min',
             videoUrl: 'https://vimeo.com/1215498477?fl=tl&fe=ec',
             summary: `Bom dia, nutris. Quarta xícara.
 Hoje a Luna não recomenda nenhum app de produtividade. Pelo contrário: ela fala sobre virar o celular para baixo, pegar a xícara e não fazer nada por um momento — e por que, neurologicamente, isso é das coisas mais produtivas que existem (oi, Default Mode Network). Desconectar para reconectar.
@@ -564,7 +564,7 @@ A pimenta não é opcional: ela eleva muito a biodisponibilidade da curcumina.`,
           {
             id: 'c1-m2-cl5',
             title: 'Dia 05',
-            duration: '16 min',
+            duration: '3:25 min',
             videoUrl: 'https://vimeo.com/1215498476?fl=tl&fe=ec',
             summary: `Bom dia, nutris. Quinta xícara.
 
@@ -609,7 +609,7 @@ O desafio da Luna: troque o segundo café pelo cacau essa semana. Só isso.`,
           {
             id: 'c1-m2-cl7',
             title: 'Dia 07',
-            duration: '14 min',
+            duration: '9:36 min',
             videoUrl: 'https://vimeo.com/1215498475?fl=tl&fe=ec',
             summary: `Boa tarde, nutris. 
 Sétima e última xícara.

@@ -123,11 +123,17 @@ const FormattedBlogContent: React.FC<{ content: string }> = ({ content }) => {
   );
 };
 
-export const BlogView: React.FC = () => {
+interface BlogViewProps {
+  onNavigateToRecipes?: () => void;
+}
+
+export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes }) => {
   const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const FOTO_LUNA = '/foto-luna.jpeg';
 
   const categories = useMemo(() => {
     const unique = Array.from(new Set(BLOG_POSTS.map(p => p.category)));
@@ -205,6 +211,15 @@ export const BlogView: React.FC = () => {
           {/* Header Info */}
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2 text-xs text-primary-accent font-mono">
+              <span className="flex items-center gap-1.5 font-bold text-primary-forest bg-secondary-surface px-2.5 py-1 rounded-lg border border-border-color">
+                <img 
+                  src={FOTO_LUNA} 
+                  alt="Luna Azevedo" 
+                  className="w-5 h-5 rounded-full object-cover border border-luxury-accent" 
+                />
+                Escrito por Luna Azevedo (Nutricionista)
+              </span>
+              <span>•</span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" /> {selectedArticle.publishDate}
               </span>
@@ -212,8 +227,6 @@ export const BlogView: React.FC = () => {
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" /> {selectedArticle.readTime}
               </span>
-              <span>•</span>
-              <span>Editorial Oficial Será Cacau</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-serif font-bold text-primary-forest leading-tight">
@@ -321,6 +334,36 @@ export const BlogView: React.FC = () => {
             </div>
           )}
 
+          {/* Author Bio Box */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#FAF7F2] to-[#F3EDE2] border border-[#E5DAC6] shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6 my-6">
+            <div className="relative shrink-0">
+              <img
+                src={FOTO_LUNA}
+                alt="Luna Azevedo"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-luxury-accent shadow-md"
+              />
+              <div className="absolute -bottom-2 -right-2 bg-primary-forest text-luxury-accent p-1.5 rounded-lg shadow">
+                <BookOpen className="w-3.5 h-3.5" />
+              </div>
+            </div>
+            <div className="space-y-2 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-luxury-accent bg-primary-forest px-2.5 py-0.5 rounded-full">
+                  Sobre a Autora
+                </span>
+                <h3 className="text-lg sm:text-xl font-serif font-bold text-primary-forest">
+                  Luna Azevedo
+                </h3>
+                <span className="text-xs font-mono text-secondary-text">
+                  • Nutricionista Clínica & Curadora Será Cacau
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-secondary-text leading-relaxed">
+                Nutricionista especializada em fitoterapia, saúde feminina e nutrição funcional integrativa. É autora dos artigos científicos e educativos do blog Será Cacau, instrutora do curso Cacau na Prática e desenvolvedora das formulações e receitas clínicas com cacau 100% Cabruca.
+              </p>
+            </div>
+          </div>
+
           {/* Bottom Navigation & Share Bar */}
           <div className="pt-8 border-t border-border-color flex flex-col sm:flex-row items-center justify-between gap-4">
             <button
@@ -389,31 +432,44 @@ export const BlogView: React.FC = () => {
         <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-luxury-accent/15 blur-3xl pointer-events-none" />
         <div className="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-primary-accent/15 blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="flex items-center gap-2">
+        <div className="relative z-10 max-w-4xl space-y-6">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="bg-luxury-accent/20 border border-luxury-accent/40 text-luxury-accent text-[9px] font-bold tracking-[0.25em] uppercase px-3 py-1 rounded-full font-mono">
               Editorial Científico & Cultural
             </span>
             <span className="text-[10px] text-white/60 font-mono">
-              Atualizado semanalmente
+              Escrito por Luna Azevedo
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white tracking-tight">
-            Blog & Artigos Será Cacau
-          </h1>
+          <div className="space-y-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white tracking-tight">
+              Blog & Artigos Será Cacau
+            </h1>
 
-          <p className="text-xs sm:text-sm md:text-base text-[#D3DDD4] leading-relaxed max-w-2xl">
-            Artigos aprofundados sobre botânica, processamento Tree to Bar vs. Bean to Bar, fitoquímica clínica, saúde da mulher e a história milenar do ritual do cacau.
-          </p>
+            <p className="text-xs sm:text-sm md:text-base text-[#D3DDD4] leading-relaxed max-w-3xl">
+              Artigos aprofundados escritos e curados por <strong className="text-white font-semibold">Luna Azevedo</strong> (Nutricionista), abordando botânica, processamento Tree to Bar vs. Bean to Bar, fitoquímica clínica, saúde da mulher, receitas e o ritual milenar do cacau.
+            </p>
+          </div>
 
-          <div className="flex flex-wrap gap-4 pt-2 text-xs text-luxury-accent font-mono">
-            <span className="flex items-center gap-1.5 bg-black/30 px-3 py-1 rounded-full border border-white/10">
-              <CheckCircle2 className="w-3.5 h-3.5 text-luxury-accent" /> 6 Artigos Exclusivos
-            </span>
-            <span className="flex items-center gap-1.5 bg-black/30 px-3 py-1 rounded-full border border-white/10">
-              <BookmarkCheck className="w-3.5 h-3.5 text-luxury-accent" /> Referências PubMed / SciELO
-            </span>
+          {/* Luna Azevedo Author Banner Card */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-black/35 border border-luxury-accent/30 backdrop-blur-sm flex items-center gap-3.5">
+            <img 
+              src={FOTO_LUNA} 
+              alt="Luna Azevedo" 
+              className="w-13 h-13 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-luxury-accent shadow-md shrink-0" 
+            />
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-bold text-white tracking-wide">Luna Azevedo</span>
+                <span className="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full bg-luxury-accent/20 text-luxury-accent border border-luxury-accent/40 font-bold">
+                  Nutricionista & Autora do Blog
+                </span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-[#D3DDD4] leading-relaxed mt-1">
+                Pesquisa clínica, fitoquímica do cacau Cabruca, saúde feminina e formulações funcionais.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -514,6 +570,22 @@ export const BlogView: React.FC = () => {
                   <h2 className="text-lg md:text-xl font-serif font-bold text-primary-forest group-hover:text-primary-accent transition-colors leading-snug">
                     {article.title}
                   </h2>
+                  
+                  {/* Author Attribution */}
+                  <div className="flex items-center gap-2 py-0.5">
+                    <img 
+                      src={FOTO_LUNA} 
+                      alt="Luna Azevedo" 
+                      className="w-5 h-5 rounded-full object-cover border border-luxury-accent shrink-0" 
+                    />
+                    <span className="text-xs font-semibold text-primary-forest">
+                      Luna Azevedo
+                    </span>
+                    <span className="text-[11px] text-secondary-text/70">
+                      • Nutricionista
+                    </span>
+                  </div>
+
                   <p className="text-xs md:text-sm text-secondary-text leading-relaxed line-clamp-3">
                     {article.summary}
                   </p>

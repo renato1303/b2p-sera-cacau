@@ -757,7 +757,9 @@ export default function App() {
           )}
 
           {currentTab === 'blog' && (
-            <BlogView />
+            <BlogView 
+              onNavigateToRecipes={() => setCurrentTab('receitas')}
+            />
           )}
 
           {currentTab === 'biblioteca' && (

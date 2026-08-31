@@ -39,10 +39,10 @@ export function getNutriCoupon(name: string): string {
 }
 
 /**
- * Returns the discount coupon for the nutritionist's patients (10% discount):
- * [nomedanutricionista(apenas o primeiro nome)]10
+ * Returns the discount coupon for the nutritionist's patients (8% discount):
+ * [nomedanutricionista(apenas o primeiro nome)]8
  */
 export function getPatientCoupon(name: string): string {
   const firstName = getNutritionistFirstName(name);
-  return `${firstName}10`;
+  return `${firstName}8`;
 }
