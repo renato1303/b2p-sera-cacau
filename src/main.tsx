@@ -4,16 +4,19 @@ import App from './App.tsx';
 import './index.css';
 import { SERA_CACAU_LOGO } from './assets/logo';
 
-// Set high-res favicon dynamically to guarantee it works on Vercel and all deployments
+// Set high-res favicon dynamically to guarantee it works on all deployments and environments
 if (typeof document !== 'undefined') {
-  let favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-  if (!favicon) {
-    favicon = document.createElement('link');
+  const iconLinks = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
+  iconLinks.forEach(link => {
+    (link as HTMLLinkElement).href = `/favicon.png?v=${Date.now()}`;
+  });
+  if (iconLinks.length === 0) {
+    const favicon = document.createElement('link');
     favicon.rel = 'icon';
+    favicon.type = 'image/png';
+    favicon.href = `/favicon.png?v=${Date.now()}`;
     document.head.appendChild(favicon);
   }
-  favicon.type = 'image/png';
-  favicon.href = SERA_CACAU_LOGO;
 }
 
 createRoot(document.getElementById('root')!).render(
