@@ -34,6 +34,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'O sal não deixa a bebida salgada — ele apara o amargor e traz a fruta do cacau para frente.',
     imageUrl: '/cacaupuro.jpeg',
+    videoUrl: 'https://vimeo.com/1222816741?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Cacau Puro & Ritual do Cacau (Dani)',
     tags: ['Bebida Quente', 'Cacau Puro', 'Ritual Matinal', 'Cabruca', 'Zero Açúcar'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -122,6 +124,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Sirva sem misturar. As camadas se encontram no primeiro gole e o contraste faz parte.',
     imageUrl: '/mochasemacucar.png',
+    videoUrl: 'https://vimeo.com/1222812176?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Mocha Gelado sem Açúcar (Dani)',
     tags: ['Bebida Gelada', 'Mocha', 'Café & Cacau', 'Foco', 'Sem Açúcar'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -166,6 +170,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Amasse a hortelã na palma da mão antes de colocar. O aroma sai sem o amargor da folha rasgada.',
     imageUrl: '/tonicadecacau.png',
+    videoUrl: 'https://vimeo.com/1222810993?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Mochito & Tônica de Cacau (Dani)',
     tags: ['Drink Refrescante', 'Bebida Gelada', 'Hortelã & Limão', 'Água com Gás', 'Sem Álcool'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -210,6 +216,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Congele a banana em rodelas na noite anterior. O smoothie fica com textura de sorvete sem precisar de mais gelo.',
     imageUrl: '/smoothie.png',
+    videoUrl: 'https://vimeo.com/1222810387?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Cacau Banana Smoothie (Dani)',
     tags: ['Smoothie', 'Vitamina C & Ferro', 'Bebida Gelada', 'Pós-Treino', 'Nibs'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -253,6 +261,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Se a ganache talhar, junte uma colher de sopa de leite quente e mexa com energia. Ela volta.',
     imageUrl: '/ganachegeladeira.png',
+    videoUrl: 'https://vimeo.com/1222811947?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Ganache de Geladeira (Dani)',
     tags: ['Doce', 'Ganache', 'Sobremesa', 'Cremoso', 'Cacau Puro'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -298,6 +308,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Dura três dias na geladeira. Faça três potes de uma vez e resolva a semana.',
     imageUrl: '/pudimdechia.png',
+    videoUrl: 'https://vimeo.com/1222813372?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Pudim de Chia e Cacau (Dani)',
     tags: ['Doce', 'Pudim de Chia', 'Café da Manhã', 'Overnight', 'Fibras & Ômega-3'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -343,6 +355,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Deixe a calda esfriar um pouco antes de despejar. No iogurte muito frio ela endurece na hora e vira casquinha — o que também é bom, mas é outra coisa.',
     imageUrl: '/bowliogurte.png',
+    videoUrl: 'https://vimeo.com/1222817132?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Bowl Anti-Crash de Iogurte (Dani)',
     tags: ['Doce', 'Bowl Funcional', 'Anti-Crash', 'Iogurte & Frutas', 'Prático'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
@@ -386,6 +400,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Com frutas congeladas a calda endurece no contato e vira uma casquinha fina. Vale experimentar.',
     imageUrl: '/berries.png',
+    videoUrl: 'https://vimeo.com/1222814455?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Berries com Calda de Cacau (Dani)',
     tags: ['Doce', 'Frutas Vermelhas', 'Antioxidantes', 'Calda Quente', 'Rápido'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -430,6 +446,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Junte o cacau fora do fogo. No calor direto ele queima e amarga de um jeito que não volta.',
     imageUrl: '/pedemolque.png',
+    videoUrl: 'https://vimeo.com/1222821136?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Pé de Moleque de Cacau e Amendoim (Dani)',
     tags: ['Doce', 'Pé de Moleque', 'Amendoim & Cacau', 'Snack', 'Sem Glúten'],
     recommendedProductSlug: 'gotas-sera-cacau-210g',
     specifications: {
@@ -473,6 +491,8 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Guarde em pote fechado, fora da geladeira. Assim mantém o brilho e a textura.',
     imageUrl: '/castanhascobertas.png',
+    videoUrl: 'https://vimeo.com/1222822292?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Castanhas Cobertas de Cacau (Dani)',
     tags: ['Doce', 'Snack', 'Castanhas & Nibs', 'Gorduras Boas', 'Mesa de Trabalho'],
     recommendedProductSlug: 'nibs-de-sera-cacau-250g',
     specifications: {
@@ -520,7 +540,9 @@ export const RECIPES: Recipe[] = [
     ],
     tip: 'Quanto mais fino você abrir, mais crocante fica. Se o centro ficar mole, volte ao forno desligado ainda quente por 10 minutos.',
     imageUrl: '/crackers.png',
-    tags: ['Salgado', 'Crackers', 'Sementes & Cacau', 'Lanche Salgado', 'Sem Glúten'],
+    videoUrl: 'https://vimeo.com/1222811553?share=copy&fl=sv&fe=ci',
+    videoTitle: 'Preparo em Vídeo: Cookies & Crackers Cacau Snack (Dani)',
+    tags: ['Salgado', 'Crackers', 'Cookies Cacau Snack', 'Sementes & Cacau', 'Lanche Salgado', 'Sem Glúten'],
     recommendedProductSlug: 'gotas-sera-cacau-105g',
     specifications: {
       theobromineMg: '120mg total (aprox. 15mg por cracker)',

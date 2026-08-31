@@ -27,7 +27,9 @@ import {
   X,
   Stethoscope,
   Info,
-  Compass
+  Compass,
+  Video,
+  Play
 } from 'lucide-react';
 import { downloadRecipePdf } from '../utils/recipePdfGenerator';
 import { 
@@ -51,6 +53,13 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
   const [savedRecipeIds, setSavedRecipeIds] = useState<string[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const getVimeoEmbedUrl = (urlOrId?: string) => {
+    if (!urlOrId) return '';
+    const match = urlOrId.match(/(?:vimeo\.com\/(?:video\/)?)(\d+)/) || urlOrId.match(/^(\d+)$/);
+    const id = match ? match[1] : urlOrId;
+    return `https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&dnt=1`;
+  };
 
   // Sync activeTab when selectedAuthor changes
   const handleSelectAuthor = (author: 'dani' | 'luna' | 'todas') => {
@@ -378,6 +387,41 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
                 <p className="text-xs md:text-sm text-[#333E34] leading-relaxed">
                   {selectedRecipe.tip}
                 </p>
+              </div>
+            )}
+
+            {/* VÍDEO DO PREPARO (Chef Dani) */}
+            {selectedRecipe.videoUrl && (
+              <div className="bg-gradient-to-br from-[#1C261D] via-[#2A382C] to-[#151E16] text-[#F7F3EC] p-6 sm:p-8 rounded-3xl border border-[#455347]/60 shadow-xl space-y-5">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-luxury-accent/20 border border-luxury-accent/40 text-luxury-accent text-xs font-semibold uppercase tracking-wider font-mono">
+                    <Video className="w-3.5 h-3.5" /> Vídeo do Preparo · Chef Dani
+                  </div>
+                  <span className="text-[11px] font-mono text-[#C8D1C7]/70 uppercase tracking-wider">
+                    Passo a Passo em Vídeo
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-white">
+                    {selectedRecipe.videoTitle || `Preparo de ${selectedRecipe.title}`}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#C2C9C0] mt-1">
+                    Acompanhe a demonstração prática, pontos de textura e dicas de sabor da receita direto da Cabruca.
+                  </p>
+                </div>
+
+                <div className="flex justify-center pt-2">
+                  <div className="w-full max-w-[320px] sm:max-w-[340px] md:max-w-[360px] aspect-[9/16] rounded-3xl overflow-hidden bg-black border-2 border-luxury-accent/40 shadow-2xl">
+                    <iframe
+                      src={getVimeoEmbedUrl(selectedRecipe.videoUrl)}
+                      className="w-full h-full border-0"
+                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                      allowFullScreen
+                      title={selectedRecipe.videoTitle || selectedRecipe.title}
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -934,6 +978,12 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
                       }
                     }}
                   />
+                  {recipe.videoUrl && (
+                    <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-luxury-accent/60 text-luxury-accent text-[11px] font-semibold flex items-center gap-1.5 shadow-lg">
+                      <Play className="w-3 h-3 fill-luxury-accent text-luxury-accent" />
+                      <span>Vídeo</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Body Content */}
@@ -953,6 +1003,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
                       }`}>
                         {isLuna ? 'Luna • Pacientes' : "Receita da Dani"}
                       </span>
+                      {recipe.videoUrl && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase bg-luxury-accent/15 text-luxury-accent border border-luxury-accent/30">
+                          <Video className="w-3 h-3" /> Vídeo
+                        </span>
+                      )}
                     </div>
 
                     <button

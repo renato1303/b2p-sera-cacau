@@ -237,6 +237,8 @@ export interface Recipe {
   tags: string[];
   recommendedProductSlug?: string;
   pdfUrl?: string;
+  videoUrl?: string;
+  videoTitle?: string;
 }
 
 export interface ScienceArticle {
