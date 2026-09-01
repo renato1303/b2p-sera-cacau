@@ -65,18 +65,33 @@ export const LoginView: React.FC<LoginViewProps> = ({
     try {
       // 1. Check if it's the Admin email
       const isAdmin = 
+        cleanEmail === 'luna.azevedo.1@gmail.com' ||
+        cleanEmail === 'luna.azevedo@gmail.com' ||
         cleanEmail === 'madeleine@seracacau.com.br' || 
         cleanEmail === 'admin@seracacau.com.br' ||
+        cleanEmail.includes('luna.azevedo') ||
         cleanEmail.includes('admin') ||
         cleanEmail.includes('madeleine');
 
       if (isAdmin) {
-        setSuccessMsg('Acesso administrativo autenticado com sucesso!');
+        const isLuna = cleanEmail.includes('luna');
+        const customAdminProfile: UserProfile = isLuna ? {
+          name: 'Luna Azevedo',
+          email: cleanEmail,
+          phone: '(21) 98765-4321',
+          instagram: '@lunaazevedo',
+          specialty: 'Nutricionista & Curadora Cabruca',
+          city: 'Rio de Janeiro',
+          state: 'RJ',
+          role: UserRole.ADMIN,
+        } : {
+          ...adminProfile,
+          email: cleanEmail
+        };
+
+        setSuccessMsg(`Acesso administrativo autenticado com sucesso! Bem-vinda, ${customAdminProfile.name}.`);
         setTimeout(() => {
-          onLogin({
-            ...adminProfile,
-            email: cleanEmail
-          });
+          onLogin(customAdminProfile);
           setIsLoading(false);
         }, 400);
         return;

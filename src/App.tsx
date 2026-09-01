@@ -69,13 +69,13 @@ export default function App() {
   };
 
   const adminProfile: UserProfile = {
-    name: 'Madeleine',
-    email: 'madeleine@seracacau.com.br',
-    phone: '(73) 99912-3456',
-    instagram: '@sera.cacau.brasil',
-    specialty: 'Fundadora & Curadora Cabruca',
-    city: 'Serra Grande',
-    state: 'BA',
+    name: 'Luna Azevedo',
+    email: 'luna.azevedo.1@gmail.com',
+    phone: '(21) 98765-4321',
+    instagram: '@lunaazevedo',
+    specialty: 'Nutricionista & Curadora Cabruca',
+    city: 'Rio de Janeiro',
+    state: 'RJ',
     role: UserRole.ADMIN,
   };
 
