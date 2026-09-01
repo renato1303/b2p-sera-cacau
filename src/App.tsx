@@ -48,7 +48,11 @@ import {
   POINTS_HISTORY,
   REWARDS
 } from './data';
-import { UserRole, UserProfile, Course, Product, FileAttachment, Campaign, Member, CommunityPost, PointsEntry, GamificationReward } from './types';
+import { BLOG_POSTS, BlogPost } from './data/blog';
+import { RECIPES } from './data/recipes';
+import { TECHNICAL_SHEETS, TechnicalSheetData } from './data/technicalSheets';
+import { SCIENCE_ARTICLES } from './data/science';
+import { UserRole, UserProfile, Course, Product, FileAttachment, Campaign, Member, CommunityPost, PointsEntry, GamificationReward, Recipe, ScienceArticle } from './types';
 
 export default function App() {
   // Profiles
@@ -244,6 +248,10 @@ export default function App() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(CAMPAIGNS);
   const [newsletters, setNewsletters] = useState<any[]>(NEWSLETTER);
   const [attachments, setAttachments] = useState<FileAttachment[]>(ATTACHMENTS);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(BLOG_POSTS);
+  const [recipes, setRecipes] = useState<Recipe[]>(RECIPES);
+  const [technicalSheets, setTechnicalSheets] = useState<TechnicalSheetData[]>(TECHNICAL_SHEETS);
+  const [scienceArticles, setScienceArticles] = useState<ScienceArticle[]>(SCIENCE_ARTICLES);
 
   const [members, setMembers] = useState<Member[]>(MEMBERS);
   const [pointsHistory, setPointsHistory] = useState<PointsEntry[]>(POINTS_HISTORY);
@@ -251,6 +259,46 @@ export default function App() {
 
   const handleUpdateCourse = (updated: Course) => {
     setCourses(prev => prev.map(c => c.id === updated.id ? updated : c));
+  };
+
+  const handleDeleteCourse = (courseId: string) => {
+    setCourses(prev => prev.filter(c => c.id !== courseId));
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    setProducts(prev => prev.filter(p => p.id !== productId));
+  };
+
+  const handleAddBlogPost = (post: BlogPost) => {
+    setBlogPosts(prev => [post, ...prev]);
+  };
+
+  const handleDeleteBlogPost = (postId: string) => {
+    setBlogPosts(prev => prev.filter(p => p.id !== postId));
+  };
+
+  const handleAddRecipe = (recipe: Recipe) => {
+    setRecipes(prev => [recipe, ...prev]);
+  };
+
+  const handleDeleteRecipe = (recipeId: string) => {
+    setRecipes(prev => prev.filter(r => r.id !== recipeId));
+  };
+
+  const handleAddTechnicalSheet = (sheet: TechnicalSheetData) => {
+    setTechnicalSheets(prev => [sheet, ...prev]);
+  };
+
+  const handleDeleteTechnicalSheet = (sheetId: string) => {
+    setTechnicalSheets(prev => prev.filter(s => s.id !== sheetId));
+  };
+
+  const handleAddScienceArticle = (article: ScienceArticle) => {
+    setScienceArticles(prev => [article, ...prev]);
+  };
+
+  const handleDeleteScienceArticle = (articleId: string) => {
+    setScienceArticles(prev => prev.filter(a => a.id !== articleId));
   };
   
   // Completed Classes tracking (starts empty for new users)
@@ -729,6 +777,7 @@ export default function App() {
 
           {currentTab === 'receitas' && (
             <RecipesView 
+              recipes={recipes}
               onSelectProduct={(productName) => {
                 const prod = products.find(p => p.name.toLowerCase().includes(productName.toLowerCase()));
                 if (prod) {
@@ -742,11 +791,11 @@ export default function App() {
           )}
 
           {currentTab === 'fichas' && (
-            <TechnicalSheetView />
+            <TechnicalSheetView sheets={technicalSheets} />
           )}
 
           {currentTab === 'ciencia' && (
-            <ScienceView />
+            <ScienceView articles={scienceArticles} />
           )}
 
           {currentTab === 'comunidade' && (
@@ -758,12 +807,13 @@ export default function App() {
 
           {currentTab === 'blog' && (
             <BlogView 
+              posts={blogPosts}
               onNavigateToRecipes={() => setCurrentTab('receitas')}
             />
           )}
 
           {currentTab === 'biblioteca' && (
-            <TechnicalSheetView />
+            <TechnicalSheetView sheets={technicalSheets} />
           )}
 
           {currentTab === 'campanhas' && (
@@ -783,16 +833,30 @@ export default function App() {
             <AdminView 
               courses={courses}
               onAddCourse={handleAddCourse}
+              onUpdateCourse={handleUpdateCourse}
+              onDeleteCourse={handleDeleteCourse}
               products={products}
               onAddProduct={handleAddProduct}
+              onDeleteProduct={handleDeleteProduct}
+              blogPosts={blogPosts}
+              onAddBlogPost={handleAddBlogPost}
+              onDeleteBlogPost={handleDeleteBlogPost}
+              recipes={recipes}
+              onAddRecipe={handleAddRecipe}
+              onDeleteRecipe={handleDeleteRecipe}
+              technicalSheets={technicalSheets}
+              onAddTechnicalSheet={handleAddTechnicalSheet}
+              onDeleteTechnicalSheet={handleDeleteTechnicalSheet}
+              scienceArticles={scienceArticles}
+              onAddScienceArticle={handleAddScienceArticle}
+              onDeleteScienceArticle={handleDeleteScienceArticle}
               attachments={attachments}
               onAddAttachment={handleAddAttachment}
               metricDownloads={metricDownloads}
               members={members}
-              onUpdateCourse={handleUpdateCourse}
+              setMembers={setMembers}
               pointsHistory={pointsHistory}
               setPointsHistory={setPointsHistory}
-              setMembers={setMembers}
             />
           )}
         </div>

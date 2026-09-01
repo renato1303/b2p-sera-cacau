@@ -25,10 +25,14 @@ import {
   ClipboardList
 } from 'lucide-react';
 
-export const TechnicalSheetView: React.FC = () => {
-  const [selectedSheetId, setSelectedSheetId] = useState<string>(TECHNICAL_SHEETS[0].id);
+interface TechnicalSheetViewProps {
+  sheets?: TechnicalSheetData[];
+}
 
-  const selectedSheet = TECHNICAL_SHEETS.find(s => s.id === selectedSheetId) || TECHNICAL_SHEETS[0];
+export const TechnicalSheetView: React.FC<TechnicalSheetViewProps> = ({ sheets = TECHNICAL_SHEETS }) => {
+  const [selectedSheetId, setSelectedSheetId] = useState<string>(sheets[0]?.id || 'ficha-cacau-gotas-100');
+
+  const selectedSheet = sheets.find(s => s.id === selectedSheetId) || sheets[0] || TECHNICAL_SHEETS[0];
 
   return (
     <div className="space-y-8 animate-fadeIn max-w-7xl mx-auto pb-16">
@@ -71,12 +75,12 @@ export const TechnicalSheetView: React.FC = () => {
             Selecione a Ficha Técnica para Leitura e Download:
           </span>
           <span className="text-xs text-secondary-text">
-            {TECHNICAL_SHEETS.length} Fichas Técnicas Oficiais
+            {sheets.length} Fichas Técnicas Oficiais
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {TECHNICAL_SHEETS.map((sheet) => {
+          {sheets.map((sheet) => {
             const isSelected = sheet.id === selectedSheet.id;
             return (
               <button

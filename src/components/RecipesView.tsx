@@ -41,9 +41,10 @@ import {
 
 interface RecipesViewProps {
   onSelectProduct?: (slug: string) => void;
+  recipes?: Recipe[];
 }
 
-export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => {
+export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct, recipes = RECIPES }) => {
   // Navigation mode: null = author selection screen (9:16 cards), 'dani' | 'luna' | 'todas' = recipes list
   const [selectedAuthor, setSelectedAuthor] = useState<'dani' | 'luna' | 'todas' | null>(null);
   const [activeTab, setActiveTab] = useState<'dani' | 'clinica' | 'todas'>('dani');
@@ -82,7 +83,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
 
   // Filter recipes
   const filteredRecipes = useMemo(() => {
-    return RECIPES.filter(recipe => {
+    return recipes.filter(recipe => {
       // Category match
       if (activeTab === 'dani' && recipe.category !== 'dani' && recipe.author !== 'Dani') {
         return false;
@@ -108,17 +109,17 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
       }
       return true;
     });
-  }, [activeTab, selectedTag, searchQuery]);
+  }, [recipes, activeTab, selectedTag, searchQuery]);
 
   // Extract all unique tags
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
-    RECIPES.forEach(r => r.tags.forEach(t => tagsSet.add(t)));
+    recipes.forEach(r => r.tags.forEach(t => tagsSet.add(t)));
     return Array.from(tagsSet);
-  }, []);
+  }, [recipes]);
 
-  const daniCount = RECIPES.filter(r => r.category === 'dani' || r.author === 'Dani').length;
-  const lunaCount = RECIPES.filter(r => r.category === 'clinica' || r.author === 'Luna').length;
+  const daniCount = recipes.filter(r => r.category === 'dani' || r.author === 'Dani').length;
+  const lunaCount = recipes.filter(r => r.category === 'clinica' || r.author === 'Luna').length;
 
   const toggleSaveRecipe = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -169,7 +170,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
     const heroImg = getRecipeDefaultImage(selectedRecipe.category, selectedRecipe.author, selectedRecipe.imageUrl);
     
     // Find related recipes by author
-    const relatedRecipes = RECIPES
+    const relatedRecipes = recipes
       .filter(r => r.id !== selectedRecipe.id && (isLuna ? (r.author === 'Luna' || r.category === 'clinica') : (r.author === 'Dani' || r.category === 'dani')))
       .slice(0, 3);
 
@@ -799,7 +800,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-[#F7F3EC] text-primary-forest font-semibold text-xs border border-[#E0D8C8] shadow-sm transition-all hover:shadow-md"
             >
               <BookOpen className="w-4 h-4 text-primary-accent" />
-              <span>Ver catálogo completo com todas as 25 receitas ({RECIPES.length})</span>
+              <span>Ver catálogo completo com todas as receitas ({recipes.length})</span>
               <ArrowRight className="w-3.5 h-3.5 text-secondary-text" />
             </button>
           </div>
@@ -855,7 +856,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({ onSelectProduct }) => 
                     : 'text-[#4A554B] hover:text-primary-forest'
                 }`}
               >
-                <span>Todas ({RECIPES.length})</span>
+                <span>Todas ({recipes.length})</span>
               </button>
             </div>
           </div>

@@ -125,9 +125,10 @@ const FormattedBlogContent: React.FC<{ content: string }> = ({ content }) => {
 
 interface BlogViewProps {
   onNavigateToRecipes?: () => void;
+  posts?: BlogPost[];
 }
 
-export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes }) => {
+export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes, posts = BLOG_POSTS }) => {
   const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -136,12 +137,12 @@ export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes }) => {
   const FOTO_LUNA = '/foto-luna.jpeg';
 
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(BLOG_POSTS.map(p => p.category)));
+    const unique = Array.from(new Set(posts.map(p => p.category)));
     return ['Todos', ...unique];
-  }, []);
+  }, [posts]);
 
   const filteredArticles = useMemo(() => {
-    return BLOG_POSTS.filter(article => {
+    return posts.filter(article => {
       const matchesCategory = selectedCategory === 'Todos' || article.category === selectedCategory;
       const matchesSearch = 
         article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -150,7 +151,7 @@ export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes }) => {
         (article.tags && article.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [posts, selectedCategory, searchQuery]);
 
   const handleShare = (article: BlogPost, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -173,7 +174,7 @@ export const BlogView: React.FC<BlogViewProps> = ({ onNavigateToRecipes }) => {
 
   // FULL SCREEN ARTICLE VIEW (quando o usuário clica em algum artigo)
   if (selectedArticle) {
-    const relatedArticles = BLOG_POSTS.filter(p => p.id !== selectedArticle.id).slice(0, 2);
+    const relatedArticles = posts.filter(p => p.id !== selectedArticle.id).slice(0, 2);
 
     return (
       <div className="px-4 sm:px-6 md:px-12 py-8 max-w-5xl mx-auto w-full flex flex-col gap-8 font-sans text-primary-text animate-fadeIn">

@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { SCIENCE_ARTICLES } from '../data';
+import { ScienceArticle } from '../types';
 import { 
   BookOpen, 
   ExternalLink, 
@@ -21,11 +22,15 @@ import {
 } from 'lucide-react';
 import { SeraCacauIcon } from './SeraCacauIcon';
 
-export const ScienceView: React.FC = () => {
+interface ScienceViewProps {
+  articles?: ScienceArticle[];
+}
+
+export const ScienceView: React.FC<ScienceViewProps> = ({ articles = SCIENCE_ARTICLES }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
-  const filteredArticles = SCIENCE_ARTICLES.filter(article => {
+  const filteredArticles = articles.filter(article => {
     if (selectedType && article.studyType !== selectedType) {
       return false;
     }
@@ -42,7 +47,7 @@ export const ScienceView: React.FC = () => {
     return true;
   });
 
-  const studyTypes = Array.from(new Set(SCIENCE_ARTICLES.map(a => a.studyType)));
+  const studyTypes = Array.from(new Set(articles.map(a => a.studyType)));
 
   return (
     <div className="space-y-8 animate-fadeIn max-w-7xl mx-auto pb-16">
