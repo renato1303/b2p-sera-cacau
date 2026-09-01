@@ -96,51 +96,51 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </p>
           </div>
 
-          {/* Quick Stats & Coupons Bar - Uniform, aligned cards without overflow */}
+          {/* Quick Stats & Coupons Bar - Aligned on a single line with expanded coupon cards */}
           <div className="border-t border-border-color/60 pt-4 mt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-3 items-stretch">
+            <div className="flex flex-wrap lg:flex-nowrap gap-2.5 sm:gap-3 items-stretch w-full">
               
               {/* 1. Status */}
-              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs overflow-hidden">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold truncate">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs shrink-0 flex-1 sm:flex-initial min-w-[105px]">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Status da Conta
                 </span>
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide truncate">
+                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide whitespace-nowrap">
                     Ativa
                   </span>
                 </div>
               </div>
 
               {/* 2. Nível */}
-              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs overflow-hidden">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold truncate">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs shrink-0 flex-1 sm:flex-initial min-w-[115px]">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Nível de Membro
                 </span>
                 <div className="flex items-center mt-1">
-                  <span className="text-xs font-bold text-primary-accent uppercase tracking-wide truncate">
+                  <span className="text-xs font-bold text-primary-accent uppercase tracking-wide whitespace-nowrap">
                     Cabruca
                   </span>
                 </div>
               </div>
 
               {/* 3. Registro Clínico */}
-              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs overflow-hidden">
-                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold truncate">
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs shrink-0 flex-1 sm:flex-initial min-w-[125px]">
+                <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Registro Clínico
                 </span>
                 <div className="flex items-center mt-1">
-                  <span className="text-xs font-bold text-primary-text font-mono tracking-tight truncate">
+                  <span className="text-xs font-bold text-primary-text font-mono tracking-tight whitespace-nowrap">
                     {user.crn || 'CRN-3 71830'}
                   </span>
                 </div>
               </div>
 
-              {/* 4. Desconto Nutri 15% (Vinculado ao E-mail) */}
-              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs overflow-hidden">
-                <div className="flex items-center justify-between gap-1 min-w-0">
-                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold truncate">
+              {/* 4. Desconto Nutri 15% (Vinculado ao E-mail - Esticado lateralmente) */}
+              <div className="bg-[#FAF7F2] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs flex-1 min-w-[210px] sm:min-w-[230px]">
+                <div className="flex items-center justify-between gap-1.5 min-w-0">
+                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Desconto Nutri
                   </span>
                   <span className="text-[8px] leading-tight shrink-0 bg-luxury-accent/20 text-[#7A5B1D] font-mono font-bold px-1.5 py-0.5 rounded border border-luxury-accent/30 whitespace-nowrap">
@@ -148,19 +148,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </span>
                 </div>
                 <div className="mt-1 flex flex-col min-w-0" title={`Desconto de 15% automaticamente vinculado a este e-mail: ${user.email}`}>
-                  <span className="text-[10px] sm:text-xs font-mono font-bold text-primary-forest truncate" title={user.email}>
+                  <span className="text-[11px] sm:text-xs font-mono font-bold text-primary-forest truncate" title={user.email}>
                     {user.email}
                   </span>
-                  <span className="text-[8px] font-mono text-[#7A5B1D] tracking-tight truncate">
+                  <span className="text-[8px] font-mono text-[#7A5B1D] tracking-tight whitespace-nowrap">
                     Automático no checkout
                   </span>
                 </div>
               </div>
 
-              {/* 5. Cupom Pacientes 8% */}
-              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac overflow-hidden col-span-2 sm:col-span-1 xl:col-span-1">
-                <div className="flex items-center justify-between gap-1 min-w-0">
-                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold truncate">
+              {/* 5. Cupom Pacientes 8% (Esticado lateralmente) */}
+              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac flex-1 min-w-[170px] sm:min-w-[185px]">
+                <div className="flex items-center justify-between gap-1.5 min-w-0">
+                  <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Cupom Pacientes
                   </span>
                   <span className="text-[8px] leading-tight shrink-0 bg-primary-accent/20 text-primary-accent font-mono font-bold px-1.5 py-0.5 rounded border border-primary-accent/30 whitespace-nowrap">
@@ -171,13 +171,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   type="button"
                   onClick={handleCopyPatient}
                   title="Clique para copiar o código de checkout de 8% para os pacientes"
-                  className="mt-1 flex items-center justify-between gap-1 text-xs font-mono font-extrabold text-primary-accent hover:text-primary-forest transition-colors cursor-pointer w-full text-left min-w-0"
+                  className="mt-1 flex items-center justify-between gap-2 text-xs font-mono font-extrabold text-primary-accent hover:text-primary-forest transition-colors cursor-pointer w-full text-left min-w-0"
                 >
-                  <span className="truncate min-w-0">{patientCoupon}</span>
+                  <span className="whitespace-nowrap font-mono">{patientCoupon}</span>
                   {copiedPatient ? (
                     <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-sans font-bold shrink-0">
                       <Check className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Copiado</span>
+                      <span className="inline">Copiado</span>
                     </span>
                   ) : (
                     <Copy className="w-3.5 h-3.5 text-secondary-text/40 group-hover/pac:text-primary-accent transition-colors shrink-0" />
@@ -531,14 +531,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </p>
                 </div>
               </div>
-
-              {/* Discount code mini badge */}
-              {product.discountCode && (
-                <div className="mt-2.5 px-2.5 py-1 rounded bg-luxury-accent/10 border border-dashed border-luxury-accent/40 text-[9px] font-mono text-luxury-accent font-bold flex items-center justify-between">
-                  <span>CUPOM: {product.discountCode}</span>
-                  <Tag className="w-3 h-3 text-luxury-accent" />
-                </div>
-              )}
 
               <div className="pt-3 border-t border-border-color/60 flex justify-between items-center mt-3">
                 <span className="text-xs font-bold text-cocoa">

@@ -221,7 +221,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Ralar 15g a 20g sobre mingau de aveia, frutas vermelhas ou derreter a 55ºC para emulsão de foco matinal.',
-    imageUrl: '/images/barra200g.jpeg',
+    imageUrl: '/image/barra200g.jpeg',
     shopifyId: 'sh_barra_200g',
     price: 'R$ 119,00',
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
@@ -257,7 +257,7 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Cortar em cubos padronizados de 10g e orientar consumo de 2 cubos/dia como cardioprotetor e estimulante de eNOS.',
-    imageUrl: '/images/barras450g.jpeg',
+    imageUrl: '/image/barras450g.jpeg',
     shopifyId: 'sh_barra_450g',
     price: 'R$ 249,00',
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
@@ -293,13 +293,13 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Prescrever 1 a 2 colheres de sopa sobre iogurte vegetal, frutas picadas ou açaí puro como topping funcional sacietógeno.',
-    imageUrl: '/images/nibssera250.jpeg',
+    imageUrl: '/image/nibs250gramas.jpeg',
     shopifyId: 'sh_nibs_250g',
     price: 'R$ 109,00',
     originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/nibs-de-sera-cacau-250g'
+    buyUrl: 'https://www.seracacau.com.br/products/nibs-sera-cacau-250g'
   },
   {
     id: 'prod-8',
@@ -338,11 +338,11 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-9',
-    name: 'Chá de Casca de Cacau | 25g',
-    slug: 'cha-de-casca-de-cacau-25g',
+    name: 'Chá de Casca de Cacau | 75g',
+    slug: 'cha-casca-de-cacau-75g',
     line: 'Infusões da Floresta',
     category: 'Chás & Infusões',
-    weight: '25g',
+    weight: '75g',
     tagline: 'A infusão dourada com o perfume reconfortante do cacau e zero calorias.',
     story: 'As cascas das amêndoas de cacau guardam uma riqueza fitoquímica singular e aromas florais extremamente aconchegantes. Após a torra branda, as cascas são separadas cuidadosamente e embaladas para infusão em água quente, gerando uma bebida límpida, naturalmente perfumada e digestiva.',
     benefits: [
@@ -364,13 +364,13 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Infundir 1 colher de sopa em 200ml de água a 90ºC por 6 minutos. Prescrever após almoço ou lanche vespertino.',
-    imageUrl: '/images/chadecasca.jpeg',
-    shopifyId: 'sh_cha_casca_25g',
+    imageUrl: '/image/chadecasca.jpeg',
+    shopifyId: 'sh_cha_casca_75g',
     price: 'R$ 22,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/cha-de-casca-de-cacau-25g'
+    buyUrl: 'https://www.seracacau.com.br/products/cha-casca-de-cacau-75g'
   },
   {
     id: 'prod-10',
@@ -400,13 +400,13 @@ export const PRODUCTS: Product[] = [
     hasLaudo: true,
     laudoUrl: '#',
     protocol: 'Sugestão Clínica: Utilizar o kit como ancoragem física no consultório para demonstrar a prática de Mindfulness e alimentação consciente.',
-    imageUrl: '/images/kitseracacau.jpeg',
+    imageUrl: '/image/kitseracacau.jpeg',
     shopifyId: 'sh_kit_inicio_gotas_xicara',
     price: 'R$ 179,00',
     originCooperativa: 'Cooperativa de Mulheres da Cabruca & Ateliê Terra Bahiana',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/kit-inicio-sera-cacau-gotas-105g-xicara'
+    buyUrl: 'https://www.seracacau.com.br/products/kit-inicio-gotas-105g-xicara'
   }
 ];
 
@@ -490,7 +490,7 @@ Prepare, prove antes de adoçar e me conta: como foi a sua primeira xícara?`,
           {
             id: 'c1-m1-cl2',
             title: 'Dia 02',
-            duration: '20 min',
+            duration: '4:49 min',
             videoUrl: 'https://vimeo.com/1222772421?share=copy',
             summary: `Bom dia, nutris. Segunda xícara.
 "Mas cacau não tem cafeína? Não vai me agitar?" A resposta é química — e hoje a Luna explica. Teobromina não é cafeína: estímulo mais gradual, sem o pico e a queda do café. E o cacau puro é uma das fontes mais densas de magnésio que existem (~520 mg/100 g).
@@ -512,7 +512,7 @@ Dica: uma pitada de sal marinho realça o amargor. Prove antes de adoçar.`,
           {
             id: 'c1-m1-cl3',
             title: 'Dia 03',
-            duration: '22 min',
+            duration: '4:14 min',
             videoUrl: 'https://vimeo.com/1222782711?share=copy&fl=sv&fe=ci',
             summary: `Bom dia, nutris. Terceira xícara — e talvez o dia favorito da Luna.
 Aquela vontade de chocolate nos dias antes da menstruação não é frescura: na fase lútea, o magnésio intracelular cai. O chocolate industrializado responde com açúcar; o cacau puro responde com magnésio de verdade e triptofano.
@@ -587,7 +587,7 @@ Boa para depois do almoço.`,
           {
             id: 'c1-m2-cl6',
             title: 'Dia 06',
-            duration: '25 min',
+            duration: '4:50 min',
             videoUrl: 'https://vimeo.com/1222789958?share=copy&fl=sv&fe=ci',
             summary: `Bom dia, nutris. Sexta xícara.
 Energia que sustenta — não a que sobe rápido e cai duas horas depois. Hoje a Luna fala de cacau no esporte (epicatequina, óxido nítrico, recuperação) e de uma saída honesta do ciclo café-exaustão-café.

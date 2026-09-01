@@ -321,19 +321,14 @@ export const LoginView: React.FC<LoginViewProps> = ({
 
       <div className="w-full max-w-md bg-surface border border-border-color rounded-2xl p-6 md:p-8 flex flex-col gap-6 shadow-sm relative z-10 my-8">
         
-        {/* Brand Header */}
-        <div className="flex flex-col items-center text-center gap-2">
+        {/* Brand Header (Logo Completa) */}
+        <div className="flex flex-col items-center text-center pb-2">
           <div className="relative group">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-primary-accent to-luxury-accent opacity-15 group-hover:opacity-25 blur transition-all duration-500" />
             <img 
-              src={SERA_CACAU_LOGO} 
-              alt="Será Cacau Logo" 
-              className="relative w-16 h-16 object-contain transition-transform duration-700 hover:scale-105" 
+              src="/logoseranovo_dark.png?v=solid" 
+              alt="Será Cacau" 
+              className="h-14 w-auto max-w-[260px] object-contain transition-transform duration-500 hover:scale-105" 
             />
-          </div>
-          <div className="flex flex-col mt-2">
-            <span className="font-sans font-extrabold text-xl tracking-[0.25em] text-primary-forest leading-none">SERÁ CACAU</span>
-            <span className="text-[9px] tracking-[0.4em] text-luxury-accent font-bold mt-1.5 uppercase">portal de membros</span>
           </div>
         </div>
 

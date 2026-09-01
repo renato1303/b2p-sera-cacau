@@ -75,19 +75,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className="flex flex-col gap-5">
           
-          {/* 1. Header Brand & Logo */}
-          <div className="flex items-center gap-3 pb-4 border-b border-[#455347]/40">
-            <div className="relative group cursor-pointer" onClick={() => setCurrentTab('dashboard')}>
-              <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-primary-accent to-luxury-accent opacity-30 group-hover:opacity-60 blur transition-opacity duration-500"></div>
+          {/* 1. Header Brand & Logo (Logo Completa com letras e ícone) */}
+          <div className="flex items-center justify-center pb-4 border-b border-[#455347]/40">
+            <div 
+              className="relative group cursor-pointer w-full flex items-center justify-center" 
+              onClick={() => setCurrentTab('dashboard')}
+            >
               <img 
-                src={SERA_CACAU_LOGO} 
+                src="/logoseranovo_white.png?v=solid" 
                 alt="Será Cacau" 
-                className="relative w-9 h-9 object-contain transition-transform duration-700 hover:scale-105" 
+                className="h-11 w-auto max-w-[210px] object-contain transition-transform duration-500 hover:scale-[1.03]" 
               />
-            </div>
-            <div className="flex flex-col cursor-pointer" onClick={() => setCurrentTab('dashboard')}>
-              <span className="font-sans font-extrabold text-[15px] tracking-[0.2em] uppercase text-white leading-none">SERÁ CACAU</span>
-              <span className="text-[8px] tracking-[0.35em] uppercase text-luxury-accent font-bold mt-1">MEMBER AREA</span>
             </div>
           </div>
  
@@ -203,13 +201,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Mobile Header and Navigation */}
       <div className="md:hidden flex flex-col w-full bg-primary-forest text-[#F7F3EC] sticky top-0 z-40">
-        <header className="flex items-center justify-between px-4 py-3 border-b border-secondary-forest/40 shadow-md">
-          <div className="flex items-center gap-2.5" onClick={() => setCurrentTab('dashboard')}>
-            <img src={SERA_CACAU_LOGO} alt="Será Cacau" className="w-7 h-7 object-contain" />
-            <div className="flex flex-col">
-              <span className="font-sans font-extrabold text-sm tracking-wider uppercase text-white leading-none">SERÁ CACAU</span>
-              <span className="text-[7px] tracking-widest uppercase text-luxury-accent mt-0.5">MEMBER</span>
-            </div>
+        <header className="flex items-center justify-between px-4 py-2.5 border-b border-secondary-forest/40 shadow-md">
+          <div className="flex items-center cursor-pointer" onClick={() => setCurrentTab('dashboard')}>
+            <img 
+              src="/logoseranovo_white.png?v=solid" 
+              alt="Será Cacau" 
+              className="h-8 w-auto max-w-[170px] object-contain" 
+            />
           </div>
 
           <div className="flex items-center gap-2">
