@@ -63,41 +63,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
     setUnregisteredRedirect(null);
 
     try {
-      // 1. Check if it's the Admin email
-      const isAdmin = 
-        cleanEmail === 'luna.azevedo.1@gmail.com' ||
-        cleanEmail === 'luna.azevedo@gmail.com' ||
-        cleanEmail === 'madeleine@seracacau.com.br' || 
-        cleanEmail === 'admin@seracacau.com.br' ||
-        cleanEmail.includes('luna.azevedo') ||
-        cleanEmail.includes('admin') ||
-        cleanEmail.includes('madeleine');
-
-      if (isAdmin) {
-        const isLuna = cleanEmail.includes('luna');
-        const customAdminProfile: UserProfile = isLuna ? {
-          name: 'Luna Azevedo',
-          email: cleanEmail,
-          phone: '(21) 98765-4321',
-          instagram: '@lunaazevedo',
-          specialty: 'Nutricionista & Curadora Cabruca',
-          city: 'Rio de Janeiro',
-          state: 'RJ',
-          role: UserRole.ADMIN,
-        } : {
-          ...adminProfile,
-          email: cleanEmail
-        };
-
-        setSuccessMsg(`Acesso administrativo autenticado com sucesso! Bem-vinda, ${customAdminProfile.name}.`);
-        setTimeout(() => {
-          onLogin(customAdminProfile);
-          setIsLoading(false);
-        }, 400);
-        return;
-      }
-
-      // 2. Check if Supabase has a profile for this email
+      // 1. Check if Supabase has a profile for this email FIRST
       if (isSupabaseConfigured) {
         try {
           const { data: profile, error } = await supabase
@@ -107,17 +73,36 @@ export const LoginView: React.FC<LoginViewProps> = ({
             .maybeSingle();
 
           if (profile && !error) {
+            // Determine default name if empty
+            let fallbackName = profile.name;
+            if (!fallbackName) {
+              if (cleanEmail.includes('madeleine')) fallbackName = 'Madeleine';
+              else if (cleanEmail.includes('luna')) fallbackName = 'Luna Azevedo';
+              else fallbackName = cleanEmail.split('@')[0];
+            }
+
+            const isExplicitAdmin = 
+              profile.role === 'ADMIN' ||
+              cleanEmail === 'madeleine@seracacau.com.br' ||
+              cleanEmail === 'admin@seracacau.com.br' ||
+              cleanEmail === 'luna.azevedo.1@gmail.com' ||
+              cleanEmail.includes('madeleine') ||
+              cleanEmail.includes('admin') ||
+              cleanEmail.includes('luna');
+
             const mappedProfile: UserProfile = {
               id: profile.id,
-              name: profile.name || cleanEmail.split('@')[0],
+              name: fallbackName,
               email: profile.email,
               phone: profile.phone || '',
-              instagram: profile.instagram || '',
-              specialty: profile.specialty || 'Nutrição Integrativa',
-              city: profile.city || 'São Paulo',
-              state: profile.state || 'SP',
-              role: profile.role === 'ADMIN' ? UserRole.ADMIN : UserRole.NUTRICIONISTA,
-              crn: profile.crn || 'CRN Ativo',
+              instagram: profile.instagram || (cleanEmail.includes('madeleine') ? '@seracacau' : (cleanEmail.includes('luna') ? '@lunaazevedo' : '')),
+              specialty: profile.specialty || (isExplicitAdmin ? (cleanEmail.includes('madeleine') ? "Gestão & Curadoria S'era Cacau" : "Nutricionista & Curadora Cabruca") : 'Nutrição Integrativa'),
+              city: profile.city || '',
+              state: profile.state || '',
+              role: isExplicitAdmin ? UserRole.ADMIN : UserRole.NUTRICIONISTA,
+              crn: profile.crn || '',
+              patientCoupon: profile.patient_coupon || profile.coupon_code || '',
+              couponCode: profile.coupon_code || profile.patient_coupon || '',
               totalPoints: profile.total_points ?? 0,
               tier: profile.tier || 'Bronze'
             };
@@ -131,6 +116,72 @@ export const LoginView: React.FC<LoginViewProps> = ({
         } catch (dbErr) {
           console.warn('Supabase profile query check:', dbErr);
         }
+      }
+
+      // 2. Fallback Admin Profiles (if not in Supabase yet)
+      // Madeleine - S'era Cacau
+      if (cleanEmail === 'madeleine@seracacau.com.br' || cleanEmail.includes('madeleine')) {
+        const madeleineProfile: UserProfile = {
+          name: 'Madeleine',
+          email: cleanEmail,
+          phone: '',
+          instagram: '@seracacau',
+          specialty: "Gestão & Curadoria S'era Cacau",
+          city: 'São Paulo',
+          state: 'SP',
+          role: UserRole.ADMIN,
+        };
+        setSuccessMsg('Acesso administrativo autenticado com sucesso! Bem-vinda, Madeleine.');
+        setTimeout(() => {
+          onLogin(madeleineProfile);
+          setIsLoading(false);
+        }, 400);
+        return;
+      }
+
+      // Luna Azevedo
+      if (
+        cleanEmail === 'luna.azevedo.1@gmail.com' ||
+        cleanEmail === 'luna.azevedo@gmail.com' ||
+        cleanEmail.includes('luna.azevedo') ||
+        cleanEmail.includes('luna')
+      ) {
+        const lunaProfile: UserProfile = {
+          name: 'Luna Azevedo',
+          email: cleanEmail,
+          phone: '(21) 98765-4321',
+          instagram: '@lunaazevedo',
+          specialty: 'Nutricionista & Curadora Cabruca',
+          city: 'Rio de Janeiro',
+          state: 'RJ',
+          role: UserRole.ADMIN,
+        };
+        setSuccessMsg('Acesso administrativo autenticado com sucesso! Bem-vinda, Luna Azevedo.');
+        setTimeout(() => {
+          onLogin(lunaProfile);
+          setIsLoading(false);
+        }, 400);
+        return;
+      }
+
+      // Generic Admin
+      if (cleanEmail === 'admin@seracacau.com.br' || cleanEmail.includes('admin')) {
+        const genericAdminProfile: UserProfile = {
+          name: "Administrador S'era Cacau",
+          email: cleanEmail,
+          phone: '',
+          instagram: '@seracacau',
+          specialty: "Gestão do Portal Soul",
+          city: 'São Paulo',
+          state: 'SP',
+          role: UserRole.ADMIN,
+        };
+        setSuccessMsg('Acesso administrativo autenticado com sucesso!');
+        setTimeout(() => {
+          onLogin(genericAdminProfile);
+          setIsLoading(false);
+        }, 400);
+        return;
       }
 
       // 3. Check Mariana Preto (default showcase account)
@@ -150,7 +201,7 @@ export const LoginView: React.FC<LoginViewProps> = ({
           city: 'São Paulo',
           state: 'SP',
           role: UserRole.NUTRICIONISTA,
-          crn: 'CRN-3 99880',
+          crn: '',
           totalPoints: 150,
           tier: 'Bronze'
         };

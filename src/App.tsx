@@ -65,7 +65,7 @@ export default function App() {
     city: 'São Paulo',
     state: 'SP',
     role: UserRole.NUTRICIONISTA,
-    crn: 'CRN-3 71830',
+    crn: '',
   };
 
   const adminProfile: UserProfile = {
@@ -124,6 +124,8 @@ export default function App() {
                 state: profile.state || '',
                 role: (profile.role === 'ADMIN' ? UserRole.ADMIN : UserRole.NUTRICIONISTA),
                 crn: profile.crn || '',
+                patientCoupon: profile.patient_coupon || profile.coupon_code || '',
+                couponCode: profile.coupon_code || profile.patient_coupon || '',
                 totalPoints: profile.total_points ?? 0,
                 tier: profile.tier || 'Bronze'
               };
@@ -147,6 +149,8 @@ export default function App() {
                 state: session.user.user_metadata?.state || '',
                 role: session.user.user_metadata?.role || UserRole.NUTRICIONISTA,
                 crn: session.user.user_metadata?.crn || '',
+                patientCoupon: session.user.user_metadata?.patient_coupon || '',
+                couponCode: session.user.user_metadata?.coupon_code || '',
                 totalPoints: 0,
                 tier: 'Bronze'
               };
@@ -156,6 +160,20 @@ export default function App() {
             setIsAuthLoading(false);
           });
       } else {
+        const auth = localStorage.getItem('sera_cacau_authenticated') === 'true';
+        const savedUser = localStorage.getItem('sera_cacau_user');
+        if (auth && savedUser) {
+          try {
+            const parsed = JSON.parse(savedUser);
+            setCurrentUser(parsed);
+            setIsAuthenticated(true);
+            if (parsed.role === UserRole.ADMIN) {
+              setCurrentTab('admin');
+            }
+          } catch (e) {
+            // Fallback
+          }
+        }
         setIsAuthLoading(false);
       }
     });
@@ -180,6 +198,8 @@ export default function App() {
                 state: profile.state || '',
                 role: (profile.role === 'ADMIN' ? UserRole.ADMIN : UserRole.NUTRICIONISTA),
                 crn: profile.crn || '',
+                patientCoupon: profile.patient_coupon || profile.coupon_code || '',
+                couponCode: profile.coupon_code || profile.patient_coupon || '',
                 totalPoints: profile.total_points ?? 0,
                 tier: profile.tier || 'Bronze'
               };
@@ -210,15 +230,18 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    const confirmExit = window.confirm("Deseja realmente sair da plataforma?");
-    if (confirmExit) {
-      if (isSupabaseConfigured) {
-        await supabase.auth.signOut();
-      }
-      setIsAuthenticated(false);
-      setCurrentUser(null as any);
+    try {
       localStorage.removeItem('sera_cacau_authenticated');
       localStorage.removeItem('sera_cacau_user');
+      if (isSupabaseConfigured) {
+        await supabase.auth.signOut().catch(() => {});
+      }
+    } catch (err) {
+      console.warn('Erro ao processar encerramento de sessão:', err);
+    } finally {
+      setIsAuthenticated(false);
+      setCurrentUser(null as any);
+      setCurrentTab('dashboard');
     }
   };
 
@@ -241,6 +264,46 @@ export default function App() {
       setCompletedClassIds([]);
     }
   }, [currentUser]);
+
+  // Load registered members/nutritionists from Supabase profiles
+  useEffect(() => {
+    if (isSupabaseConfigured) {
+      supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .then(({ data, error }) => {
+          if (data && data.length > 0 && !error) {
+            const dbMembers: Member[] = data
+              .filter((p: any) => p.role !== 'ADMIN')
+              .map((p: any) => ({
+                id: p.id || `db-${p.email}`,
+                name: p.name || 'Nutricionista',
+                email: p.email || '',
+                phone: p.phone || '',
+                crn: p.crn || '',
+                city: p.city || '',
+                state: p.state || '',
+                specialty: p.specialty || '',
+                patientCoupon: p.patient_coupon || p.coupon_code || '',
+                couponCode: p.coupon_code || p.patient_coupon || '',
+                enrolledCourseIds: ['c1', 'c2'],
+                joinedDate: p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recente',
+                totalPoints: p.total_points ?? 0,
+                tier: p.tier || 'Bronze'
+              }));
+
+            if (dbMembers.length > 0) {
+              setMembers(prev => {
+                const dbEmails = new Set(dbMembers.map(m => m.email.toLowerCase()));
+                const nonDuplicates = prev.filter(m => !dbEmails.has(m.email.toLowerCase()));
+                return [...dbMembers, ...nonDuplicates];
+              });
+            }
+          }
+        });
+    }
+  }, []);
   
   // Data State (allows admin edits to persist during session)
   const [courses, setCourses] = useState<Course[]>(COURSES);
@@ -826,6 +889,7 @@ export default function App() {
             <ProfileView 
               user={currentUser}
               onUpdateProfile={handleUpdateProfile}
+              onLogout={handleLogout}
             />
           )}
 

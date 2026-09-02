@@ -55,7 +55,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const activeCourse = courses[0] || null;
 
-  const patientCoupon = getPatientCoupon(user.name);
+  const patientCoupon = user.patientCoupon || user.couponCode || getPatientCoupon(user.name);
 
   const [copiedPatient, setCopiedPatient] = useState(false);
 
@@ -130,10 +130,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                   Registro Clínico
                 </span>
-                <div className="flex items-center mt-1">
-                  <span className="text-xs font-bold text-primary-text font-mono tracking-tight whitespace-nowrap">
-                    {user.crn || 'CRN-3 71830'}
-                  </span>
+                <div className="flex items-center mt-1 min-w-0">
+                  {user.crn && user.crn.trim() ? (
+                    <span className="text-xs font-bold text-primary-text font-mono tracking-tight truncate" title={user.crn}>
+                      {user.crn}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-[#8E9B90] italic font-sans font-medium truncate" title="Preencha seu CRN na aba Meu Perfil">
+                      Pendente
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -157,8 +163,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
               </div>
 
-              {/* 5. Cupom Pacientes 8% (Esticado lateralmente) */}
-              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac flex-1 min-w-[170px] sm:min-w-[185px]">
+              {/* 5. Cupom Pacientes 8% (Esticado lateralmente - idêntico ao Desconto Nutri) */}
+              <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac flex-1 min-w-[210px] sm:min-w-[230px]">
                 <div className="flex items-center justify-between gap-1.5 min-w-0">
                   <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Cupom Pacientes
@@ -170,18 +176,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <button
                   type="button"
                   onClick={handleCopyPatient}
-                  title="Clique para copiar o código de checkout de 8% para os pacientes"
-                  className="mt-1 flex items-center justify-between gap-2 text-xs font-mono font-extrabold text-primary-accent hover:text-primary-forest transition-colors cursor-pointer w-full text-left min-w-0"
+                  title={`Clique para copiar o cupom: ${patientCoupon}`}
+                  className="mt-1 flex flex-col min-w-0 w-full text-left cursor-pointer group"
                 >
-                  <span className="whitespace-nowrap font-mono">{patientCoupon}</span>
-                  {copiedPatient ? (
-                    <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-sans font-bold shrink-0">
-                      <Check className="w-3.5 h-3.5" />
-                      <span className="inline">Copiado</span>
+                  <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+                    <span 
+                      className="text-[11px] sm:text-xs font-mono font-bold text-primary-accent group-hover:text-primary-forest transition-colors truncate" 
+                      title={patientCoupon}
+                    >
+                      {patientCoupon}
                     </span>
-                  ) : (
-                    <Copy className="w-3.5 h-3.5 text-secondary-text/40 group-hover/pac:text-primary-accent transition-colors shrink-0" />
-                  )}
+                    {copiedPatient ? (
+                      <span className="flex items-center gap-0.5 text-[9px] text-emerald-600 font-sans font-bold shrink-0">
+                        <Check className="w-3 h-3" />
+                        <span>Copiado</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3 h-3 text-secondary-text/40 group-hover:text-primary-accent transition-colors shrink-0" />
+                    )}
+                  </div>
+                  <span className="text-[8px] font-mono text-primary-accent/80 tracking-tight whitespace-nowrap">
+                    {copiedPatient ? 'Pronto para enviar!' : 'Clique para copiar'}
+                  </span>
                 </button>
               </div>
 
@@ -217,7 +233,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="flex justify-between items-end border-t border-white/10 pt-3 mt-1.5">
             <div className="flex flex-col gap-0.5">
               <span className="text-[7px] text-white/40 uppercase tracking-widest font-mono">Registro</span>
-              <span className="text-[10px] font-mono font-bold text-white">{user.crn || 'CRN-3 71830'}</span>
+              <span className="text-[10px] font-mono font-bold text-white">{user.crn && user.crn.trim() ? user.crn : 'Pendente no perfil'}</span>
             </div>
             <div className="flex flex-col gap-0.5 items-end">
               <span className="text-[7px] text-white/40 uppercase tracking-widest font-mono">Código</span>

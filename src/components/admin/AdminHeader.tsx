@@ -58,7 +58,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     { id: 'recipes' as AdminTab, label: 'Receitas & Clínicas', count: stats.totalRecipes, icon: Utensils, color: 'text-luxury-accent' },
     { id: 'sheets' as AdminTab, label: 'Fichas Técnicas', count: stats.totalSheets, icon: ShieldCheck, color: 'text-teal-700' },
     { id: 'science' as AdminTab, label: 'Ciência do Cacau', count: stats.totalArticles, icon: Microscope, color: 'text-sky-700' },
-    { id: 'members' as AdminTab, label: 'Nutris & Pontos (CRM)', count: stats.totalMembers, icon: Users, color: 'text-indigo-700' },
+    { id: 'members' as AdminTab, label: 'Cadastro de Nutris', count: stats.totalMembers, icon: Users, color: 'text-indigo-700' },
     { id: 'shopify' as AdminTab, label: 'Integração Shopify', count: 3, icon: ShopifyIcon, color: 'text-secondary-accent' }
   ];
 
@@ -82,7 +82,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             </h1>
 
             <p className="text-[#C2C9C0] text-sm sm:text-base leading-relaxed font-light">
-              Publique e gerencie cursos, módulos, artigos do blog, fichas técnicas oficiais, evidências científicas, produtos, receitas e a pontuação das nutricionistas em tempo real.
+              Publique e gerencie cursos, módulos, artigos do blog, fichas técnicas oficiais, evidências científicas, produtos, receitas e o cadastro de nutricionistas em tempo real.
             </p>
           </div>
 

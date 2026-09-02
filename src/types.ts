@@ -38,6 +38,8 @@ export interface UserProfile {
   role: UserRole;
   avatarUrl?: string;
   crn?: string; // CRN registry for nutritionists
+  patientCoupon?: string; // Cupom exclusivo para pacientes / clientes
+  couponCode?: string;
   totalPoints?: number;
   tier?: GamificationTier;
 }
@@ -155,7 +157,11 @@ export interface Member {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   crn?: string;
+  specialty?: string;
+  patientCoupon?: string;
+  couponCode?: string;
   city: string;
   state: string;
   enrolledCourseIds: string[];

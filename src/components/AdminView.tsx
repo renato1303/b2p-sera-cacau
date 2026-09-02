@@ -14,8 +14,11 @@ import { AdminProducts } from './admin/AdminProducts';
 import { AdminRecipes } from './admin/AdminRecipes';
 import { AdminTechnicalSheets } from './admin/AdminTechnicalSheets';
 import { AdminScience } from './admin/AdminScience';
+import { AdminImportMembersModal } from './admin/AdminImportMembersModal';
 import { SHOPIFY_INTEGRATION_METHODS, SHOPIFY_SUPPORT_TEMPLATE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+import { SUPABASE_SQL_SCHEMA } from '../lib/supabaseSchema';
+import { getPatientCoupon } from '../lib/coupon';
 import { 
   Users, 
   PlusCircle, 
@@ -25,10 +28,19 @@ import {
   Sparkles,
   Search,
   Award,
+  ChevronLeft,
   ChevronRight,
   TrendingUp,
   ShieldCheck,
-  ExternalLink
+  ExternalLink,
+  FileSpreadsheet,
+  UploadCloud,
+  Phone,
+  Tag,
+  Database,
+  Terminal,
+  Check,
+  X
 } from 'lucide-react';
 
 interface AdminViewProps {
@@ -97,102 +109,54 @@ export const AdminView: React.FC<AdminViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('courses');
   const [successMsg, setSuccessMsg] = useState<string>('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
+  const [isSqlModalOpen, setIsSqlModalOpen] = useState<boolean>(false);
+  const [copiedAdminSql, setCopiedAdminSql] = useState<boolean>(false);
 
-  // Points Launch Form States in CRM tab
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(members[0]?.id || '');
-  const [launchPoints, setLaunchPoints] = useState<string>('');
-  const [launchReason, setLaunchReason] = useState<string>('');
+  // Member Search and Pagination States in Cadastro de Nutris tab
   const [memberSearchQuery, setMemberSearchQuery] = useState('');
+  const [memberCurrentPage, setMemberCurrentPage] = useState<number>(1);
+  const MEMBERS_PER_PAGE = 15;
 
   const triggerSuccess = (msg: string) => {
     setSuccessMsg(msg);
     setTimeout(() => setSuccessMsg(''), 4500);
   };
 
-  const handleLaunchPoints = (e: React.FormEvent) => {
-    e.preventDefault();
-    const targetId = selectedMemberId || (members[0]?.id || '');
-    if (!targetId || !launchPoints || !launchReason) {
-      alert('Por favor, preencha todos os campos do formulário de lançamento.');
-      return;
-    }
-
-    const memberToUpdate = members.find(m => m.id === targetId);
-    if (!memberToUpdate) return;
-
-    const pointsToAdd = parseInt(launchPoints, 10);
-    if (isNaN(pointsToAdd)) {
-      alert('Por favor, digite um número válido de pontos.');
-      return;
-    }
-
-    const updatedPoints = (memberToUpdate.totalPoints || 0) + pointsToAdd;
-
-    // Determine new tier
-    let updatedTier: 'Bronze' | 'Prata' | 'Ouro' | 'Diamante' = 'Bronze';
-    if (updatedPoints > 1200) {
-      updatedTier = 'Diamante';
-    } else if (updatedPoints > 700) {
-      updatedTier = 'Ouro';
-    } else if (updatedPoints > 300) {
-      updatedTier = 'Prata';
-    }
-
-    // Write to Supabase if configured and valid UUID
-    if (isSupabaseConfigured) {
-      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(targetId);
-      if (isUuid) {
-        supabase.from('points_history').insert({
-          member_id: targetId,
-          points: pointsToAdd,
-          reason: launchReason
-        }).then(({ error: histError }) => {
-          if (histError) console.error('Erro ao salvar pontos no histórico:', histError);
-        });
-
-        supabase.from('profiles').update({
-          total_points: updatedPoints,
-          tier: updatedTier
-        }).eq('id', targetId).then(({ error: profError }) => {
-          if (profError) console.error('Erro ao atualizar perfil do membro:', profError);
-        });
-      }
-    }
-
-    // Update Member list state
-    setMembers(prev => prev.map(m => {
-      if (m.id === targetId) {
-        return {
-          ...m,
-          totalPoints: updatedPoints,
-          tier: updatedTier
-        };
-      }
-      return m;
-    }));
-
-    // Create PointsEntry
-    const newEntry: PointsEntry = {
-      id: `pe-${Date.now()}`,
-      memberId: targetId,
-      points: pointsToAdd,
-      reason: launchReason,
-      date: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' })
-    };
-
-    // Update Points History state
-    setPointsHistory(prev => [newEntry, ...prev]);
-
-    triggerSuccess(`+${pointsToAdd} pontos creditados com sucesso para ${memberToUpdate.name}!`);
-    setLaunchPoints('');
-    setLaunchReason('');
-  };
-
   const filteredMembers = members.filter(m => {
     if (!memberSearchQuery.trim()) return true;
     const q = memberSearchQuery.toLowerCase();
-    return m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q) || m.crn.toLowerCase().includes(q);
+    return (
+      m.name.toLowerCase().includes(q) ||
+      m.email.toLowerCase().includes(q) ||
+      (m.phone && m.phone.toLowerCase().includes(q)) ||
+      (m.crn && m.crn.toLowerCase().includes(q)) ||
+      (m.patientCoupon && m.patientCoupon.toLowerCase().includes(q)) ||
+      (m.city && m.city.toLowerCase().includes(q))
+    );
   });
+
+  const totalMemberPages = Math.max(1, Math.ceil(filteredMembers.length / MEMBERS_PER_PAGE));
+  const safeMemberPage = Math.min(Math.max(1, memberCurrentPage), totalMemberPages);
+  const paginatedMembers = filteredMembers.slice(
+    (safeMemberPage - 1) * MEMBERS_PER_PAGE,
+    safeMemberPage * MEMBERS_PER_PAGE
+  );
+  const memberStartIndex = filteredMembers.length === 0 ? 0 : (safeMemberPage - 1) * MEMBERS_PER_PAGE + 1;
+  const memberEndIndex = Math.min(safeMemberPage * MEMBERS_PER_PAGE, filteredMembers.length);
+
+  const getPaginationTabs = (currentPage: number, totalPages: number) => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (currentPage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+  };
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 md:px-8 space-y-8 font-sans text-primary-text">
@@ -279,49 +243,95 @@ export const AdminView: React.FC<AdminViewProps> = ({
           />
         )}
 
-        {/* 7. MEMBERS & CRM */}
+        {/* 7. CADASTRO DE NUTRIS */}
         {activeTab === 'members' && (
           <div className="space-y-8 animate-fadeIn">
             {/* Top Bar */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-[#2E4030]/10 shadow-sm">
               <div>
-                <h2 className="text-xl font-serif text-primary-forest">Gestão de Membros, Rankings & Bonificações (CRM)</h2>
+                <h2 className="text-xl font-serif text-primary-forest">Cadastro de Nutris</h2>
                 <p className="text-xs text-[#526054] mt-0.5">
-                  Acompanhe nutricionistas credenciadas, libere acessos e lance pontos de bonificação por prescrição.
+                  Consulte e gerencie as nutricionistas credenciadas, cupons de desconto para pacientes e dados de contato.
                 </p>
               </div>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
-                {members.length} Profissionais Credenciadas
-              </span>
+              
+              <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setIsSqlModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-primary-forest border border-[#2E4030]/15 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  title="Ver script SQL de tabelas e permissões para o Supabase"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-primary-accent" />
+                  <span>Script SQL Supabase</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                >
+                  <FileSpreadsheet className="w-4 h-4 text-secondary-accent" />
+                  <span>Importar do Excel (.xlsx / .csv)</span>
+                </button>
+
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
+                  {members.length} Credenciadas
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              {/* MEMBERS TABLE (8 Cols) */}
-              <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-[#2E4030]/10 shadow-sm space-y-4">
-                <div className="flex items-center gap-3 bg-[#FAF7F2] p-3 rounded-2xl border border-[#2E4030]/10">
-                  <Search className="w-4 h-4 text-[#6A786C] ml-2" />
+            {/* MEMBERS TABLE (Full Width) */}
+            <div className="w-full bg-white rounded-3xl p-6 border border-[#2E4030]/10 shadow-sm space-y-4">
+              {/* Search Bar & Stats */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FAF7F2] p-3 rounded-2xl border border-[#2E4030]/10">
+                <div className="flex items-center gap-2 flex-1">
+                  <Search className="w-4 h-4 text-[#6A786C] ml-2 shrink-0" />
                   <input
                     type="text"
                     value={memberSearchQuery}
-                    onChange={e => setMemberSearchQuery(e.target.value)}
-                    placeholder="Buscar nutricionista por nome, e-mail ou CRN..."
+                    onChange={e => {
+                      setMemberSearchQuery(e.target.value);
+                      setMemberCurrentPage(1);
+                    }}
+                    placeholder="Buscar por nome, e-mail, telefone, cupom ou CRN..."
                     className="w-full text-xs text-primary-text bg-transparent focus:outline-none"
                   />
+                  {memberSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMemberSearchQuery('');
+                        setMemberCurrentPage(1);
+                      }}
+                      className="p-1 text-[#6A786C] hover:text-primary-forest text-xs cursor-pointer"
+                      title="Limpar busca"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs text-[#526054]">
-                    <thead>
-                      <tr className="border-b border-[#2E4030]/10 text-primary-forest font-bold uppercase text-[10px] tracking-wider font-mono">
-                        <th className="py-3 px-3">Profissional</th>
-                        <th className="py-3 px-3">Pontos / Nível</th>
-                        <th className="py-3 px-3">Registro (CRN)</th>
-                        <th className="py-3 px-3">Cidade / UF</th>
-                        <th className="py-3 px-3 text-right">Ação</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#2E4030]/5">
-                      {filteredMembers.map(member => (
+                <div className="text-[11px] font-mono text-[#6A786C] px-2 text-right shrink-0">
+                  {filteredMembers.length} {filteredMembers.length === 1 ? 'encontrada' : 'encontradas'}
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-x-auto rounded-2xl border border-[#2E4030]/10">
+                <table className="w-full text-left text-xs text-[#526054]">
+                  <thead>
+                    <tr className="bg-[#FAF7F2] border-b border-[#2E4030]/10 text-primary-forest font-bold uppercase text-[10px] tracking-wider font-mono">
+                      <th className="py-3 px-3">Profissional</th>
+                      <th className="py-3 px-3">Cupom Paciente (8%)</th>
+                      <th className="py-3 px-3">Contato & Telefone</th>
+                      <th className="py-3 px-3">Registro (CRN)</th>
+                      <th className="py-3 px-3">Cidade / UF</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2E4030]/5">
+                    {paginatedMembers.length > 0 ? (
+                      paginatedMembers.map(member => (
                         <tr key={member.id} className="hover:bg-[#FAF7F2] transition-colors">
                           <td className="py-3 px-3 font-semibold text-primary-forest">
                             <div className="flex flex-col">
@@ -330,91 +340,123 @@ export const AdminView: React.FC<AdminViewProps> = ({
                             </div>
                           </td>
                           <td className="py-3 px-3">
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-primary-accent">{member.totalPoints || 0} pts</span>
-                              <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
-                                {member.tier || 'Bronze'}
-                              </span>
-                            </div>
+                            <span className="inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] text-[#7A5B1D] bg-[#FAF3E0] border border-[#E8DAB2] px-2 py-0.5 rounded-md shadow-xs" title="Cupom oficial de 8% de desconto para clientes/pacientes">
+                              <Tag className="w-3 h-3 text-primary-accent" />
+                              <span>{member.patientCoupon || getPatientCoupon(member.name)}</span>
+                            </span>
                           </td>
-                          <td className="py-3 px-3 font-mono text-[11px] text-primary-forest font-semibold">{member.crn}</td>
-                          <td className="py-3 px-3">{member.city} - {member.state}</td>
-                          <td className="py-3 px-3 text-right">
+                          <td className="py-3 px-3 font-mono text-[11px] text-[#4A554B]">
+                            {member.phone ? (
+                              <span className="inline-flex items-center gap-1">
+                                <Phone className="w-3 h-3 text-[#6A786C]" />
+                                {member.phone}
+                              </span>
+                            ) : (
+                              <span className="text-[#8E9B90] italic">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 font-mono text-[11px] text-primary-forest font-semibold">{member.crn || '-'}</td>
+                          <td className="py-3 px-3">
+                            {member.city || member.state ? (
+                              <span>{member.city ? (member.state ? `${member.city} - ${member.state}` : member.city) : member.state}</span>
+                            ) : (
+                              <span className="text-[#8E9B90] italic text-[11px]">Não informada</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-[#6A786C] space-y-2">
+                          <p className="text-xs font-semibold">Nenhuma nutricionista encontrada.</p>
+                          {memberSearchQuery && (
                             <button
                               type="button"
                               onClick={() => {
-                                setSelectedMemberId(member.id);
-                                triggerSuccess(`Membro ${member.name} selecionado para bonificação.`);
+                                setMemberSearchQuery('');
+                                setMemberCurrentPage(1);
                               }}
-                              className="text-[10px] uppercase font-bold tracking-widest text-primary-accent hover:text-primary-forest transition-colors font-mono"
+                              className="text-xs font-bold text-primary-accent underline cursor-pointer"
                             >
-                              Bonificar
+                              Limpar filtro de busca
                             </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
 
-              {/* LAUNCH POINTS FORM (4 Cols) */}
-              <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-[#2E4030]/10 shadow-sm space-y-5">
-                <div className="border-b border-[#2E4030]/10 pb-3">
-                  <span className="text-[10px] font-mono uppercase font-bold text-primary-accent block">Bonificação</span>
-                  <h3 className="text-lg font-serif font-bold text-primary-forest mt-0.5">Lançar Pontos Manuais</h3>
-                </div>
+              {/* Pagination Navigation Footer (15 rows limit per page) */}
+              {filteredMembers.length > 0 && (
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#2E4030]/10">
+                  <div className="text-xs text-[#6A786C] font-mono">
+                    Mostrando <strong className="text-primary-forest font-bold">{memberStartIndex}</strong> a <strong className="text-primary-forest font-bold">{memberEndIndex}</strong> de <strong className="text-primary-forest font-bold">{filteredMembers.length}</strong> nutricionistas (15 por página)
+                  </div>
 
-                <form onSubmit={handleLaunchPoints} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-primary-forest">Selecionar Profissional</label>
-                    <select
-                      value={selectedMemberId}
-                      onChange={e => setSelectedMemberId(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#2E4030]/15 text-xs text-primary-text font-medium focus:outline-none"
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                    {/* Previous Page Button */}
+                    <button
+                      type="button"
+                      onClick={() => setMemberCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={safeMemberPage <= 1}
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                        safeMemberPage <= 1
+                          ? 'text-gray-400 bg-gray-100 cursor-not-allowed border border-transparent'
+                          : 'text-primary-forest bg-[#FAF7F2] hover:bg-[#F0EAE1] border border-[#2E4030]/15 cursor-pointer shadow-xs'
+                      }`}
+                      title="Página Anterior"
                     >
-                      {members.map(m => (
-                        <option key={m.id} value={m.id}>
-                          {m.name} ({m.crn})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Anterior</span>
+                    </button>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-primary-forest">Quantidade de Pontos</label>
-                    <input
-                      type="number"
-                      min="1"
-                      required
-                      value={launchPoints}
-                      onChange={e => setLaunchPoints(e.target.value)}
-                      placeholder="Ex: 150"
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#2E4030]/15 text-xs text-primary-text font-medium focus:outline-none"
-                    />
-                  </div>
+                    {/* Numbered Page Tabs */}
+                    {getPaginationTabs(safeMemberPage, totalMemberPages).map((pageNum, idx) => {
+                      if (pageNum === '...') {
+                        return (
+                          <span key={`ellipsis-${idx}`} className="px-2 text-xs font-bold text-gray-400">
+                            ...
+                          </span>
+                        );
+                      }
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-primary-forest">Motivo / Prescrição Clínica</label>
-                    <input
-                      type="text"
-                      required
-                      value={launchReason}
-                      onChange={e => setLaunchReason(e.target.value)}
-                      placeholder="Ex: Prescrição de Gotas 210g"
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#2E4030]/15 text-xs text-primary-text focus:outline-none"
-                    />
-                  </div>
+                      const isCurrent = pageNum === safeMemberPage;
+                      return (
+                        <button
+                          key={`page-${pageNum}`}
+                          type="button"
+                          onClick={() => setMemberCurrentPage(Number(pageNum))}
+                          className={`min-w-[32px] h-8 px-2 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer ${
+                            isCurrent
+                              ? 'bg-primary-forest text-white shadow-sm border border-primary-forest'
+                              : 'bg-[#FAF7F2] hover:bg-[#F0EAE1] text-[#4A554B] border border-[#2E4030]/15'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
 
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-primary-forest hover:bg-primary-forest/90 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 mt-2"
-                  >
-                    <PlusCircle className="w-4 h-4 text-secondary-accent" />
-                    <span>Confirmar e Creditar Pontos</span>
-                  </button>
-                </form>
-              </div>
+                    {/* Next Page Button */}
+                    <button
+                      type="button"
+                      onClick={() => setMemberCurrentPage(prev => Math.min(totalMemberPages, prev + 1))}
+                      disabled={safeMemberPage >= totalMemberPages}
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                        safeMemberPage >= totalMemberPages
+                          ? 'text-gray-400 bg-gray-100 cursor-not-allowed border border-transparent'
+                          : 'text-primary-forest bg-[#FAF7F2] hover:bg-[#F0EAE1] border border-[#2E4030]/15 cursor-pointer shadow-xs'
+                      }`}
+                      title="Próxima Página"
+                    >
+                      <span className="hidden sm:inline">Próxima</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -494,6 +536,109 @@ export const AdminView: React.FC<AdminViewProps> = ({
           </div>
         )}
       </div>
+
+      {/* Excel / Supabase Nutritionists Importer Modal */}
+      <AdminImportMembersModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        existingMembers={members}
+        onImportSuccess={(newMembers, count) => {
+          setMembers(prev => {
+            const existingEmails = new Set(newMembers.map(nm => nm.email.toLowerCase()));
+            const nonDuplicates = prev.filter(p => !existingEmails.has(p.email.toLowerCase()));
+            return [...newMembers, ...nonDuplicates];
+          });
+          triggerSuccess(`🎉 ${count} nutricionistas importadas e sincronizadas com sucesso!`);
+        }}
+      />
+
+      {/* Supabase SQL Schema Viewer Modal */}
+      {isSqlModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto animate-fadeIn">
+          <div className="relative w-full max-w-3xl bg-white rounded-3xl border border-[#2E4030]/15 shadow-2xl overflow-hidden my-8 max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="bg-gradient-to-br from-[#1C261D] via-[#243325] to-[#121A13] p-6 text-[#F7F3EC] flex items-start justify-between gap-4 shrink-0">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-secondary-accent text-xs font-semibold">
+                  <Terminal className="w-3.5 h-3.5" />
+                  <span>Configuração do Banco de Dados</span>
+                </div>
+                <h2 className="text-xl font-serif font-bold text-white">
+                  Script SQL para o Supabase (Schema & RLS)
+                </h2>
+                <p className="text-xs text-[#C2C9C0]">
+                  Execute este script no <strong>SQL Editor</strong> do seu projeto Supabase para criar as tabelas <code>profiles</code>, <code>points_history</code> e <code>course_progress</code>.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsSqlModalOpen(false)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4 overflow-y-auto flex-1">
+              <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-[#2E4030]/10 text-xs text-[#3E4A3F] space-y-2">
+                <div className="flex items-center gap-2 font-bold text-primary-forest text-sm">
+                  <Sparkles className="w-4 h-4 text-primary-accent" />
+                  <span>Passo a Passo Rápido:</span>
+                </div>
+                <ol className="list-decimal list-inside space-y-1 text-xs text-[#526054]">
+                  <li>Abra o painel do seu projeto no <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer" className="text-primary-accent font-bold underline inline-flex items-center gap-0.5">Supabase Dashboard <ExternalLink className="w-3 h-3" /></a></li>
+                  <li>No menu lateral esquerdo, clique no ícone <strong>SQL Editor</strong></li>
+                  <li>Clique em <strong>+ New query</strong>, cole o script abaixo e clique no botão verde <strong>Run</strong></li>
+                </ol>
+              </div>
+
+              <div className="bg-[#182219] p-4 rounded-2xl border border-white/10 space-y-3">
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                  <span className="text-xs font-mono font-bold text-secondary-accent">
+                    schema.sql (PostgreSQL)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(SUPABASE_SQL_SCHEMA);
+                      setCopiedAdminSql(true);
+                      setTimeout(() => setCopiedAdminSql(false), 3000);
+                    }}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold transition-all text-white cursor-pointer border border-white/20 shadow-xs"
+                  >
+                    {copiedAdminSql ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-300">Copiado!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-secondary-accent" />
+                        <span>Copiar Script SQL Completo</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <pre className="text-[11px] font-mono bg-black/60 p-4 rounded-xl max-h-72 overflow-y-auto whitespace-pre-wrap text-emerald-300 border border-white/10 leading-relaxed">
+                  {SUPABASE_SQL_SCHEMA}
+                </pre>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-[#FAF7F2] p-4 border-t border-[#2E4030]/10 flex justify-end shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsSqlModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-primary-forest text-white text-xs font-bold hover:bg-primary-forest/90 transition-all cursor-pointer"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

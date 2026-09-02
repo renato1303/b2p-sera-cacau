@@ -186,10 +186,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            id="btn-logout-desktop"
+            type="button"
             onClick={onLogout}
-            className="flex items-center gap-3 px-3 py-2 text-rose-300 hover:text-rose-400 transition-all text-left text-xs uppercase font-medium tracking-wider hover:bg-rose-500/10 rounded-lg"
+            className="flex items-center gap-3 px-3 py-2 text-rose-300 hover:text-rose-200 transition-all text-left text-xs uppercase font-medium tracking-wider hover:bg-rose-500/20 rounded-lg cursor-pointer group"
           >
-            <LogOut className="w-4 h-4 shrink-0" />
+            <LogOut className="w-4 h-4 shrink-0 group-hover:-translate-x-0.5 transition-transform" />
             <span>Sair da Sessão</span>
           </button>
 
@@ -212,16 +214,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setCurrentTab('comunidade')}
-              className={`p-1.5 rounded-lg text-xs flex items-center gap-1 ${currentTab === 'comunidade' ? 'bg-white/10 text-luxury-accent' : 'text-white/80'}`}
+              onClick={() => setCurrentTab('perfil')}
+              className={`p-1.5 rounded-lg text-xs flex items-center gap-1 cursor-pointer ${currentTab === 'perfil' ? 'bg-white/10 text-luxury-accent' : 'text-white/80'}`}
+              title="Meu Perfil"
             >
-              <Users className="w-4 h-4" />
+              <User className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setCurrentTab('receitas')}
-              className={`p-1.5 rounded-lg text-xs flex items-center gap-1 ${currentTab === 'receitas' ? 'bg-white/10 text-luxury-accent' : 'text-white/80'}`}
+              type="button"
+              onClick={onLogout}
+              className="p-1.5 rounded-lg text-xs flex items-center gap-1 text-rose-300 hover:bg-rose-500/20 transition-all cursor-pointer"
+              title="Sair da Sessão"
             >
-              <Utensils className="w-4 h-4" />
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </header>

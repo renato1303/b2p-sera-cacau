@@ -15,7 +15,8 @@ import {
   Sparkles,
   Tag,
   Copy,
-  Check
+  Check,
+  LogOut
 } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
 import { getPatientCoupon } from '../lib/coupon';
@@ -23,14 +24,15 @@ import { getPatientCoupon } from '../lib/coupon';
 interface ProfileViewProps {
   user: UserProfile;
   onUpdateProfile: (updatedProfile: UserProfile) => void;
+  onLogout?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile, onLogout }) => {
   const [formData, setFormData] = useState<UserProfile>({ ...user });
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [copiedPatient, setCopiedPatient] = useState(false);
 
-  const patientCoupon = getPatientCoupon(formData.name);
+  const patientCoupon = formData.patientCoupon || user.patientCoupon || user.couponCode || getPatientCoupon(formData.name);
 
   const handleCopyPatient = () => {
     navigator.clipboard.writeText(patientCoupon);
@@ -125,11 +127,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
               </span>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <div className="flex flex-col min-w-0">
+              <div className="flex flex-col min-w-0 flex-1">
                 <span className="text-[11px] text-[#C8D1C7]">
                   Código de checkout:
                 </span>
-                <span className="text-base font-mono font-extrabold text-white tracking-wider">
+                <span className="text-base font-mono font-extrabold text-white tracking-wider truncate" title={patientCoupon}>
                   {patientCoupon}
                 </span>
               </div>
@@ -247,27 +249,31 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] tracking-widest uppercase text-secondary-text font-bold font-mono">Cidade do Consultório</label>
+            <label className="text-[10px] tracking-widest uppercase text-secondary-text font-bold font-mono">
+              Cidade do Consultório <span className="text-secondary-text/60 font-normal">(Opcional)</span>
+            </label>
             <input
               type="text"
               name="city"
               value={formData.city}
               onChange={handleChange}
-              required
+              placeholder="Ex: São Paulo"
               className="w-full px-4 py-2.5 rounded border border-border-color focus:border-primary-accent focus:outline-none bg-bg-app text-xs text-primary-text font-sans"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] tracking-widest uppercase text-secondary-text font-bold font-mono">Estado (UF)</label>
+            <label className="text-[10px] tracking-widest uppercase text-secondary-text font-bold font-mono">
+              Estado (UF) <span className="text-secondary-text/60 font-normal">(Opcional)</span>
+            </label>
             <input
               type="text"
               name="state"
               value={formData.state}
               onChange={handleChange}
-              required
+              placeholder="Ex: SP"
               maxLength={2}
-              className="w-full px-4 py-2.5 rounded border border-border-color focus:border-primary-accent focus:outline-none bg-bg-app text-xs text-primary-text font-sans"
+              className="w-full px-4 py-2.5 rounded border border-border-color focus:border-primary-accent focus:outline-none bg-bg-app text-xs text-primary-text font-sans uppercase"
             />
           </div>
 
@@ -290,10 +296,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
         <div className="flex flex-col gap-1">
           <span className="text-xs font-bold text-primary-forest">Segurança e Privacidade</span>
           <p className="text-[11px] text-secondary-text leading-relaxed">
-            Seus dados cadastrais estão criptografados e protegidos de acordo com a LGPD. Nenhuma informação pessoal de registro ou telefone de consultório será compartilhada com terceiros sem consentimento explícito.
+            Seus dados cadastrais estão protegidos de acordo com a LGPD. Nenhuma informação pessoal de registro ou telefone de consultório será compartilhada com terceiros sem consentimento explícito.
           </p>
         </div>
       </div>
+
+      {/* Logout Session Section */}
+      {onLogout && (
+        <div className="pt-4 border-t border-border-color flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs text-secondary-text">
+            Deseja alternar de conta ou sair da sua sessão com segurança?
+          </div>
+          <button
+            type="button"
+            id="btn-logout-profile"
+            onClick={onLogout}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-rose-300 text-rose-700 bg-rose-50/70 hover:bg-rose-100 text-xs font-bold transition-all cursor-pointer shadow-xs"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Sair da Sessão</span>
+          </button>
+        </div>
+      )}
 
     </div>
   );

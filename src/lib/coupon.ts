@@ -40,9 +40,13 @@ export function getNutriCoupon(name: string): string {
 
 /**
  * Returns the discount coupon for the nutritionist's patients (8% discount):
- * [nomedanutricionista(apenas o primeiro nome)]8
+ * If a custom coupon was imported or configured, it is returned directly.
+ * Otherwise, generates the default format: [primeironome]8
  */
-export function getPatientCoupon(name: string): string {
-  const firstName = getNutritionistFirstName(name);
+export function getPatientCoupon(name?: string, customCoupon?: string): string {
+  if (customCoupon && typeof customCoupon === 'string' && customCoupon.trim().length > 0) {
+    return customCoupon.trim().toUpperCase();
+  }
+  const firstName = getNutritionistFirstName(name || '');
   return `${firstName}8`;
 }
