@@ -24,8 +24,7 @@ export type AdminTab =
   | 'recipes' 
   | 'sheets' 
   | 'science' 
-  | 'members' 
-  | 'shopify';
+  | 'members';
 
 // For backwards compatibility if imported elsewhere
 export type AdminActiveTab = AdminTab;
@@ -58,8 +57,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
     { id: 'recipes' as AdminTab, label: 'Receitas & Clínicas', count: stats.totalRecipes, icon: Utensils, color: 'text-luxury-accent' },
     { id: 'sheets' as AdminTab, label: 'Fichas Técnicas', count: stats.totalSheets, icon: ShieldCheck, color: 'text-teal-700' },
     { id: 'science' as AdminTab, label: 'Ciência do Cacau', count: stats.totalArticles, icon: Microscope, color: 'text-sky-700' },
-    { id: 'members' as AdminTab, label: 'Cadastro de Nutris', count: stats.totalMembers, icon: Users, color: 'text-indigo-700' },
-    { id: 'shopify' as AdminTab, label: 'Integração Shopify', count: 3, icon: ShopifyIcon, color: 'text-secondary-accent' }
+    { id: 'members' as AdminTab, label: 'Cadastro de Nutris', count: stats.totalMembers, icon: Users, color: 'text-indigo-700' }
   ];
 
   return (

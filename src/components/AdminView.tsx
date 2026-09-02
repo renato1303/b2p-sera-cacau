@@ -15,7 +15,6 @@ import { AdminRecipes } from './admin/AdminRecipes';
 import { AdminTechnicalSheets } from './admin/AdminTechnicalSheets';
 import { AdminScience } from './admin/AdminScience';
 import { AdminImportMembersModal } from './admin/AdminImportMembersModal';
-import { SHOPIFY_INTEGRATION_METHODS, SHOPIFY_SUPPORT_TEMPLATE } from '../data';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { SUPABASE_SQL_SCHEMA } from '../lib/supabaseSchema';
 import { getPatientCoupon } from '../lib/coupon';
@@ -457,81 +456,6 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   </div>
                 </div>
               )}
-            </div>
-          </div>
-        )}
-
-        {/* 8. SHOPIFY & SETTINGS */}
-        {activeTab === 'shopify' && (
-          <div className="space-y-8 animate-fadeIn">
-            {/* Top Bar */}
-            <div className="bg-gradient-to-br from-[#1C261D] to-[#253626] text-[#F7F3EC] p-6 sm:p-8 rounded-3xl border border-[#455347]/50 shadow-xl space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#455347]/60 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-luxury-accent/20 text-luxury-accent flex items-center justify-center shrink-0">
-                    <ShoppingBag className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-white">Integração Nativa Shopify & App Proxy</h3>
-                    <p className="text-xs text-[#C2C9C0]">
-                      Diretrizes e templates para embutir o Portal de Nutricionistas diretamente na loja Shopify.
-                    </p>
-                  </div>
-                </div>
-
-                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold font-mono">
-                  SHOPIFY NATIVE PROXY
-                </span>
-              </div>
-
-              {/* Integration Methods Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {SHOPIFY_INTEGRATION_METHODS.map((method, idx) => (
-                  <div key={idx} className="bg-black/30 p-5 rounded-2xl border border-white/10 space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <span className="text-[10px] font-bold text-luxury-accent uppercase font-mono">{method.badge}</span>
-                      <h4 className="font-serif font-bold text-base text-white">{method.title}</h4>
-                      <p className="text-xs text-[#C8D1C7] leading-relaxed">{method.description}</p>
-                      <div className="text-[11px] text-[#A0AAA0] bg-white/5 p-2.5 rounded-xl">
-                        <strong>Vantagens:</strong> {method.pros.join(' • ')}
-                      </div>
-                    </div>
-
-                    <div className="pt-2 text-xs text-secondary-accent font-semibold flex items-center justify-between border-t border-white/10">
-                      <span className="truncate pr-2">{method.recommendedFor}</span>
-                      <span className="text-[9px] font-mono uppercase bg-white/10 px-2 py-0.5 rounded-full shrink-0">Ativo</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Support Template */}
-              <div className="bg-black/40 p-6 rounded-2xl border border-white/10 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-                  <div>
-                    <span className="text-xs font-bold text-luxury-accent uppercase tracking-wider block">
-                      Template de Abertura de Chamado · Suporte Shopify
-                    </span>
-                    <p className="text-xs text-[#A0AAA0]">Configuração de App Proxy / Custom App para o Portal de Nutricionistas</p>
-                  </div>
-                  
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(SHOPIFY_SUPPORT_TEMPLATE);
-                      triggerSuccess('Template de suporte Shopify copiado com sucesso!');
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-luxury-accent hover:bg-luxury-accent/90 text-[#1C261D] rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer shadow-md"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copiar Chamado</span>
-                  </button>
-                </div>
-
-                <pre className="text-xs text-[#E0E6DF] bg-black/60 p-4 rounded-xl whitespace-pre-wrap font-mono leading-relaxed border border-white/5 max-h-60 overflow-y-auto">
-                  {SHOPIFY_SUPPORT_TEMPLATE}
-                </pre>
-              </div>
             </div>
           </div>
         )}
