@@ -40,6 +40,7 @@ interface ParsedNutritionist {
   lastName: string;
   fullName: string;
   email: string;
+  hasGeneratedEmail?: boolean;
   phone: string;
   crn: string;
   city: string;
@@ -100,14 +101,29 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
     reader.onload = (e) => {
       try {
         const buffer = e.target?.result;
-        const workbook = XLSX.read(buffer, { type: 'binary' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
+        const workbook = XLSX.read(buffer, { type: 'binary', cellDates: true });
         
-        // Convert sheet to JSON array of objects
-        const rawJson: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+        // 1. Intelligent Sheet Selection:
+        // Find the sheet that contains actual data (most non-empty rows)
+        let selectedSheetName = workbook.SheetNames[0];
+        let maxDataRows = 0;
 
-        if (!rawJson || rawJson.length === 0) {
+        for (const sheetName of workbook.SheetNames) {
+          const ws = workbook.Sheets[sheetName];
+          const rawGrid = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' }) as any[][];
+          const nonEmpty = rawGrid.filter(row => 
+            Array.isArray(row) && row.some(cell => String(cell || '').trim() !== '')
+          ).length;
+          if (nonEmpty > maxDataRows) {
+            maxDataRows = nonEmpty;
+            selectedSheetName = sheetName;
+          }
+        }
+
+        const worksheet = workbook.Sheets[selectedSheetName];
+        const rawGrid = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' }) as any[][];
+
+        if (!rawGrid || rawGrid.length === 0 || maxDataRows === 0) {
           setSyncFeedback({
             type: 'error',
             message: 'A planilha selecionada está vazia ou não possui linhas válidas.'
@@ -116,136 +132,321 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
           return;
         }
 
+        // 2. Header Row Hunting:
+        // Search rows 0 to min(15, rawGrid.length - 1) for the header row
+        const headerKeywords = [
+          'nome', 'name', 'nutri', 'nutricionista', 'aluna', 'profissional', 'sobrenome', 'completo',
+          'email', 'mail', 'login', 'usuario', 'correio',
+          'tel', 'cel', 'whats', 'phone', 'contato', 'fone',
+          'cupom', 'coupon', 'desconto', 'voucher', 'codigo',
+          'crn', 'registro', 'conselho',
+          'cidade', 'estado', 'uf', 'municipio'
+        ];
+
+        let headerRowIndex = -1;
+        let maxHeaderScore = 0;
+
+        for (let r = 0; r < Math.min(15, rawGrid.length); r++) {
+          const row = rawGrid[r];
+          if (!Array.isArray(row)) continue;
+          let score = 0;
+          for (const cell of row) {
+            const val = normalizeKey(String(cell || ''));
+            if (!val) continue;
+            for (const kw of headerKeywords) {
+              if (val.includes(kw)) {
+                score++;
+                break;
+              }
+            }
+          }
+          if (score > maxHeaderScore) {
+            maxHeaderScore = score;
+            headerRowIndex = r;
+          }
+        }
+
+        // If no row had >= 2 keywords, check if any row has 'email' or 'nome' or 'cupom'
+        if (maxHeaderScore < 2) {
+          for (let r = 0; r < Math.min(10, rawGrid.length); r++) {
+            const row = rawGrid[r];
+            if (!Array.isArray(row)) continue;
+            const rowText = row.map(c => normalizeKey(String(c || ''))).join(' ');
+            if (rowText.includes('email') || rowText.includes('nome') || rowText.includes('cupom')) {
+              headerRowIndex = r;
+              break;
+            }
+          }
+        }
+
+        // If still no header detected, assume row 0
+        if (headerRowIndex === -1) {
+          headerRowIndex = 0;
+        }
+
+        const headerRow = rawGrid[headerRowIndex] || [];
+        const maxCols = Math.max(...rawGrid.map(r => (Array.isArray(r) ? r.length : 0)));
+
+        // 3. Map Columns by Header Names
+        let colFullName = -1;
+        let colFirstName = -1;
+        let colLastName = -1;
+        let colEmail = -1;
+        let colPhone = -1;
+        let colCoupon = -1;
+        let colCrn = -1;
+        let colCity = -1;
+        let colState = -1;
+        let colSpecialty = -1;
+
+        headerRow.forEach((cell, idx) => {
+          const k = normalizeKey(String(cell || ''));
+          if (!k) return;
+
+          // Email
+          if (k.includes('email') || k.includes('mail') || k.includes('login') || k.includes('usuario') || k.includes('correio')) {
+            if (colEmail === -1) colEmail = idx;
+          }
+          // Coupon
+          else if (k.includes('cupom') || k.includes('coupon') || k.includes('voucher') || (k.includes('desconto') && !k.includes('valor') && !k.includes('percentual'))) {
+            if (colCoupon === -1) colCoupon = idx;
+          }
+          // Phone
+          else if (k.includes('tel') || k.includes('cel') || k.includes('whats') || k.includes('phone') || k.includes('contato') || k.includes('fone')) {
+            if (colPhone === -1) colPhone = idx;
+          }
+          // CRN
+          else if (k.includes('crn') || k.includes('registro') || k.includes('conselho')) {
+            if (colCrn === -1) colCrn = idx;
+          }
+          // Location
+          else if (k.includes('cidade') || k.includes('municipio') || k.includes('city')) {
+            if (colCity === -1) colCity = idx;
+          }
+          else if (k.includes('estado') || k.includes('uf') || k.includes('state')) {
+            if (colState === -1) colState = idx;
+          }
+          // Specialty
+          else if (k.includes('especialidade') || k.includes('specialty') || k.includes('area')) {
+            if (colSpecialty === -1) colSpecialty = idx;
+          }
+          // Names
+          else if (k.includes('sobrenome') || k.includes('lastname') || k.includes('surname') || k.includes('ultimonome') || k.includes('segundonome')) {
+            if (colLastName === -1) colLastName = idx;
+          }
+          else if (k.includes('primeironome') || k.includes('firstname')) {
+            if (colFirstName === -1) colFirstName = idx;
+          }
+          else if (k.includes('nome') || k.includes('name') || k.includes('nutri') || k.includes('profissional') || k.includes('aluna') || k.includes('cliente') || k.includes('membro')) {
+            if (colFullName === -1) colFullName = idx;
+          }
+        });
+
+        // 4. Semantic Content-Type Fallback for any unmapped columns
+        const sampleRows = rawGrid.slice(headerRowIndex + 1, headerRowIndex + 25);
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+        const phoneRegex = /(\(?\d{2}\)?\s?9?\d{4}-?\d{4})|(\d{10,11})/;
+        const crnRegex = /(crn\s*[-/]?\s*\d+)|(\b\d{4,6}\b)/i;
+
+        for (let col = 0; col < maxCols; col++) {
+          if (colEmail === -1) {
+            const emailMatches = sampleRows.filter(r => r && emailRegex.test(String(r[col] || ''))).length;
+            if (emailMatches >= Math.min(2, sampleRows.length)) {
+              colEmail = col;
+              continue;
+            }
+          }
+          if (colPhone === -1 && col !== colEmail) {
+            const phoneMatches = sampleRows.filter(r => r && phoneRegex.test(String(r[col] || ''))).length;
+            if (phoneMatches >= Math.min(2, sampleRows.length)) {
+              colPhone = col;
+              continue;
+            }
+          }
+          if (colCrn === -1 && col !== colEmail && col !== colPhone) {
+            const crnMatches = sampleRows.filter(r => r && crnRegex.test(String(r[col] || ''))).length;
+            if (crnMatches >= Math.min(2, sampleRows.length)) {
+              colCrn = col;
+              continue;
+            }
+          }
+          if (colFullName === -1 && colFirstName === -1 && col !== colEmail && col !== colPhone && col !== colCrn && col !== colCoupon) {
+            const textMatches = sampleRows.filter(r => {
+              const str = String(r?.[col] || '').trim();
+              return str.length > 2 && /^[A-Za-zÀ-ÖØ-öø-ÿ\s.'-]+$/.test(str) && !str.includes('@');
+            }).length;
+            if (textMatches >= Math.min(2, sampleRows.length)) {
+              colFullName = col;
+              continue;
+            }
+          }
+        }
+
+        // 5. Extract and Validate Every Row
         const existingEmails = new Set(existingMembers.map(m => m.email.toLowerCase().trim()));
+        const dataRows = rawGrid.slice(headerRowIndex + 1);
 
-        const processed: ParsedNutritionist[] = rawJson.map((row, index) => {
-          // Normalize row keys
-          const normalizedRow: Record<string, any> = {};
-          Object.keys(row).forEach(k => {
-            normalizedRow[normalizeKey(k)] = row[k];
-          });
+        const processed: ParsedNutritionist[] = [];
+        let validIdx = 0;
 
-          // Detect columns
-          const firstName = String(
-            normalizedRow['nome'] || 
-            normalizedRow['primeironome'] || 
-            normalizedRow['firstname'] || 
-            normalizedRow['name'] || 
-            ''
-          ).trim();
+        for (let index = 0; index < dataRows.length; index++) {
+          const row = dataRows[index];
+          if (!Array.isArray(row)) continue;
 
-          const lastName = String(
-            normalizedRow['sobrenome'] || 
-            normalizedRow['ultimonome'] || 
-            normalizedRow['lastname'] || 
-            normalizedRow['surname'] || 
-            ''
-          ).trim();
+          // Skip completely empty rows
+          const hasAnyContent = row.some(cell => String(cell || '').trim() !== '');
+          if (!hasAnyContent) continue;
 
+          // Extract Names
+          let firstName = '';
+          let lastName = '';
           let fullName = '';
+
+          if (colFirstName !== -1 && row[colFirstName]) {
+            firstName = String(row[colFirstName]).trim();
+          }
+          if (colLastName !== -1 && row[colLastName]) {
+            lastName = String(row[colLastName]).trim();
+          }
+
           if (firstName && lastName) {
             fullName = `${firstName} ${lastName}`.trim();
+          } else if (colFullName !== -1 && row[colFullName]) {
+            fullName = String(row[colFullName]).trim();
           } else if (firstName) {
             fullName = firstName;
           } else if (lastName) {
             fullName = lastName;
-          } else {
-            fullName = 'Nutricionista Credenciada';
           }
 
-          const rawEmail = String(
-            normalizedRow['email'] || 
-            normalizedRow['correioeletronico'] || 
-            normalizedRow['mail'] || 
-            ''
-          ).trim().toLowerCase();
+          // Clean medical/academic titles from full name
+          fullName = fullName
+            .replace(/^(dra?\.|dr\.|nutricionista|nutri)\s+/i, '')
+            .trim();
 
-          const phone = String(
-            normalizedRow['telefone'] || 
-            normalizedRow['celular'] || 
-            normalizedRow['whatsapp'] || 
-            normalizedRow['phone'] || 
-            normalizedRow['tel'] || 
-            ''
-          ).trim();
+          // Extract Email
+          let rawEmail = '';
+          if (colEmail !== -1 && row[colEmail]) {
+            const candidate = String(row[colEmail]).trim().toLowerCase();
+            const match = candidate.match(emailRegex);
+            if (match) rawEmail = match[0];
+          }
 
-          const crn = String(
-            normalizedRow['crn'] || 
-            normalizedRow['registrocrn'] || 
-            normalizedRow['crnregistro'] || 
-            normalizedRow['registro'] || 
-            ''
-          ).trim();
+          // If email was not found in colEmail, scan all cells in this row for an email
+          if (!rawEmail) {
+            for (const cell of row) {
+              const cellStr = String(cell || '').trim().toLowerCase();
+              const match = cellStr.match(emailRegex);
+              if (match) {
+                rawEmail = match[0];
+                break;
+              }
+            }
+          }
 
-          // Location is optional and left for the nutritionist to fill on the dashboard if absent
-          const city = String(
-            normalizedRow['cidade'] || 
-            normalizedRow['municipio'] || 
-            normalizedRow['city'] || 
-            ''
-          ).trim();
+          // Extract Phone
+          let phone = '';
+          if (colPhone !== -1 && row[colPhone]) {
+            phone = String(row[colPhone]).trim();
+          } else {
+            for (const cell of row) {
+              const cellStr = String(cell || '').trim();
+              if (phoneRegex.test(cellStr) && !cellStr.includes('@')) {
+                phone = cellStr;
+                break;
+              }
+            }
+          }
 
-          const state = String(
-            normalizedRow['estado'] || 
-            normalizedRow['uf'] || 
-            normalizedRow['state'] || 
-            ''
-          ).trim();
+          // Extract CRN
+          let crn = '';
+          if (colCrn !== -1 && row[colCrn]) {
+            crn = String(row[colCrn]).trim();
+          } else {
+            for (const cell of row) {
+              const cellStr = String(cell || '').trim();
+              if (/^crn/i.test(cellStr)) {
+                crn = cellStr;
+                break;
+              }
+            }
+          }
 
-          const specialty = String(
-            normalizedRow['especialidade'] || 
-            normalizedRow['specialty'] || 
-            'Nutrição Integrativa & Funcional'
-          ).trim();
+          // Extract City and State
+          const city = colCity !== -1 && row[colCity] ? String(row[colCity]).trim() : '';
+          const state = colState !== -1 && row[colState] ? String(row[colState]).trim() : '';
+          const specialty = colSpecialty !== -1 && row[colSpecialty] ? String(row[colSpecialty]).trim() : 'Nutrição Integrativa & Funcional';
 
-          // Detect Client / Patient Discount Coupon in the row
-          const couponKey = Object.keys(normalizedRow).find(k => 
-            k.includes('cupom') || 
-            k.includes('coupon') || 
-            k.includes('voucher') || 
-            (k.includes('desconto') && !k.includes('porcentagem') && !k.includes('valor'))
-          );
+          // Extract or Compute Patient Discount Coupon
+          let rawCouponValue = '';
+          if (colCoupon !== -1 && row[colCoupon]) {
+            rawCouponValue = String(row[colCoupon]).trim();
+          } else {
+            for (const cell of row) {
+              const cellStr = String(cell || '').trim();
+              if (/^[A-Z0-9_-]{4,15}$/.test(cellStr) && !/^\d+$/.test(cellStr) && cellStr !== crn && cellStr !== phone) {
+                rawCouponValue = cellStr;
+                break;
+              }
+            }
+          }
 
-          const rawCouponValue = String(
-            couponKey ? normalizedRow[couponKey] : (
-              normalizedRow['cupom'] || 
-              normalizedRow['cupomdesconto'] || 
-              normalizedRow['cupomdedesconto'] || 
-              normalizedRow['cupomcliente'] || 
-              normalizedRow['cupompaciente'] || 
-              normalizedRow['coupon'] || 
-              normalizedRow['couponcode'] || 
-              ''
-            )
-          ).trim();
+          // Default name fallback if absent
+          if (!fullName) {
+            if (rawEmail) {
+              const emailPrefix = rawEmail.split('@')[0].replace(/[._-]/g, ' ');
+              fullName = emailPrefix
+                .split(' ')
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(' ');
+            } else {
+              fullName = `Nutricionista ${validIdx + 1}`;
+            }
+          }
 
           const hasCustomCoupon = rawCouponValue.length > 0;
           const patientCoupon = hasCustomCoupon 
             ? rawCouponValue.toUpperCase() 
             : getPatientCoupon(fullName);
 
-          // Validate email
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          const isValidEmail = emailRegex.test(rawEmail);
-          const isExisting = existingEmails.has(rawEmail);
+          // BULK MASS REGISTRATION GUARANTEE:
+          // If the spreadsheet row doesn't have an email, auto-generate a valid direct-access email
+          // so the user can import the whole list in bulk directly to the database without errors
+          let finalEmail = rawEmail;
+          let hasGeneratedEmail = false;
+
+          if (!finalEmail) {
+            const nameSlug = fullName
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z0-9]/g, ".")
+              .replace(/\.+/g, ".")
+              .replace(/^\.|\.$/g, "");
+
+            finalEmail = `${nameSlug || `nutri.${validIdx + 1}`}@nutri.seracacau.com.br`;
+            hasGeneratedEmail = true;
+          }
+
+          const isExisting = existingEmails.has(finalEmail);
 
           let status: 'valid' | 'invalid_email' | 'existing' = 'valid';
-          let statusMessage = 'Pronto para importar';
+          let statusMessage = hasGeneratedEmail
+            ? 'Pronta para cadastro (e-mail de acesso gerado)'
+            : 'Pronta para cadastro na base';
 
-          if (!rawEmail || !isValidEmail) {
-            status = 'invalid_email';
-            statusMessage = 'E-mail inválido ou em branco';
-          } else if (isExisting) {
+          if (isExisting) {
             status = 'existing';
             statusMessage = 'Já cadastrada (será atualizada)';
           }
 
-          return {
-            id: `nutri-import-${Date.now()}-${index}`,
-            firstName,
-            lastName,
+          processed.push({
+            id: `nutri-import-${Date.now()}-${validIdx}`,
+            firstName: firstName || fullName.split(' ')[0],
+            lastName: lastName || fullName.split(' ').slice(1).join(' '),
             fullName,
-            email: rawEmail,
+            email: finalEmail,
+            hasGeneratedEmail,
             phone,
             crn: crn || '',
             city: city || '',
@@ -255,8 +456,10 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
             hasCustomCoupon,
             status,
             statusMessage
-          };
-        });
+          });
+
+          validIdx++;
+        }
 
         setParsedRows(processed);
         setIsProcessing(false);
@@ -413,6 +616,21 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
         totalPoints: 0,
         tier: 'Bronze'
       }));
+
+      // Persist in localStorage so any page refresh or direct login finds them immediately
+      try {
+        const stored = localStorage.getItem('sera_cacau_registered_nutris') || localStorage.getItem('sera_cacau_members');
+        const existing: Member[] = stored ? JSON.parse(stored) : [];
+        const mergedMap = new Map<string, Member>();
+        existingMembers.forEach(m => mergedMap.set((m.email || '').toLowerCase().trim(), m));
+        existing.forEach(m => mergedMap.set((m.email || '').toLowerCase().trim(), m));
+        newMembers.forEach(m => mergedMap.set((m.email || '').toLowerCase().trim(), m));
+        const mergedArray = Array.from(mergedMap.values());
+        localStorage.setItem('sera_cacau_registered_nutris', JSON.stringify(mergedArray));
+        localStorage.setItem('sera_cacau_members', JSON.stringify(mergedArray));
+      } catch (lsErr) {
+        console.warn('Erro ao salvar localmente no navegador:', lsErr);
+      }
 
       onImportSuccess(newMembers, validRows.length);
 
@@ -768,7 +986,18 @@ ON CONFLICT (email) DO UPDATE SET
                               {row.fullName}
                             </td>
                             <td className="py-2.5 px-3 font-mono text-[11px] text-primary-text">
-                              {row.email || <span className="text-rose-500 italic">sem e-mail</span>}
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span>{row.email}</span>
+                                {row.hasGeneratedEmail && (
+                                  <span 
+                                    className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-sans font-semibold inline-flex items-center gap-0.5" 
+                                    title="E-mail gerado para cadastro em massa direto na base"
+                                  >
+                                    <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
+                                    Acesso Direto
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td className="py-2.5 px-3">
                               <span className="inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] text-[#7A5B1D] bg-[#FAF3E0] border border-[#E8DAB2] px-2 py-0.5 rounded-md shadow-xs">
@@ -890,7 +1119,7 @@ ON CONFLICT (email) DO UPDATE SET
               ) : (
                 <>
                   <Database className="w-4 h-4 text-secondary-accent" />
-                  <span>Gravar e Sincronizar ({validCount}) no Supabase</span>
+                  <span>Cadastrar ({validCount}) Nutris na Base</span>
                 </>
               )}
             </button>

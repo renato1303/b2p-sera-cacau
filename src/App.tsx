@@ -527,8 +527,31 @@ export default function App() {
     setAttachments(prev => [newAtt, ...prev]);
   };
 
-  const handleUpdateProfile = (updated: UserProfile) => {
+  const handleUpdateProfile = async (updated: UserProfile) => {
     setCurrentUser(updated);
+    localStorage.setItem('sera_cacau_user', JSON.stringify(updated));
+
+    if (isSupabaseConfigured && updated.email) {
+      try {
+        await supabase
+          .from('profiles')
+          .upsert({
+            email: updated.email.toLowerCase().trim(),
+            name: updated.name,
+            phone: updated.phone || '',
+            crn: updated.crn || '',
+            city: updated.city || '',
+            state: updated.state || '',
+            specialty: updated.specialty || 'Nutrição Integrativa & Funcional',
+            instagram: updated.instagram || '',
+            patient_coupon: updated.patientCoupon || updated.couponCode || '',
+            coupon_code: updated.patientCoupon || updated.couponCode || '',
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'email' });
+      } catch (err) {
+        console.warn('Erro ao atualizar perfil no Supabase:', err);
+      }
+    }
   };
 
   const incrementDownloads = () => {

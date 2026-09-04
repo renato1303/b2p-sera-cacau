@@ -14,7 +14,7 @@ import {
   ExternalLink,
   UserPlus
 } from 'lucide-react';
-import { UserRole, UserProfile } from '../types';
+import { UserRole, UserProfile, Member } from '../types';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { MEMBERS } from '../data';
 
@@ -213,9 +213,20 @@ export const LoginView: React.FC<LoginViewProps> = ({
         return;
       }
 
-      // 4. Check in MEMBERS list
-      const matchedMember = MEMBERS.find(
-        m => m.email.toLowerCase() === cleanEmail || cleanEmail.includes(m.email.toLowerCase())
+      // 4. Check in dynamic registered members (localStorage) and static MEMBERS list
+      let localMembers: Member[] = [];
+      try {
+        const stored = localStorage.getItem('sera_cacau_registered_nutris') || localStorage.getItem('sera_cacau_members');
+        if (stored) {
+          localMembers = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn('Erro ao ler membros locais:', e);
+      }
+
+      const allCandidates = [...localMembers, ...MEMBERS];
+      const matchedMember = allCandidates.find(
+        m => m.email?.toLowerCase() === cleanEmail || cleanEmail.includes(m.email?.toLowerCase())
       );
 
       if (matchedMember) {
@@ -223,15 +234,17 @@ export const LoginView: React.FC<LoginViewProps> = ({
           id: matchedMember.id,
           name: matchedMember.name,
           email: matchedMember.email,
-          phone: '',
+          phone: matchedMember.phone || '',
           instagram: '',
-          specialty: 'Nutrição Clínica Funcional',
-          city: matchedMember.city,
-          state: matchedMember.state,
+          specialty: matchedMember.specialty || 'Nutrição Integrativa & Funcional',
+          city: matchedMember.city || '',
+          state: matchedMember.state || '',
           role: UserRole.NUTRICIONISTA,
-          crn: matchedMember.crn,
-          totalPoints: matchedMember.totalPoints,
-          tier: matchedMember.tier
+          crn: matchedMember.crn || '',
+          patientCoupon: matchedMember.patientCoupon || matchedMember.couponCode || '',
+          couponCode: matchedMember.couponCode || matchedMember.patientCoupon || '',
+          totalPoints: matchedMember.totalPoints || 0,
+          tier: matchedMember.tier || 'Bronze'
         };
         setSuccessMsg(`Bem-vinda(o), ${memberProfile.name}! Redirecionando...`);
         setTimeout(() => {

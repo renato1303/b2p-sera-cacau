@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Course, Product, FileAttachment, Member, PointsEntry, Recipe, ScienceArticle } from '../types';
 import { BlogPost } from '../data/blog';
 import { TechnicalSheetData } from '../data/technicalSheets';
@@ -15,6 +15,7 @@ import { AdminRecipes } from './admin/AdminRecipes';
 import { AdminTechnicalSheets } from './admin/AdminTechnicalSheets';
 import { AdminScience } from './admin/AdminScience';
 import { AdminImportMembersModal } from './admin/AdminImportMembersModal';
+import { AdminMemberModal } from './admin/AdminMemberModal';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { SUPABASE_SQL_SCHEMA } from '../lib/supabaseSchema';
 import { getPatientCoupon } from '../lib/coupon';
@@ -39,7 +40,11 @@ import {
   Database,
   Terminal,
   Check,
-  X
+  X,
+  UserPlus,
+  Edit2,
+  Trash2,
+  RefreshCw
 } from 'lucide-react';
 
 interface AdminViewProps {
@@ -109,8 +114,171 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const [activeTab, setActiveTab] = useState<AdminTab>('courses');
   const [successMsg, setSuccessMsg] = useState<string>('');
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
+  const [isMemberModalOpen, setIsMemberModalOpen] = useState<boolean>(false);
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState<boolean>(false);
   const [copiedAdminSql, setCopiedAdminSql] = useState<boolean>(false);
+  const [copiedCouponEmail, setCopiedCouponEmail] = useState<string | null>(null);
+
+  // Supabase live sync states
+  const [isSyncingWithSupabase, setIsSyncingWithSupabase] = useState<boolean>(false);
+  const [supabaseCloudCount, setSupabaseCloudCount] = useState<number | null>(null);
+
+  // Check Supabase count on mount or when tab changes
+  useEffect(() => {
+    if (isSupabaseConfigured) {
+      supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .then(({ count, error }) => {
+          if (!error && count !== null) {
+            setSupabaseCloudCount(count);
+          }
+        });
+    }
+  }, [activeTab]);
+
+  const loadFromSupabase = async () => {
+    if (!isSupabaseConfigured) return;
+    setIsSyncingWithSupabase(true);
+    try {
+      const { data, count, error } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false });
+
+      if (data && !error) {
+        setSupabaseCloudCount(count ?? data.length);
+        const dbMembers: Member[] = data
+          .filter((p: any) => p.role !== 'ADMIN')
+          .map((p: any) => ({
+            id: p.id || `db-${p.email}`,
+            name: p.name || 'Nutricionista',
+            email: p.email || '',
+            phone: p.phone || '',
+            crn: p.crn || '',
+            city: p.city || '',
+            state: p.state || '',
+            specialty: p.specialty || 'Nutrição Integrativa & Funcional',
+            patientCoupon: p.patient_coupon || p.coupon_code || '',
+            couponCode: p.coupon_code || p.patient_coupon || '',
+            enrolledCourseIds: ['c1', 'c2'],
+            joinedDate: p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recente',
+            totalPoints: p.total_points ?? 0,
+            tier: p.tier || 'Bronze'
+          }));
+
+        if (dbMembers.length > 0) {
+          setMembers(prev => {
+            const dbEmails = new Set(dbMembers.map(m => m.email.toLowerCase().trim()));
+            const nonDuplicates = prev.filter(m => !dbEmails.has(m.email.toLowerCase().trim()));
+            return [...dbMembers, ...nonDuplicates];
+          });
+        }
+        triggerSuccess(`✓ Sincronizado com o Supabase: ${data.length} perfis ativos na base de dados.`);
+      }
+    } catch (e: any) {
+      console.warn('Erro ao carregar do Supabase:', e);
+    } finally {
+      setIsSyncingWithSupabase(false);
+    }
+  };
+
+  const handleSaveMember = async (member: Member) => {
+    // 1. Replicate directly to Supabase
+    if (isSupabaseConfigured) {
+      const payload = {
+        name: member.name,
+        email: member.email.toLowerCase().trim(),
+        phone: member.phone || '',
+        crn: member.crn || '',
+        city: member.city || '',
+        state: member.state || '',
+        specialty: member.specialty || 'Nutrição Integrativa & Funcional',
+        role: 'NUTRICIONISTA',
+        patient_coupon: member.patientCoupon,
+        coupon_code: member.patientCoupon,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('profiles')
+        .upsert(payload, { onConflict: 'email' });
+
+      if (error) {
+        console.error('Erro ao replicar no Supabase:', error);
+        throw new Error(`Erro no Supabase: ${error.message}`);
+      }
+    }
+
+    // 2. Update local state
+    setMembers(prev => {
+      const exists = prev.some(m => m.email.toLowerCase().trim() === member.email.toLowerCase().trim());
+      if (exists) {
+        return prev.map(m => m.email.toLowerCase().trim() === member.email.toLowerCase().trim() ? member : m);
+      }
+      return [member, ...prev];
+    });
+
+    // 3. Cache in localStorage for immediate access
+    try {
+      const stored = localStorage.getItem('sera_cacau_registered_nutris') || localStorage.getItem('sera_cacau_members');
+      const existing: Member[] = stored ? JSON.parse(stored) : [];
+      const map = new Map<string, Member>();
+      existing.forEach(m => map.set(m.email.toLowerCase().trim(), m));
+      map.set(member.email.toLowerCase().trim(), member);
+      const arr = Array.from(map.values());
+      localStorage.setItem('sera_cacau_registered_nutris', JSON.stringify(arr));
+      localStorage.setItem('sera_cacau_members', JSON.stringify(arr));
+    } catch (e) {
+      console.warn('Erro ao salvar no localStorage:', e);
+    }
+
+    // Update cloud count
+    setSupabaseCloudCount(prev => (prev !== null ? prev + 1 : prev));
+
+    triggerSuccess(`Nutricionista "${member.name}" gravada e sincronizada no Supabase com sucesso!`);
+  };
+
+  const handleDeleteMember = async (member: Member) => {
+    if (!window.confirm(`Deseja realmente remover a nutricionista "${member.name}" (${member.email}) do cadastro e do Supabase?`)) {
+      return;
+    }
+
+    if (isSupabaseConfigured && member.email) {
+      try {
+        await supabase
+          .from('profiles')
+          .delete()
+          .eq('email', member.email.toLowerCase().trim());
+      } catch (err) {
+        console.warn('Erro ao excluir no Supabase:', err);
+      }
+    }
+
+    setMembers(prev => prev.filter(m => m.email.toLowerCase().trim() !== member.email.toLowerCase().trim()));
+
+    try {
+      const stored = localStorage.getItem('sera_cacau_registered_nutris') || localStorage.getItem('sera_cacau_members');
+      if (stored) {
+        const existing: Member[] = JSON.parse(stored);
+        const filtered = existing.filter(m => m.email.toLowerCase().trim() !== member.email.toLowerCase().trim());
+        localStorage.setItem('sera_cacau_registered_nutris', JSON.stringify(filtered));
+        localStorage.setItem('sera_cacau_members', JSON.stringify(filtered));
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    setSupabaseCloudCount(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+    triggerSuccess(`Nutricionista "${member.name}" removida com sucesso.`);
+  };
+
+  const handleCopyCoupon = (coupon: string, email: string) => {
+    navigator.clipboard.writeText(coupon);
+    setCopiedCouponEmail(email);
+    setTimeout(() => setCopiedCouponEmail(null), 2500);
+  };
 
   // Member Search and Pagination States in Cadastro de Nutris tab
   const [memberSearchQuery, setMemberSearchQuery] = useState('');
@@ -246,36 +414,71 @@ export const AdminView: React.FC<AdminViewProps> = ({
         {activeTab === 'members' && (
           <div className="space-y-8 animate-fadeIn">
             {/* Top Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-[#2E4030]/10 shadow-sm">
-              <div>
-                <h2 className="text-xl font-serif text-primary-forest">Cadastro de Nutris</h2>
-                <p className="text-xs text-[#526054] mt-0.5">
-                  Consulte e gerencie as nutricionistas credenciadas, cupons de desconto para pacientes e dados de contato.
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-[#2E4030]/10 shadow-sm">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-serif text-primary-forest">Cadastro de Nutris</h2>
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Supabase Conectado
+                  </span>
+                </div>
+                <p className="text-xs text-[#526054]">
+                  Gerencie as nutricionistas credenciadas. Cada novo cadastro ou importação é replicado em tempo real na tabela <code className="text-primary-forest font-mono font-bold bg-[#FAF7F2] px-1.5 py-0.5 rounded">profiles</code> do Supabase.
                 </p>
               </div>
               
-              <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+              <div className="flex items-center gap-2 w-full lg:w-auto flex-wrap">
+                {/* Botão Nova Nutricionista */}
                 <button
                   type="button"
-                  onClick={() => setIsSqlModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-primary-forest border border-[#2E4030]/15 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
-                  title="Ver script SQL de tabelas e permissões para o Supabase"
+                  onClick={() => {
+                    setEditingMember(null);
+                    setIsMemberModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+                  title="Cadastrar uma nutricionista manualmente"
                 >
-                  <Terminal className="w-3.5 h-3.5 text-primary-accent" />
-                  <span>Script SQL Supabase</span>
+                  <UserPlus className="w-3.5 h-3.5 text-secondary-accent" />
+                  <span>+ Nova Nutricionista</span>
                 </button>
 
+                {/* Botão Importar Excel */}
                 <button
                   type="button"
                   onClick={() => setIsImportModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-primary-forest border border-[#2E4030]/15 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  title="Importar planilha Excel ou CSV em lote"
                 >
-                  <FileSpreadsheet className="w-4 h-4 text-secondary-accent" />
-                  <span>Importar do Excel (.xlsx / .csv)</span>
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-primary-accent" />
+                  <span>Importar Excel / CSV</span>
+                </button>
+
+                {/* Botão Sincronizar Nuvem */}
+                <button
+                  type="button"
+                  onClick={loadFromSupabase}
+                  disabled={isSyncingWithSupabase}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-primary-forest border border-[#2E4030]/15 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                  title="Atualizar dados diretamente do Supabase"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-[#526054] ${isSyncingWithSupabase ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline">Sincronizar</span>
+                </button>
+
+                {/* Botão Script SQL */}
+                <button
+                  type="button"
+                  onClick={() => setIsSqlModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-[#FAF7F2] hover:bg-[#F2ECE1] text-primary-forest border border-[#2E4030]/15 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  title="Ver script SQL de tabelas e permissões para o Supabase"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-primary-accent" />
+                  <span className="hidden sm:inline">SQL</span>
                 </button>
 
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
-                  {members.length} Credenciadas
+                  {members.length} Ativas
                 </span>
               </div>
             </div>
@@ -326,47 +529,93 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <th className="py-3 px-3">Contato & Telefone</th>
                       <th className="py-3 px-3">Registro (CRN)</th>
                       <th className="py-3 px-3">Cidade / UF</th>
+                      <th className="py-3 px-3 text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#2E4030]/5">
                     {paginatedMembers.length > 0 ? (
-                      paginatedMembers.map(member => (
-                        <tr key={member.id} className="hover:bg-[#FAF7F2] transition-colors">
-                          <td className="py-3 px-3 font-semibold text-primary-forest">
-                            <div className="flex flex-col">
-                              <span>{member.name}</span>
-                              <span className="text-[10px] text-[#6A786C] font-mono font-normal">{member.email}</span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-3">
-                            <span className="inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] text-[#7A5B1D] bg-[#FAF3E0] border border-[#E8DAB2] px-2 py-0.5 rounded-md shadow-xs" title="Cupom oficial de 8% de desconto para clientes/pacientes">
-                              <Tag className="w-3 h-3 text-primary-accent" />
-                              <span>{member.patientCoupon || getPatientCoupon(member.name)}</span>
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 font-mono text-[11px] text-[#4A554B]">
-                            {member.phone ? (
-                              <span className="inline-flex items-center gap-1">
-                                <Phone className="w-3 h-3 text-[#6A786C]" />
-                                {member.phone}
+                      paginatedMembers.map(member => {
+                        const coupon = member.patientCoupon || member.couponCode || getPatientCoupon(member.name);
+                        const isCopied = copiedCouponEmail === member.email;
+
+                        return (
+                          <tr key={member.id} className="hover:bg-[#FAF7F2] transition-colors">
+                            <td className="py-3 px-3 font-semibold text-primary-forest">
+                              <div className="flex flex-col">
+                                <span>{member.name}</span>
+                                <span className="text-[10px] text-[#6A786C] font-mono font-normal">{member.email}</span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className="inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] text-[#7A5B1D] bg-[#FAF3E0] border border-[#E8DAB2] px-2 py-0.5 rounded-md shadow-xs" title="Cupom oficial de 8% de desconto para pacientes">
+                                <Tag className="w-3 h-3 text-primary-accent" />
+                                <span>{coupon}</span>
                               </span>
-                            ) : (
-                              <span className="text-[#8E9B90] italic">-</span>
-                            )}
-                          </td>
-                          <td className="py-3 px-3 font-mono text-[11px] text-primary-forest font-semibold">{member.crn || '-'}</td>
-                          <td className="py-3 px-3">
-                            {member.city || member.state ? (
-                              <span>{member.city ? (member.state ? `${member.city} - ${member.state}` : member.city) : member.state}</span>
-                            ) : (
-                              <span className="text-[#8E9B90] italic text-[11px]">Não informada</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))
+                            </td>
+                            <td className="py-3 px-3 font-mono text-[11px] text-[#4A554B]">
+                              {member.phone ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <Phone className="w-3 h-3 text-[#6A786C]" />
+                                  {member.phone}
+                                </span>
+                              ) : (
+                                <span className="text-[#8E9B90] italic">-</span>
+                              )}
+                            </td>
+                            <td className="py-3 px-3 font-mono text-[11px] text-primary-forest font-semibold">{member.crn || '-'}</td>
+                            <td className="py-3 px-3">
+                              {member.city || member.state ? (
+                                <span>{member.city ? (member.state ? `${member.city} - ${member.state}` : member.city) : member.state}</span>
+                              ) : (
+                                <span className="text-[#8E9B90] italic text-[11px]">Não informada</span>
+                              )}
+                            </td>
+                            <td className="py-3 px-3 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {/* Botão Copiar Cupom */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopyCoupon(coupon, member.email)}
+                                  className="p-1.5 rounded-lg bg-[#FAF7F2] hover:bg-[#F2ECE1] text-[#526054] hover:text-primary-forest border border-[#2E4030]/10 transition-all cursor-pointer"
+                                  title="Copiar Cupom de Paciente"
+                                >
+                                  {isCopied ? (
+                                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                  ) : (
+                                    <Copy className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
+
+                                {/* Botão Editar */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingMember(member);
+                                    setIsMemberModalOpen(true);
+                                  }}
+                                  className="p-1.5 rounded-lg bg-[#FAF7F2] hover:bg-[#F2ECE1] text-[#526054] hover:text-primary-forest border border-[#2E4030]/10 transition-all cursor-pointer"
+                                  title="Editar dados da nutricionista"
+                                >
+                                  <Edit2 className="w-3.5 h-3.5 text-primary-forest" />
+                                </button>
+
+                                {/* Botão Excluir */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteMember(member)}
+                                  className="p-1.5 rounded-lg bg-[#FAF7F2] hover:bg-rose-50 text-[#526054] hover:text-rose-600 border border-[#2E4030]/10 hover:border-rose-200 transition-all cursor-pointer"
+                                  title="Excluir do cadastro e do Supabase"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
                     ) : (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-[#6A786C] space-y-2">
+                        <td colSpan={6} className="py-8 text-center text-[#6A786C] space-y-2">
                           <p className="text-xs font-semibold">Nenhuma nutricionista encontrada.</p>
                           {memberSearchQuery && (
                             <button
@@ -563,6 +812,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Adicionar / Editar Nutricionista */}
+      <AdminMemberModal
+        isOpen={isMemberModalOpen}
+        onClose={() => {
+          setIsMemberModalOpen(false);
+          setEditingMember(null);
+        }}
+        onSave={handleSaveMember}
+        editingMember={editingMember}
+      />
 
     </div>
   );
