@@ -44,7 +44,8 @@ import {
   UserPlus,
   Edit2,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  Download
 } from 'lucide-react';
 
 interface AdminViewProps {
@@ -280,6 +281,87 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setTimeout(() => setCopiedCouponEmail(null), 2500);
   };
 
+  const handleExportShopifyCsv = () => {
+    if (members.length === 0) {
+      alert('Nenhuma nutricionista para exportar.');
+      return;
+    }
+
+    // Official Shopify Customer Import CSV Format (Updated to current Shopify schema)
+    const headers = [
+      'First Name',
+      'Last Name',
+      'Email',
+      'Company',
+      'Address1',
+      'Address2',
+      'City',
+      'Province Code',
+      'Country Code',
+      'Zip',
+      'Phone',
+      'Accepts Email Marketing',
+      'Tags',
+      'Note',
+      'Tax Exempt'
+    ];
+
+    const rows = members.map(m => {
+      const cleanName = (m.name || '').trim();
+      const parts = cleanName.split(/\s+/);
+      const firstName = parts[0] || 'Nutricionista';
+      const lastName = parts.slice(1).join(' ') || '';
+      const email = (m.email || '').trim().toLowerCase();
+
+      // Formatar telefone no padrão internacional aceito pela Shopify (+55...)
+      let phone = (m.phone || '').trim();
+      if (phone) {
+        const digits = phone.replace(/[^0-9]/g, '');
+        if (digits.length >= 10 && !phone.startsWith('+')) {
+          phone = `+55${digits}`;
+        }
+      }
+
+      const city = m.city || '';
+      const stateCode = (m.state || '').trim().toUpperCase().slice(0, 2);
+      const tags = 'nutri, prescritora, sera_cacau';
+      const note = `Nutricionista Credenciada Será Cacau - CRN: ${m.crn || 'Não informado'} | Cupom: ${m.patientCoupon || ''}`;
+
+      const escape = (val: string) => `"${(val || '').replace(/"/g, '""')}"`;
+
+      return [
+        escape(firstName),
+        escape(lastName),
+        escape(email),
+        escape(''), // Company
+        escape(''), // Address1
+        escape(''), // Address2
+        escape(city),
+        escape(stateCode), // Province Code (ex: SP, RJ - ISO 3166-2)
+        escape(stateCode ? 'BR' : ''), // Country Code (BR - ISO 3166-1 alpha-2)
+        escape(''), // Zip
+        escape(phone),
+        escape('yes'), // Accepts Email Marketing
+        escape(tags),
+        escape(note),
+        escape('no') // Tax Exempt
+      ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `clientes_shopify_nutris_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    triggerSuccess(`✓ Arquivo CSV da Shopify gerado com sucesso para ${members.length} nutricionistas (com a tag "nutri")!`);
+  };
+
   // Member Search and Pagination States in Cadastro de Nutris tab
   const [memberSearchQuery, setMemberSearchQuery] = useState('');
   const [memberCurrentPage, setMemberCurrentPage] = useState<number>(1);
@@ -452,6 +534,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5 text-primary-accent" />
                   <span>Importar Excel / CSV</span>
+                </button>
+
+                {/* Botão Exportar para Shopify */}
+                <button
+                  type="button"
+                  onClick={handleExportShopifyCsv}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-[#FAF7F2] hover:bg-emerald-50 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  title="Exportar planilha formatada para importação direta na Shopify com a tag 'nutri'"
+                >
+                  <Download className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Exportar p/ Shopify (.csv)</span>
                 </button>
 
                 {/* Botão Sincronizar Nuvem */}

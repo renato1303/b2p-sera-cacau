@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Product } from '../../types';
+import { SERA_CACAU_BUY_URL } from '../../data';
 import { 
   ShoppingBag, 
   Plus, 
@@ -45,7 +46,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const [story, setStory] = useState('Cultivado sob a sombra da Mata Atlântica no Sul da Bahia...');
   const [ingredients, setIngredients] = useState('100% Amêndoas de cacau orgânico selecionadas.');
   const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&q=80&w=800');
-  const [buyUrl, setBuyUrl] = useState('https://www.seracacau.com.br/products/');
+  const [buyUrl, setBuyUrl] = useState(SERA_CACAU_BUY_URL);
   const [discountCode, setDiscountCode] = useState('NUTRICACAU10');
   const [originCooperativa, setOriginCooperativa] = useState('Sistema Agroflorestal Cabruca · Serra Grande / Bahia');
 

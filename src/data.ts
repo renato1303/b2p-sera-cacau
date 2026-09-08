@@ -56,6 +56,8 @@ export const ATTACHMENTS: FileAttachment[] = [
   }
 ];
 
+export const SERA_CACAU_BUY_URL = 'https://account.seracacau.com.br/authentication/login?_s=a4710ca9-3994-4637-ba15-680b1ab10a00&_y=f4e100d4-c80c-43b4-a77e-6a11d703f2ea&analytics_trace_id=ca314759-4790-46a8-a9a8-b16ee961b0bb&client_id=f2704ee2-ba54-4f15-b457-b021fce9c2ff&locale=pt-BR&redirect_uri=%2Fauthentication%2Foauth%2Fauthorize%3F_cs%3D%26_s%3Da4710ca9-3994-4637-ba15-680b1ab10a00%26_y%3Df4e100d4-c80c-43b4-a77e-6a11d703f2ea%26analytics_trace_id%3Dca314759-4790-46a8-a9a8-b16ee961b0bb%26buyer_flags%3DeyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0N2MwNmItNDkubXlzaG9waWZ5LmNvbSIsImZsYWdzIjpbXSwiZXhwIjoxNzg5NTAwNDU0LCJuYmYiOjE3ODg4OTU2NTR9.yLZjqMgh74NIlYYMD4z5pm_HtfaC8RZTi2_gNeHNIlE%26client_id%3Df2704ee2-ba54-4f15-b457-b021fce9c2ff%26locale%3Dpt-BR%26nonce%3Df72de5c8-4135-4e32-9fa9-c51b7907a3b0%26redirect_uri%3Dhttps%253A%252F%252Fwww.seracacau.com.br%252Fcustomer_authentication%252Fcallback%26response_type%3Dcode%26scope%3Dopenid%2Bemail%2Bcustomer-account-api%26state%3DhWNGbaB8YJxPcA5xJufaJdp8';
+
 export const PRODUCTS: Product[] = [
   {
     id: 'prod-1',
@@ -91,7 +93,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-210g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-2',
@@ -125,7 +127,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-105g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-3',
@@ -157,7 +159,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Associação Agroflorestal de Serra Grande',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/disco-sera-cacau-36g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-4',
@@ -191,7 +193,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Agricultura familiar integrada de Serra Grande, Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/sera-baunilha-1-fava'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-5',
@@ -227,7 +229,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/barra-sera-cacau-200g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-6',
@@ -263,7 +265,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Produtoras Agroflorestais da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/barra-sera-cacau-450g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-7',
@@ -299,7 +301,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/nibs-sera-cacau-250g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-8',
@@ -334,7 +336,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Associação Agroflorestal de Serra Grande, Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/nibs-de-sera-cacau-75g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-9',
@@ -370,7 +372,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Mulheres da Cabruca - Sul da Bahia',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/cha-casca-de-cacau-75g'
+    buyUrl: SERA_CACAU_BUY_URL
   },
   {
     id: 'prod-10',
@@ -406,7 +408,7 @@ export const PRODUCTS: Product[] = [
     originCooperativa: 'Cooperativa de Mulheres da Cabruca & Ateliê Terra Bahiana',
     discountCode: 'NUTRI15',
     discountDescription: '15% de desconto exclusivo para nutricionistas parceiras',
-    buyUrl: 'https://www.seracacau.com.br/products/kit-inicio-gotas-105g-xicara'
+    buyUrl: SERA_CACAU_BUY_URL
   }
 ];
 

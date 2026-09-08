@@ -20,6 +20,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Product } from '../types';
+import { SERA_CACAU_BUY_URL } from '../data';
 
 interface ProductsViewProps {
   products: Product[];
@@ -147,9 +148,23 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
                   {prod.price}
                 </span>
                 
-                <span className="text-[10px] uppercase font-bold tracking-widest text-primary-accent group-hover:translate-x-1.5 transition-all flex items-center gap-1">
-                  Ver Detalhes <ChevronRight className="w-4 h-4" />
-                </span>
+                <div className="flex items-center gap-2">
+                  <a
+                    id={`btn-comprar-${prod.id}`}
+                    href={prod.buyUrl || SERA_CACAU_BUY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-lg text-[11px] uppercase font-bold tracking-wider transition-all shadow-xs hover:scale-102 cursor-pointer"
+                    title="Comprar com desconto prescrevedor na Será Cacau"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>Comprar</span>
+                  </a>
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-primary-accent group-hover:translate-x-1 transition-all flex items-center gap-0.5">
+                    Detalhes <ChevronRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
               </div>
             </div>
           ))}
@@ -238,17 +253,7 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
               {/* Direct e-commerce purchase link */}
               <a
                 id={`buy-now-${selectedProduct.id}`}
-                href={selectedProduct.buyUrl || (
-                  selectedProduct.name.toLowerCase().includes('210g')
-                    ? 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-210g'
-                    : selectedProduct.name.toLowerCase().includes('105g')
-                    ? 'https://www.seracacau.com.br/products/gotas-de-sera-cacau-105g'
-                    : selectedProduct.name.toLowerCase().includes('disc') || selectedProduct.name.toLowerCase().includes('disco') || selectedProduct.name.toLowerCase().includes('36g')
-                    ? 'https://www.seracacau.com.br/products/disco-sera-cacau-36g'
-                    : selectedProduct.name.toLowerCase().includes('baunilha') || selectedProduct.name.toLowerCase().includes('fava')
-                    ? 'https://www.seracacau.com.br/products/sera-baunilha-1-fava'
-                    : 'https://www.seracacau.com.br'
-                )}
+                href={selectedProduct.buyUrl || SERA_CACAU_BUY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow-md hover:scale-102 font-mono cursor-pointer"
