@@ -133,6 +133,10 @@ export interface Course {
   communityEnabled?: boolean;
   visibility?: CourseVisibility;
   enrolledMemberIds?: string[];
+  totalHours?: string;
+  availableFrom?: string; // ISO string e.g. '2026-09-20T00:00:00'
+  availableFromLabel?: string; // e.g. '20/09'
+  isLockedUntilAvailable?: boolean;
 }
 
 export interface CommunityReply {

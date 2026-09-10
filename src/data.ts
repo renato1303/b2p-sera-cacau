@@ -425,6 +425,10 @@ export const COURSES: Course[] = [
     communityEnabled: true,
     visibility: 'Somente Matriculadas',
     enrolledMemberIds: ['mem-1', 'mem-2', 'mem-3', 'mem-4'],
+    totalHours: '7 Dias + Introdução',
+    availableFrom: '2026-09-20T00:00:00',
+    availableFromLabel: '20/09',
+    isLockedUntilAvailable: true,
     modules: [
       {
         id: 'c1-m1',

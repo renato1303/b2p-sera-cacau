@@ -29,6 +29,8 @@ import {
   X
 } from 'lucide-react';
 import { Course, CourseClass, CourseModule, UserProfile, CommunityPost, FileAttachment } from '../types';
+import { isCourseLockedByDate } from '../utils/courseRelease';
+import { CourseLockedView } from './CourseLockedView';
 
 interface AcademyViewProps {
   courses: Course[];
@@ -39,6 +41,7 @@ interface AcademyViewProps {
   user: UserProfile;
   communityPosts: CommunityPost[];
   onAddCommunityPost: (post: CommunityPost) => void;
+  onNavigate?: (tabId: string) => void;
 }
 
 export const AcademyView: React.FC<AcademyViewProps> = ({
@@ -49,8 +52,12 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
   toggleCompleteClass,
   user,
   communityPosts,
-  onAddCommunityPost
+  onAddCommunityPost,
+  onNavigate
 }) => {
+  // Admin preview toggle (allows admin to test what's locked vs preview content)
+  const [adminPreviewMode, setAdminPreviewMode] = useState<boolean>(false);
+
   // Active learning states
   const [activeClass, setActiveClass] = useState<CourseClass | null>(null);
   const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
@@ -156,9 +163,40 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
     }
   };
 
+  const isSelectedCourseLocked = selectedCourse ? isCourseLockedByDate(selectedCourse, user.role) : false;
+
+  if (selectedCourse && isSelectedCourseLocked && !adminPreviewMode) {
+    return (
+      <CourseLockedView
+        course={selectedCourse}
+        user={user}
+        onBack={() => setSelectedCourse(null)}
+        onNavigateToProducts={() => onNavigate?.('produtos')}
+        onAdminPreview={user.role === 'ADMIN' ? () => setAdminPreviewMode(true) : undefined}
+      />
+    );
+  }
+
   return (
     <div ref={topRef} className="px-6 md:px-12 py-8 max-w-7xl mx-auto w-full font-sans text-primary-text">
       
+      {/* Admin Preview Mode Banner */}
+      {selectedCourse && isSelectedCourseLocked && adminPreviewMode && (
+        <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-4 text-xs font-mono">
+          <div className="flex items-center gap-2 text-amber-900 font-bold">
+            <Eye className="w-4 h-4 text-amber-700" />
+            <span>Modo Pré-visualização de Administrador (Bloqueado para os alunos até 20/09)</span>
+          </div>
+          <button
+            id="btn-exit-admin-preview"
+            onClick={() => setAdminPreviewMode(false)}
+            className="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+          >
+            Ver Bloqueio do Aluno
+          </button>
+        </div>
+      )}
+
       {/* HEADER SECTION */}
       {!selectedCourse ? (
         <div className="flex flex-col gap-2 mb-10">
@@ -227,6 +265,7 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
       {!selectedCourse ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map((course) => {
+            const isLocked = isCourseLockedByDate(course, user.role);
             const total = getCourseClassesCount(course);
             const completed = getCourseCompletedCount(course);
             const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -255,18 +294,25 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                   {/* Subtle vignette layer */}
                   <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-black/25 z-10" />
 
-                  {/* Completed Stamp */}
-                  {pct === 100 && (
+                  {/* Locked / Release Date Stamp */}
+                  {isLocked ? (
+                    <div className="absolute top-4 right-4 bg-amber-500/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-full z-20 shadow-md flex items-center gap-1.5 text-[10px] font-bold font-mono uppercase tracking-wider">
+                      <Lock className="w-3 h-3" />
+                      <span>Liberado em 20/09</span>
+                    </div>
+                  ) : pct === 100 ? (
                     <div className="absolute top-4 right-4 bg-emerald-500 text-white p-1 rounded-full z-20 shadow-md">
                       <CheckCircle className="w-4 h-4 fill-emerald-500 text-white" />
                     </div>
-                  )}
+                  ) : null}
 
                   {/* Progress overlay bar at the bottom of imagery */}
                   <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/10 z-20">
                     <div 
-                      className="h-full bg-gradient-to-r from-primary-accent to-luxury-accent transition-all duration-500"
-                      style={{ width: `${pct}%` }}
+                      className={`h-full transition-all duration-500 ${
+                        isLocked ? 'bg-amber-500' : 'bg-gradient-to-r from-primary-accent to-luxury-accent'
+                      }`}
+                      style={{ width: isLocked ? '10%' : `${pct}%` }}
                     />
                   </div>
                 </div>
@@ -282,16 +328,32 @@ export const AcademyView: React.FC<AcademyViewProps> = ({
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-border-color/60 flex items-center justify-between mt-4">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] text-secondary-text/60 uppercase tracking-widest font-mono">Aulas concluídas</span>
-                      <span className="text-xs font-semibold text-primary-forest font-mono">{completed} / {total} ({pct}%)</span>
+                  {isLocked ? (
+                    <div className="pt-4 border-t border-border-color/60 flex items-center justify-between mt-4">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-amber-800 font-bold uppercase tracking-widest font-mono flex items-center gap-1">
+                          <Lock className="w-3 h-3 text-amber-700" />
+                          Lançamento Oficial
+                        </span>
+                        <span className="text-xs font-semibold text-primary-forest font-mono">Disponível em 20/09</span>
+                      </div>
+                      
+                      <span className="text-[9px] uppercase font-bold tracking-widest text-amber-800 bg-amber-500/15 border border-amber-500/25 px-2.5 py-1.5 rounded-lg group-hover:bg-amber-500/25 transition-all flex items-center gap-1 font-mono">
+                        Ver Data <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
                     </div>
-                    
-                    <span className="text-[9px] uppercase font-bold tracking-widest text-primary-accent group-hover:translate-x-1 transition-all flex items-center gap-1 font-mono">
-                      Entrar <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
+                  ) : (
+                    <div className="pt-4 border-t border-border-color/60 flex items-center justify-between mt-4">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-secondary-text/60 uppercase tracking-widest font-mono">Aulas concluídas</span>
+                        <span className="text-xs font-semibold text-primary-forest font-mono">{completed} / {total} ({pct}%)</span>
+                      </div>
+                      
+                      <span className="text-[9px] uppercase font-bold tracking-widest text-primary-accent group-hover:translate-x-1 transition-all flex items-center gap-1 font-mono">
+                        Entrar <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             );

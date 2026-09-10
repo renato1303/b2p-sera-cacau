@@ -27,10 +27,12 @@ import {
   Copy,
   Check,
   Percent,
-  Share2
+  Share2,
+  Lock
 } from 'lucide-react';
 import { UserProfile, Course, Product, Campaign, FileAttachment } from '../types';
 import { getPatientCoupon } from '../lib/coupon';
+import { isCourseLockedByDate } from '../utils/courseRelease';
 
 interface DashboardViewProps {
   user: UserProfile;
@@ -322,90 +324,138 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </section>
 
       {/* 3. Main Hero Featured Course / Continue Learning */}
-      {activeCourse && (
-        <section className="bg-surface rounded-3xl border border-border-color p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-center shadow-sm relative overflow-hidden group">
-          <div className="w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden bg-secondary-surface relative border border-border-color shadow-md">
-            <img 
-              src={activeCourse.coverImage} 
-              alt={activeCourse.title} 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                const target = e.currentTarget;
-                if (!target.src.includes('img_4189.jpg') && !target.src.includes('cabruca_forest')) {
-                  target.src = '/images/img_4189.jpg';
-                }
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-            
-            <button
-              id="continue-learning-btn"
-              onClick={() => {
-                onSelectCourse(activeCourse);
-                onNavigate('academia');
-              }}
-              className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-primary-forest/90 hover:bg-primary-forest text-white border border-luxury-accent/40 flex items-center justify-center shadow-2xl transition-transform duration-300 hover:scale-110 cursor-pointer"
-            >
-              <Play className="w-6 h-6 fill-current translate-x-0.5 text-luxury-accent" />
-            </button>
+      {activeCourse && (() => {
+        const isHeroCourseLocked = isCourseLockedByDate(activeCourse, user.role);
 
-            <span className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm text-luxury-accent text-[9px] font-bold px-2.5 py-1 rounded font-mono uppercase">
-              {activeCourse.totalHours} de conteúdo
-            </span>
-          </div>
-
-          <div className="w-full lg:w-1/2 flex flex-col justify-between gap-5">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] uppercase tracking-widest font-bold text-primary-accent font-mono">
-                  {activeCourse.category} • Academia Cabruca
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[9px] text-emerald-600 font-bold uppercase font-mono">Em Andamento</span>
-              </div>
-
-              <h2 className="text-2xl md:text-3xl font-extrabold text-primary-forest tracking-tight mt-1.5">
-                {activeCourse.title}
-              </h2>
-
-              <p className="text-xs md:text-sm text-secondary-text mt-2.5 leading-relaxed line-clamp-3">
-                {activeCourse.description}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-2 pt-2 border-t border-border-color/60">
-              <div className="flex justify-between items-center text-[10px] font-mono">
-                <span className="text-secondary-text font-medium">Instrutor: <strong className="text-primary-forest">{activeCourse.instructor}</strong></span>
-                <span className="text-primary-accent font-bold">1/4 Módulos Concluídos (25%)</span>
-              </div>
-              <div className="w-full h-2 bg-secondary-surface rounded-full overflow-hidden">
-                <div className="h-full bg-primary-accent rounded-full transition-all duration-500" style={{ width: '25%' }} />
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-3 pt-2">
+        return (
+          <section className="bg-surface rounded-3xl border border-border-color p-6 md:p-8 flex flex-col lg:flex-row gap-8 items-center shadow-sm relative overflow-hidden group">
+            <div className="w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden bg-secondary-surface relative border border-border-color shadow-md">
+              <img 
+                src={activeCourse.coverImage} 
+                alt={activeCourse.title} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('img_4189.jpg') && !target.src.includes('cabruca_forest')) {
+                    target.src = '/images/img_4189.jpg';
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+              
               <button
+                id="continue-learning-btn"
                 onClick={() => {
                   onSelectCourse(activeCourse);
                   onNavigate('academia');
                 }}
-                className="px-6 py-3 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow font-mono flex items-center gap-2 cursor-pointer"
+                className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-primary-forest/90 hover:bg-primary-forest text-white border border-luxury-accent/40 flex items-center justify-center shadow-2xl transition-transform duration-300 hover:scale-110 cursor-pointer"
+                title={isHeroCourseLocked ? 'Curso com liberação em 20/09' : 'Iniciar Aula'}
               >
-                <span>Continuar Aula</span>
-                <ArrowRight className="w-4 h-4" />
+                {isHeroCourseLocked ? (
+                  <Lock className="w-6 h-6 text-luxury-accent" />
+                ) : (
+                  <Play className="w-6 h-6 fill-current translate-x-0.5 text-luxury-accent" />
+                )}
               </button>
 
-              <button
-                onClick={() => onNavigate('academia')}
-                className="px-5 py-3 bg-surface hover:bg-secondary-surface text-secondary-text border border-border-color rounded-xl text-xs uppercase font-bold tracking-widest transition-all font-mono cursor-pointer"
-              >
-                Ver Todos os Módulos
-              </button>
+              <span className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-xs text-luxury-accent text-[9px] font-bold px-2.5 py-1 rounded font-mono uppercase flex items-center gap-1">
+                {isHeroCourseLocked ? (
+                  <>
+                    <Lock className="w-3 h-3" />
+                    Lançamento: 20/09
+                  </>
+                ) : (
+                  `${activeCourse.totalHours} de conteúdo`
+                )}
+              </span>
             </div>
-          </div>
-        </section>
-      )}
+
+            <div className="w-full lg:w-1/2 flex flex-col justify-between gap-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] uppercase tracking-widest font-bold text-primary-accent font-mono">
+                    {activeCourse.category} • Academia Cabruca
+                  </span>
+                  {isHeroCourseLocked ? (
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      <span className="text-[9px] text-amber-700 font-bold uppercase font-mono flex items-center gap-1">
+                        <Lock className="w-3 h-3" />
+                        Disponível em 20/09
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <span className="text-[9px] text-emerald-600 font-bold uppercase font-mono">Em Andamento</span>
+                    </>
+                  )}
+                </div>
+
+                <h2 className="text-2xl md:text-3xl font-extrabold text-primary-forest tracking-tight mt-1.5">
+                  {activeCourse.title}
+                </h2>
+
+                <p className="text-xs md:text-sm text-secondary-text mt-2.5 leading-relaxed line-clamp-3">
+                  {activeCourse.description}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-border-color/60">
+                <div className="flex justify-between items-center text-[10px] font-mono">
+                  <span className="text-secondary-text font-medium">Instrutor: <strong className="text-primary-forest">{activeCourse.instructor}</strong></span>
+                  {isHeroCourseLocked ? (
+                    <span className="text-amber-800 font-bold flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-amber-700" />
+                      Liberação Oficial: 20 de Setembro
+                    </span>
+                  ) : (
+                    <span className="text-primary-accent font-bold">1/4 Módulos Concluídos (25%)</span>
+                  )}
+                </div>
+                <div className="w-full h-2 bg-secondary-surface rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-500 ${isHeroCourseLocked ? 'bg-amber-500' : 'bg-primary-accent'}`} 
+                    style={{ width: isHeroCourseLocked ? '10%' : '25%' }} 
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3 pt-2">
+                <button
+                  id="hero-course-action-btn"
+                  onClick={() => {
+                    onSelectCourse(activeCourse);
+                    onNavigate('academia');
+                  }}
+                  className="px-6 py-3 bg-primary-forest hover:bg-primary-forest/90 text-white rounded-xl text-xs uppercase font-bold tracking-widest transition-all shadow font-mono flex items-center gap-2 cursor-pointer"
+                >
+                  {isHeroCourseLocked ? (
+                    <>
+                      <Lock className="w-4 h-4 text-luxury-accent" />
+                      <span>Ver Lançamento (20/09)</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Continuar Aula</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => onNavigate('academia')}
+                  className="px-5 py-3 bg-surface hover:bg-secondary-surface text-secondary-text border border-border-color rounded-xl text-xs uppercase font-bold tracking-widest transition-all font-mono cursor-pointer"
+                >
+                  Ver Todos os Cursos
+                </button>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* 4. Quick Action Hub / Portais Essenciais */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

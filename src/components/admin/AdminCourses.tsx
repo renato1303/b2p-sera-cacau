@@ -736,6 +736,16 @@ export const AdminCourses: React.FC<AdminCoursesProps> = ({
                       <h4 className={`text-sm font-bold mt-2 line-clamp-1 ${isSelected ? 'text-white' : 'text-primary-forest'}`}>
                         {course.title}
                       </h4>
+                      {course.isLockedUntilAvailable && (
+                        <div className="mt-1">
+                          <span className={`inline-flex items-center gap-1 text-[9px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                            isSelected ? 'bg-amber-400/20 text-amber-200 border border-amber-300/30' : 'bg-amber-100 text-amber-900 border border-amber-300'
+                          }`}>
+                            <Lock className="w-2.5 h-2.5 text-amber-600" />
+                            Disponível aos usuários em 20/09
+                          </span>
+                        </div>
+                      )}
                       <p className={`text-xs mt-1 line-clamp-1 ${isSelected ? 'text-[#C2C9C0]' : 'text-[#6A786C]'}`}>
                         {course.modules.length} módulos · {totalClasses} aulas · Por {course.instructor}
                       </p>
@@ -767,6 +777,15 @@ export const AdminCourses: React.FC<AdminCoursesProps> = ({
                       </span>
                     </div>
                   </div>
+
+                  {selectedCourse.isLockedUntilAvailable && (
+                    <div className="p-3 bg-amber-50 border border-amber-200/90 rounded-xl text-xs text-amber-900 flex items-center gap-2.5">
+                      <Lock className="w-4 h-4 text-amber-700 shrink-0" />
+                      <span>
+                        <strong>Acesso aos Alunos Agendado:</strong> Este curso está bloqueado para os usuários comuns até <strong>20/09/2026</strong>.
+                      </span>
+                    </div>
+                  )}
 
                   {/* Add New Module to this Existing Course */}
                   <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-[#2E4030]/15 space-y-3">

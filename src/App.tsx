@@ -844,6 +844,7 @@ export default function App() {
               user={currentUser}
               communityPosts={communityPosts}
               onAddCommunityPost={(post) => setCommunityPosts(prev => [post, ...prev])}
+              onNavigate={handleNavigateWithTarget}
             />
           )}
 
