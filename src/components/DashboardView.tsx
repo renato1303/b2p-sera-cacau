@@ -57,12 +57,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const activeCourse = courses[0] || null;
 
+  const isCouponActive = user.couponActive ?? false;
   const patientCoupon = user.patientCoupon || user.couponCode || getPatientCoupon(user.name);
 
   const [copiedPatient, setCopiedPatient] = useState(false);
 
   const handleCopyPatient = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isCouponActive) {
+      alert('Seu cupom está atualmente Inativo. Ele será ativado assim que o administrador do sistema o liberar no painel.');
+      return;
+    }
     navigator.clipboard.writeText(patientCoupon);
     setCopiedPatient(true);
     setTimeout(() => setCopiedPatient(false), 2200);
@@ -165,40 +170,46 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
               </div>
 
-              {/* 5. Cupom Pacientes 8% (Esticado lateralmente - idêntico ao Desconto Nutri) */}
+              {/* 5. Cupom Pacientes 8% */}
               <div className="bg-[#FAF7F2] hover:bg-[#F5EFE4] border border-[#E8E0D2] rounded-xl p-2.5 sm:p-3 flex flex-col justify-between min-h-[64px] shadow-xs transition-colors group/pac flex-1 min-w-[210px] sm:min-w-[230px]">
                 <div className="flex items-center justify-between gap-1.5 min-w-0">
                   <span className="text-[9px] uppercase tracking-wider text-secondary-text/80 font-mono font-semibold whitespace-nowrap">
                     Cupom Pacientes
                   </span>
-                  <span className="text-[8px] leading-tight shrink-0 bg-primary-accent/20 text-primary-accent font-mono font-bold px-1.5 py-0.5 rounded border border-primary-accent/30 whitespace-nowrap">
-                    8% OFF
+                  <span className={`text-[8px] leading-tight shrink-0 font-mono font-bold px-1.5 py-0.5 rounded border whitespace-nowrap ${
+                    isCouponActive 
+                      ? 'bg-primary-accent/20 text-primary-accent border-primary-accent/30' 
+                      : 'bg-rose-100 text-rose-800 border-rose-300'
+                  }`}>
+                    {isCouponActive ? '8% OFF' : 'INATIVO'}
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={handleCopyPatient}
-                  title={`Clique para copiar o cupom: ${patientCoupon}`}
+                  title={isCouponActive ? `Clique para copiar o cupom: ${patientCoupon}` : 'Cupom Inativo (Aguardando liberação do administrador)'}
                   className="mt-1 flex flex-col min-w-0 w-full text-left cursor-pointer group"
                 >
                   <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
                     <span 
-                      className="text-[11px] sm:text-xs font-mono font-bold text-primary-accent group-hover:text-primary-forest transition-colors truncate" 
-                      title={patientCoupon}
+                      className={`text-[11px] sm:text-xs font-mono font-bold truncate ${isCouponActive ? 'text-primary-accent group-hover:text-primary-forest' : 'text-rose-600'}`} 
+                      title={isCouponActive ? patientCoupon : 'Inativo'}
                     >
-                      {patientCoupon}
+                      {isCouponActive ? patientCoupon : 'INATIVO'}
                     </span>
-                    {copiedPatient ? (
-                      <span className="flex items-center gap-0.5 text-[9px] text-emerald-600 font-sans font-bold shrink-0">
-                        <Check className="w-3 h-3" />
-                        <span>Copiado</span>
-                      </span>
-                    ) : (
-                      <Copy className="w-3 h-3 text-secondary-text/40 group-hover:text-primary-accent transition-colors shrink-0" />
+                    {isCouponActive && (
+                      copiedPatient ? (
+                        <span className="flex items-center gap-0.5 text-[9px] text-emerald-600 font-sans font-bold shrink-0">
+                          <Check className="w-3 h-3" />
+                          <span>Copiado</span>
+                        </span>
+                      ) : (
+                        <Copy className="w-3 h-3 text-secondary-text/40 group-hover:text-primary-accent transition-colors shrink-0" />
+                      )
                     )}
                   </div>
-                  <span className="text-[8px] font-mono text-primary-accent/80 tracking-tight whitespace-nowrap">
-                    {copiedPatient ? 'Pronto para enviar!' : 'Clique para copiar'}
+                  <span className="text-[8px] font-mono tracking-tight whitespace-nowrap text-secondary-text/80">
+                    {isCouponActive ? (copiedPatient ? 'Pronto para enviar!' : 'Clique para copiar') : 'Aguardando liberação'}
                   </span>
                 </button>
               </div>

@@ -41,6 +41,7 @@ export const AdminMemberModal: React.FC<AdminMemberModalProps> = ({
   const [state, setState] = useState('');
   const [specialty, setSpecialty] = useState('Nutrição Integrativa & Funcional');
   const [patientCoupon, setPatientCoupon] = useState('');
+  const [couponActive, setCouponActive] = useState(false);
   const [customCouponTouched, setCustomCouponTouched] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +57,7 @@ export const AdminMemberModal: React.FC<AdminMemberModalProps> = ({
       setState(editingMember.state || '');
       setSpecialty(editingMember.specialty || 'Nutrição Integrativa & Funcional');
       setPatientCoupon(editingMember.patientCoupon || editingMember.couponCode || getPatientCoupon(editingMember.name));
+      setCouponActive(editingMember.couponActive ?? false);
       setCustomCouponTouched(true);
     } else {
       setName('');
@@ -66,6 +68,7 @@ export const AdminMemberModal: React.FC<AdminMemberModalProps> = ({
       setState('');
       setSpecialty('Nutrição Integrativa & Funcional');
       setPatientCoupon('');
+      setCouponActive(false);
       setCustomCouponTouched(false);
     }
     setErrorMsg('');
@@ -112,6 +115,7 @@ export const AdminMemberModal: React.FC<AdminMemberModalProps> = ({
       specialty: specialty.trim() || 'Nutrição Integrativa & Funcional',
       patientCoupon: finalCoupon,
       couponCode: finalCoupon,
+      couponActive: couponActive,
       enrolledCourseIds: editingMember?.enrolledCourseIds || ['c1', 'c2'],
       joinedDate: editingMember?.joinedDate || new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }),
       totalPoints: editingMember?.totalPoints ?? 0,
@@ -320,6 +324,29 @@ export const AdminMemberModal: React.FC<AdminMemberModalProps> = ({
             <p className="text-[10px] text-[#6A786C]">
               Este código é disponibilizado para a nutricionista prescrever aos pacientes com 8% de desconto na loja virtual.
             </p>
+
+            {/* Status Toggle */}
+            <div className="pt-2 border-t border-[#E8DAB2]/40 flex items-center justify-between">
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary-forest block">
+                  Status de Ativação
+                </span>
+                <span className="text-[10px] text-[#6A786C]">
+                  {couponActive ? 'Cupom ativo e válido para pacientes.' : 'Cupom inativo (aguardando liberação do administrador).'}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCouponActive(!couponActive)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                  couponActive 
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                    : 'bg-rose-100 text-rose-800 border border-rose-300'
+                }`}
+              >
+                {couponActive ? '● Ativo (Liberado)' : '○ Inativo'}
+              </button>
+            </div>
           </div>
 
         </form>

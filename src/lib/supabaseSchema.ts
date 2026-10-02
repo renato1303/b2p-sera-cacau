@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   role TEXT DEFAULT 'NUTRICIONISTA',
   patient_coupon TEXT,
   coupon_code TEXT,
+  coupon_active BOOLEAN DEFAULT FALSE,
   instagram TEXT,
   total_points INTEGER DEFAULT 0,
   tier TEXT DEFAULT 'Bronze',

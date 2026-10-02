@@ -126,6 +126,7 @@ export default function App() {
                 crn: profile.crn || '',
                 patientCoupon: profile.patient_coupon || profile.coupon_code || '',
                 couponCode: profile.coupon_code || profile.patient_coupon || '',
+                couponActive: profile.coupon_active ?? false,
                 totalPoints: profile.total_points ?? 0,
                 tier: profile.tier || 'Bronze'
               };
@@ -287,6 +288,7 @@ export default function App() {
                 specialty: p.specialty || '',
                 patientCoupon: p.patient_coupon || p.coupon_code || '',
                 couponCode: p.coupon_code || p.patient_coupon || '',
+                couponActive: p.coupon_active ?? false,
                 enrolledCourseIds: ['c1', 'c2'],
                 joinedDate: p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recente',
                 totalPoints: p.total_points ?? 0,
@@ -546,6 +548,7 @@ export default function App() {
             instagram: updated.instagram || '',
             patient_coupon: updated.patientCoupon || updated.couponCode || '',
             coupon_code: updated.patientCoupon || updated.couponCode || '',
+            coupon_active: updated.couponActive ?? false,
             updated_at: new Date().toISOString()
           }, { onConflict: 'email' });
       } catch (err) {

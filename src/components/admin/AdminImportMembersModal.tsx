@@ -563,6 +563,7 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
           role: 'NUTRICIONISTA',
           patient_coupon: r.patientCoupon,
           coupon_code: r.patientCoupon,
+          coupon_active: false,
           total_points: 0,
           tier: 'Bronze',
           updated_at: new Date().toISOString()
@@ -611,6 +612,7 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
         specialty: r.specialty,
         patientCoupon: r.patientCoupon,
         couponCode: r.patientCoupon,
+        couponActive: false,
         enrolledCourseIds: ['c1', 'c2'],
         joinedDate: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }),
         totalPoints: 0,
@@ -671,6 +673,7 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
         specialty: r.specialty,
         patientCoupon: r.patientCoupon,
         couponCode: r.patientCoupon,
+        couponActive: false,
         enrolledCourseIds: ['c1', 'c2'],
         joinedDate: new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }),
         totalPoints: 0,

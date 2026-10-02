@@ -185,6 +185,28 @@ export const AdminView: React.FC<AdminViewProps> = ({
     }
   };
 
+  const handleToggleCouponActive = async (member: Member) => {
+    const nextActive = !member.couponActive;
+    const updatedMember = { ...member, couponActive: nextActive };
+
+    if (isSupabaseConfigured) {
+      const payload = {
+        email: member.email.toLowerCase().trim(),
+        coupon_active: nextActive,
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await supabase
+        .from('profiles')
+        .upsert(payload, { onConflict: 'email' });
+      if (error) {
+        console.error('Erro ao atualizar status do cupom no Supabase:', error);
+      }
+    }
+
+    setMembers(prev => prev.map(m => m.id === member.id ? updatedMember : m));
+    triggerSuccess(`Cupom de ${member.name} alterado para ${nextActive ? 'ATIVO' : 'INATIVO'}.`);
+  };
+
   const handleSaveMember = async (member: Member) => {
     // 1. Replicate directly to Supabase
     if (isSupabaseConfigured) {
@@ -199,6 +221,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         role: 'NUTRICIONISTA',
         patient_coupon: member.patientCoupon,
         coupon_code: member.patientCoupon,
+        coupon_active: member.couponActive ?? false,
         updated_at: new Date().toISOString()
       };
 
@@ -640,10 +663,28 @@ export const AdminView: React.FC<AdminViewProps> = ({
                               </div>
                             </td>
                             <td className="py-3 px-3">
-                              <span className="inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] text-[#7A5B1D] bg-[#FAF3E0] border border-[#E8DAB2] px-2 py-0.5 rounded-md shadow-xs" title="Cupom oficial de 8% de desconto para pacientes">
-                                <Tag className="w-3 h-3 text-primary-accent" />
-                                <span>{coupon}</span>
-                              </span>
+                              <div className="flex flex-col gap-1.5">
+                                <span className={`inline-flex items-center gap-1.5 font-mono font-extrabold text-[11px] px-2 py-0.5 rounded-md shadow-xs border ${
+                                  member.couponActive 
+                                    ? 'text-[#7A5B1D] bg-[#FAF3E0] border-[#E8DAB2]' 
+                                    : 'text-gray-500 bg-gray-100 border-gray-300'
+                                }`} title={member.couponActive ? `Cupom Ativo: ${coupon}` : 'Cupom Inativo'}>
+                                  <Tag className="w-3 h-3 text-primary-accent" />
+                                  <span>{member.couponActive ? coupon : 'INATIVO'}</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleCouponActive(member)}
+                                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded w-fit transition-colors cursor-pointer flex items-center gap-1 ${
+                                    member.couponActive 
+                                      ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' 
+                                      : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
+                                  }`}
+                                  title="Clique para alternar entre Ativo e Inativo"
+                                >
+                                  {member.couponActive ? '● Ativo (Liberado)' : '○ Inativo (Liberar)'}
+                                </button>
+                              </div>
                             </td>
                             <td className="py-3 px-3 font-mono text-[11px] text-[#4A554B]">
                               {member.phone ? (

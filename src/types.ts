@@ -40,6 +40,7 @@ export interface UserProfile {
   crn?: string; // CRN registry for nutritionists
   patientCoupon?: string; // Cupom exclusivo para pacientes / clientes
   couponCode?: string;
+  couponActive?: boolean;
   totalPoints?: number;
   tier?: GamificationTier;
 }
@@ -166,6 +167,7 @@ export interface Member {
   specialty?: string;
   patientCoupon?: string;
   couponCode?: string;
+  couponActive?: boolean;
   city: string;
   state: string;
   enrolledCourseIds: string[];
