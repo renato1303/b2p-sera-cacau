@@ -535,22 +535,27 @@ export default function App() {
 
     if (isSupabaseConfigured && updated.email) {
       try {
-        await supabase
+        let payload: any = {
+          email: updated.email.toLowerCase().trim(),
+          name: updated.name,
+          phone: updated.phone || '',
+          crn: updated.crn || '',
+          city: updated.city || '',
+          state: updated.state || '',
+          specialty: updated.specialty || 'Nutrição Integrativa & Funcional',
+          instagram: updated.instagram || '',
+          patient_coupon: updated.patientCoupon || updated.couponCode || '',
+          coupon_code: updated.patientCoupon || updated.couponCode || '',
+          coupon_active: updated.couponActive ?? false,
+          updated_at: new Date().toISOString()
+        };
+        let { error } = await supabase
           .from('profiles')
-          .upsert({
-            email: updated.email.toLowerCase().trim(),
-            name: updated.name,
-            phone: updated.phone || '',
-            crn: updated.crn || '',
-            city: updated.city || '',
-            state: updated.state || '',
-            specialty: updated.specialty || 'Nutrição Integrativa & Funcional',
-            instagram: updated.instagram || '',
-            patient_coupon: updated.patientCoupon || updated.couponCode || '',
-            coupon_code: updated.patientCoupon || updated.couponCode || '',
-            coupon_active: updated.couponActive ?? false,
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'email' });
+          .upsert(payload, { onConflict: 'email' });
+        if (error && (error.message.includes('coupon_active') || error.message.includes('column') || error.message.includes('cache'))) {
+          delete payload.coupon_active;
+          await supabase.from('profiles').upsert(payload, { onConflict: 'email' });
+        }
       } catch (err) {
         console.warn('Erro ao atualizar perfil no Supabase:', err);
       }

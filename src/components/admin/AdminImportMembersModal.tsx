@@ -552,7 +552,7 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
 
       if (isSupabaseConfigured) {
         // Prepare payload for Supabase 'profiles' table including patient coupon without forcing fake location
-        const payload = validRows.map(r => ({
+        let payload: any[] = validRows.map(r => ({
           name: r.fullName,
           email: r.email,
           phone: r.phone || '',
@@ -570,9 +570,22 @@ export const AdminImportMembersModal: React.FC<AdminImportMembersModalProps> = (
         }));
 
         // Upsert into Supabase profiles on conflict of email
-        const { error } = await supabase
+        let { error } = await supabase
           .from('profiles')
           .upsert(payload, { onConflict: 'email' });
+
+        if (error && (error.message.includes('coupon_active') || error.message.includes('column') || error.message.includes('cache'))) {
+          console.warn('Coluna coupon_active não encontrada no Supabase, tentando sem ela...', error);
+          payload = payload.map(p => {
+            const copy = { ...p };
+            delete copy.coupon_active;
+            return copy;
+          });
+          const retryRes = await supabase
+            .from('profiles')
+            .upsert(payload, { onConflict: 'email' });
+          error = retryRes.error;
+        }
 
         if (error) {
           const errCode = (error as any)?.code;

@@ -190,16 +190,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
     const updatedMember = { ...member, couponActive: nextActive };
 
     if (isSupabaseConfigured) {
-      const payload = {
+      let payload: any = {
         email: member.email.toLowerCase().trim(),
         coupon_active: nextActive,
         updated_at: new Date().toISOString()
       };
-      const { error } = await supabase
+      let { error } = await supabase
         .from('profiles')
         .upsert(payload, { onConflict: 'email' });
-      if (error) {
-        console.error('Erro ao atualizar status do cupom no Supabase:', error);
+      if (error && (error.message.includes('coupon_active') || error.message.includes('column') || error.message.includes('cache'))) {
+        delete payload.coupon_active;
+        await supabase.from('profiles').upsert(payload, { onConflict: 'email' });
       }
     }
 
@@ -210,7 +211,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const handleSaveMember = async (member: Member) => {
     // 1. Replicate directly to Supabase
     if (isSupabaseConfigured) {
-      const payload = {
+      let payload: any = {
         name: member.name,
         email: member.email.toLowerCase().trim(),
         phone: member.phone || '',
@@ -225,9 +226,18 @@ export const AdminView: React.FC<AdminViewProps> = ({
         updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
+      let { error } = await supabase
         .from('profiles')
         .upsert(payload, { onConflict: 'email' });
+
+      if (error && (error.message.includes('coupon_active') || error.message.includes('column') || error.message.includes('cache'))) {
+        console.warn('Coluna coupon_active não encontrada no Supabase, tentando sem ela...', error);
+        delete payload.coupon_active;
+        const retryRes = await supabase
+          .from('profiles')
+          .upsert(payload, { onConflict: 'email' });
+        error = retryRes.error;
+      }
 
       if (error) {
         console.error('Erro ao replicar no Supabase:', error);
